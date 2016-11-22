@@ -1,0 +1,133 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.iamkatrechko.clipboardmanager.ClipEditFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/etTitle"
+            tools:text="Название"
+            android:textSize="19sp"
+            android:textColor="?attr/colorPrimary"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="16dp"
+            android:enabled="false"
+            android:background="#00000000"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/linearCategory"
+                android:gravity="center_vertical"
+                android:background="?android:attr/selectableItemBackground">
+
+                <ImageView
+                    android:padding="12dp"
+                    android:tint="#808080"
+                    android:src="@drawable/ic_label"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvCategory"
+                    android:layout_weight="1"
+                    android:textColor="#808080"
+                    tools:text="Название категории"/>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/ivIsFavorite"
+                android:src="@drawable/ic_star_border"
+                android:tint="#808080"
+                android:padding="8dp"
+                android:layout_width="38dp"
+                android:layout_height="40dp"/>
+
+            <ImageView
+                android:id="@+id/ivShare"
+                android:tint="#808080"
+                android:src="@drawable/ic_share_24dp"
+                android:padding="8dp"
+                android:layout_width="38dp"
+                android:layout_height="40dp"/>
+
+            <ImageView
+                android:id="@+id/ivCopy"
+                android:src="@drawable/ic_copy"
+                android:padding="9dp"
+                android:tint="#808080"
+                android:layout_width="38dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="6dp"/>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_marginLeft="12dp"
+            android:background="#b6b6b6"
+            android:layout_marginRight="12dp"
+            android:layout_height="1dp">
+
+        </FrameLayout>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/etContent"
+            tools:text="Содержание"
+            android:gravity="top"
+            android:textSize="15sp"
+            android:textColor="#505050"
+            android:background="#00000000"
+            android:padding="12dp"
+            android:enabled="false"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/tvDate"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="8dp"
+            tools:text="Дата создания"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorPrimary"/>
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_done_24dp"
+        android:tint="#ffffff"/>
+</android.support.design.widget.CoordinatorLayout>
+

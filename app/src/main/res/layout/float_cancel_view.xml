@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center_horizontal">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_height="48dp"
+        android:id="@+id/linearMain"
+        android:background="@drawable/my_toast"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:alpha="0.7">
+
+        <TextView
+            android:text="@string/copy_in_app"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvInfo"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@android:color/background_light"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"/>
+
+        <FrameLayout
+            android:layout_height="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_width="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:id="@+id/linearCancel">
+
+            <TextView
+                android:text="Отмена"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/darker_gray"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="4dp"/>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:src="@drawable/ic_close"
+                android:tint="@android:color/darker_gray"
+                android:layout_weight="1"
+                android:layout_height="24dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginLeft="4dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

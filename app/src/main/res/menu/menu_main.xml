@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.iamkatrechko.clipboardmanager.MainActivity">
+    <item
+        android:id="@+id/action_developer_menu"
+        android:orderInCategory="100"
+        android:title="Меню разработчика"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_show_favorites"
+        android:checkable="true"
+        android:checked="false"
+        android:orderInCategory="100"
+        android:title="Только избранные"
+        android:icon="@drawable/ic_star_border_white"
+        app:showAsAction="ifRoom|withText"/>
+</menu>
