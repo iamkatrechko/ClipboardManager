@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content_search"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="?attr/colorPrimary">
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/etSearch"
+            android:background="#ffffff"
+            android:hint="Введите искомый текст"
+            android:padding="8dp"
+            android:paddingRight="8dp"
+            android:layout_weight="1"
+            android:layout_margin="4dp"
+            android:maxLines="1"/>
+
+        <ImageButton
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:id="@+id/ibSeacrh"
+            android:background="?attr/colorPrimary"
+            android:src="@drawable/ic_search"
+            android:scaleType="centerCrop"
+            android:tint="#ffffff"
+            android:padding="10dp"/>
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recyclerView"/>
+
+</LinearLayout>

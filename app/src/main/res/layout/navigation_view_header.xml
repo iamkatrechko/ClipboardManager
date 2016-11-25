@@ -23,7 +23,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Иванов Михаил"
+            android:text="ClipboardManager"
             android:id="@+id/textViewName"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
@@ -33,7 +33,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="iamkatrechko@yandex.ru"
+            android:text="Менеджер буера обмена"
             android:id="@+id/textViewDescription"
             android:layout_marginLeft="16dp"
             android:textColor="#ffffff"

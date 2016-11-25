@@ -24,7 +24,8 @@
             android:layout_weight="1"
             tools:text="Название"
             android:textSize="17sp"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:textColor="#545454"/>
 
         <TextView
             android:text="Дата"
@@ -59,7 +60,8 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginBottom="8dp"
-                android:maxLines="3"/>
+                android:maxLines="3"
+                android:textColor="#747474"/>
 
             <TextView
                 android:text="№ категории"

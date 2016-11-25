@@ -164,6 +164,9 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+            case R.id.action_search:
+                getActivity().startActivity(new Intent(getActivity(), SearchActivity.class));
+                break;
             // Показывать только избранные
             case R.id.action_show_favorites:
                 boolean isOnly = UtilPrefences.isShowOnlyFavorite(getActivity());

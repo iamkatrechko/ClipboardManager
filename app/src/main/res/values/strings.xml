@@ -34,4 +34,5 @@
     <string name="action_change_category">Переместить в...</string>
     <string name="splited">Объединено</string>
     <string name="select_cancel">Для объединения выделите больше 1-й записи</string>
+    <string name="title_activity_search">SearchActivity</string>
 </resources>
