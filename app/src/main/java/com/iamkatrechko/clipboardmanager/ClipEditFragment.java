@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
+import com.iamkatrechko.clipboardmanager.dialogs.DialogSaveClip;
 
 import static com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.*;
 import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
@@ -38,8 +39,6 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
 
     private static final int ONE_CLIP_LOADER = 0;
     private static final int ONE_CATEGORY_LOADER = 1;
-
-    private static final int DIALOG_CANCEL_CHANGES = 465444;
 
     private boolean addingNewClip = false;
     private boolean isEditMode = false;
@@ -205,13 +204,6 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
         getActivity().finish();
     }
 
-    private void cancel() {
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        DialogSaveClip fragmentDialog = DialogSaveClip.newInstance();
-        fragmentDialog.setTargetFragment(this, DIALOG_CANCEL_CHANGES);
-        fragmentDialog.show(fragmentManager, "DIALOG_CANCEL_CHANGES");
-    }
-
     private void copyToClipboard() {
         Util.copyToClipboard(getActivity(), etContent.getText().toString());
     }
@@ -336,7 +328,7 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
             saveNeed = true;
             return;
         }
-        if (resultCode == Activity.RESULT_OK && requestCode == DIALOG_CANCEL_CHANGES) {
+        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_CANCEL_CHANGES) {
             boolean save = data.getBooleanExtra("save", true);
             if (!save) {
                 getActivity().finish();
@@ -375,7 +367,7 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
     public void backButtonWasPressed() {
         if (isEditMode) {
             if (saveNeed) {
-                cancel();
+                DialogManager.showDialogCancel(this);
                 //Toast.makeText(getActivity(), "Нужно сохранить", Toast.LENGTH_SHORT).show();
             } else {
                 getActivity().finish();
