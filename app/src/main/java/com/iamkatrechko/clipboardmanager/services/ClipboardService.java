@@ -61,13 +61,13 @@ public class ClipboardService extends Service {
                             null,
                             null,
                             Clip._ID + " ASC");
-                    //FIXME оздать метод по проверке записи на существование
-                    /*if (recordAlreadyExists(clipText)){
+                    if (recordAlreadyExists(clipText)){
+                        Toast.makeText(getApplicationContext(), "Запись уже существует (в базе)", Toast.LENGTH_SHORT).show();
                         return;
-                    }*/
+                    }
                     if (cursor.moveToLast()){
                         if (cursor.getString(1).equals(clipText)){
-                            Toast.makeText(getApplicationContext(), "Запись уже есть", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Запись уже существует (последняя)", Toast.LENGTH_SHORT).show();
                         }else{
                             addNewClip(clipText);
                         }
@@ -84,10 +84,20 @@ public class ClipboardService extends Service {
         return Service.START_NOT_STICKY;
     }
 
+    private boolean recordAlreadyExists(String clipText) {
+        Cursor cursor = getContentResolver().query(Clip.CONTENT_URI,
+                null,
+                Clip.COLUMN_CONTENT + " = ?",
+                new String[]{clipText},
+                null);
+        return cursor != null && (cursor.getCount() != 0);
+    }
+
     private void addNewClip(String content){
         String formattedDate = Util.getCurrentTime();
 
         ContentValues contentValues = Clip.getDefaultContentValues();
+        //TODO Добавить генерацию названия записи
         contentValues.put(Clip.COLUMN_CONTENT, content);
         contentValues.put(Clip.COLUMN_DATE, formattedDate);
 
