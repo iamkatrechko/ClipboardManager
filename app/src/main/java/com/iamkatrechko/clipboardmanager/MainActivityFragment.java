@@ -188,6 +188,10 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             case R.id.action_share:
                 mCursorAdapter.shareItems();
                 break;
+            // Сменить категорию выделенных записей
+            case R.id.action_change_category:
+                DialogManager.showDialogChangeCategory(this);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -199,6 +203,11 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             boolean deleteOldClips = data.getBooleanExtra("deleteOldClips", false);
 
             mCursorAdapter.splitItems(splitChar, deleteOldClips);
+        }
+        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_CHANGE_CATEGORY){
+            long categoryId = data.getLongExtra("categoryId", 0);
+
+            mCursorAdapter.changeCategory(categoryId);
         }
     }
 }

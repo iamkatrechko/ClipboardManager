@@ -19,4 +19,8 @@
         android:title="@string/action_share"
         android:icon="@drawable/ic_share_white_48dp"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_change_category"
+        android:orderInCategory="4"
+        android:title="@string/action_change_category"/>
 </menu>

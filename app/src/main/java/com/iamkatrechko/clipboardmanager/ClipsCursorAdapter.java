@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import com.bignerdranch.android.multiselector.SwappingHolder;
 import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
 import com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
 import com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.*;
+
+import java.util.ArrayList;
 
 public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.ViewHolder> {
     private Context aContext;
@@ -186,6 +189,18 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
         }
     }
 
+    public ArrayList<Long> getSelectedIds(){
+        ArrayList<Long> idsList = new ArrayList<>();
+        for (int i = getItemCount(); i >= 0; i--) {
+            if (mMultiSelector.isSelected(i, 0)) { // (1)
+                long id = ((ViewHolder) mRecyclerView.findViewHolderForPosition(i))._id;
+                idsList.add(id);
+            }
+        }
+        mMultiSelector.getSelectedPositions();
+        return idsList;
+    }
+
     /**
      * Перепривязывает данные в адаптере
      */
@@ -219,13 +234,9 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
      * Удаляет из базы данных выбранные множественным выделением записи
      */
     public void deleteSelectedItems() {
-        for (int i = getItemCount(); i >= 0; i--) {
-            if (mMultiSelector.isSelected(i, 0)) { // (1)
-                mRecyclerView.getAdapter().notifyItemRemoved(i);
-
-                Uri uri = DatabaseDescription.Clip.buildClipUri(((ViewHolder) mRecyclerView.findViewHolderForPosition(i))._id);
-                aContext.getContentResolver().delete(uri, null, null);
-            }
+        for (long id : getSelectedIds()){
+            Uri uri = DatabaseDescription.Clip.buildClipUri(id);
+            aContext.getContentResolver().delete(uri, null, null);
         }
         resetSelectMode();
     }
@@ -239,18 +250,15 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
     private String getSplitItemsText(String splitChar, boolean deleteOld) {
         String newClipText = "";
 
-        for (int i = getItemCount(); i >= 0; i--) {
-            if (mMultiSelector.isSelected(i, 0)) { // (1)
-                long id = ((ViewHolder) mRecyclerView.findViewHolderForPosition(i))._id;
-                Uri uri = DatabaseDescription.Clip.buildClipUri(id);
+        for (long id : getSelectedIds()){
+            Uri uri = DatabaseDescription.Clip.buildClipUri(id);
 
-                ClipboardCursor cursor = new ClipboardCursor(aContext.getContentResolver().query(uri, null, null, null, null));
-                if (cursor.moveToFirst()) {
-                    newClipText += cursor.getContent() + splitChar;
-                }
-                if (deleteOld) {
-                    aContext.getContentResolver().delete(uri, null, null);
-                }
+            ClipboardCursor cursor = new ClipboardCursor(aContext.getContentResolver().query(uri, null, null, null, null));
+            if (cursor.moveToFirst()) {
+                newClipText += cursor.getContent() + splitChar;
+            }
+            if (deleteOld) {
+                aContext.getContentResolver().delete(uri, null, null);
             }
         }
         if (newClipText.length() >= splitChar.length()) {
@@ -275,9 +283,9 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
             aContext.getContentResolver().insert(uriInsert, contentValues);
 
             resetSelectMode();
-            Toast.makeText(aContext, "Соединено", Toast.LENGTH_SHORT).show();
+            Toast.makeText(aContext, R.string.splited, Toast.LENGTH_SHORT).show();
         }else{
-            Toast.makeText(aContext, "Меньше 2-х записей", Toast.LENGTH_SHORT).show();
+            Toast.makeText(aContext, R.string.select_cancel, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -287,6 +295,19 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
     public void shareItems(){
         String shareText = getSplitItemsText(UtilPrefences.getSplitChar(aContext), false);
         Util.shareText(aContext, shareText);
+    }
+
+    /**
+     * Изменяет категорию выделенных записей
+     */
+    public void changeCategory(long categoryId){
+        for (long id : getSelectedIds()){
+            Uri uri = DatabaseDescription.Clip.buildClipUri(id);
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(Clip.COLUMN_CATEGORY_ID, categoryId);
+            aContext.getContentResolver().update(uri, contentValues, null, null);
+        }
     }
 }
 
