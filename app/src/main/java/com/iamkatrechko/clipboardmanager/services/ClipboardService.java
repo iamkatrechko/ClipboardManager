@@ -61,6 +61,10 @@ public class ClipboardService extends Service {
                             null,
                             null,
                             Clip._ID + " ASC");
+                    if (clipText.length() == 0){
+                        Toast.makeText(getApplicationContext(), "Пустая запись", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     if (recordAlreadyExists(clipText)){
                         Toast.makeText(getApplicationContext(), "Запись уже существует (в базе)", Toast.LENGTH_SHORT).show();
                         return;
@@ -94,10 +98,12 @@ public class ClipboardService extends Service {
     }
 
     private void addNewClip(String content){
+        int titleLength = 25;
         String formattedDate = Util.getCurrentTime();
 
         ContentValues contentValues = Clip.getDefaultContentValues();
-        //TODO Добавить генерацию названия записи
+        if (content.length() < titleLength) titleLength = content.length();
+        contentValues.put(Clip.COLUMN_TITLE, content.substring(0, titleLength));
         contentValues.put(Clip.COLUMN_CONTENT, content);
         contentValues.put(Clip.COLUMN_DATE, formattedDate);
 
