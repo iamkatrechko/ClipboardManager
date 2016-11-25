@@ -39,7 +39,6 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
     private static final int ONE_CLIP_LOADER = 0;
     private static final int ONE_CATEGORY_LOADER = 1;
 
-    private static final int DIALOG_CHANGE_CATEGORY = 121262;
     private static final int DIALOG_CANCEL_CHANGES = 465444;
 
     private boolean addingNewClip = false;
@@ -206,13 +205,6 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
         getActivity().finish();
     }
 
-    private void changeCategory() {
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        DialogChangeCategory fragmentDialog = DialogChangeCategory.newInstance();
-        fragmentDialog.setTargetFragment(this, DIALOG_CHANGE_CATEGORY);
-        fragmentDialog.show(fragmentManager, "dialog_change_category");
-    }
-
     private void cancel() {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         DialogSaveClip fragmentDialog = DialogSaveClip.newInstance();
@@ -256,7 +248,7 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
                 share();
                 break;
             case R.id.linearCategory:
-                changeCategory();
+                DialogManager.showDialogChangeCategory(this);
                 break;
             case R.id.ivIsFavorite:
                 setIsFavorite(!isFavorite);
@@ -301,7 +293,7 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
 
                     etTitle.setText(clipsData.getTitle());
                     etContent.setText(clipsData.getContent());
-                    tvDate.setText(clipsData.getDate());
+                    tvDate.setText(Util.getTimeInString(clipsData.getDate()));
                     if (currentCategoryId == -1) {
                         currentCategoryId = clipsData.getCategoryId();
                     }
@@ -333,7 +325,7 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && requestCode == DIALOG_CHANGE_CATEGORY) {
+        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_CHANGE_CATEGORY) {
             Toast.makeText(getActivity(), "Выбрана категория - " + data.getLongExtra("categoryId", 0), Toast.LENGTH_SHORT).show();
             currentCategoryId = data.getLongExtra("categoryId", 0);
 

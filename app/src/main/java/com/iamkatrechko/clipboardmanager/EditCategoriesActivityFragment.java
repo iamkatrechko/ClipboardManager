@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -17,17 +16,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
-
 import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
 
 public class EditCategoriesActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     private final static String TAG = "EditCategoryFragment";
     private static final int CATEGORIES_LOADER = 0;
-
-    private static final int DIALOG_EDIT = 125812;
-    private static final int DIALOG_ADD = 734723;
-    private static final int DIALOG_DELETE = 823663;
 
     private RecyclerView mRecyclerView;
     private CategoriesCursorAdapter mAdapter;
@@ -48,12 +41,12 @@ public class EditCategoriesActivityFragment extends Fragment implements LoaderMa
         mAdapter = new CategoriesCursorAdapter(getActivity(), new CategoriesCursorAdapter.MyClickListener() {
             @Override
             public void onEditClick(long categoryId) {
-                showDialogEdit(categoryId);
+                DialogManager.showDialogCategoryEdit(EditCategoriesActivityFragment.this, categoryId);
             }
 
             @Override
             public void onDeleteClick(long categotyId) {
-                showDialogDelete(categotyId);
+                DialogManager.showDialogCategoryDelete(EditCategoriesActivityFragment.this, categotyId);
             }
         });
 
@@ -63,29 +56,12 @@ public class EditCategoriesActivityFragment extends Fragment implements LoaderMa
         return v;
     }
 
-    private void showDialogEdit(long categoryId){
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        DialogCategoryEdit fragmentDialog = DialogCategoryEdit.newInstance(categoryId);
-        fragmentDialog.setTargetFragment(this, DIALOG_EDIT);
-        fragmentDialog.show(fragmentManager, "dialog_category_edit");
-    }
-
     public void showDialogAdd(){
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        DialogCategoryEdit fragmentDialog = DialogCategoryEdit.newInstance(-1);
-        fragmentDialog.setTargetFragment(this, DIALOG_ADD);
-        fragmentDialog.show(fragmentManager, "dialog_add_category");
-    }
-
-    private void showDialogDelete(long categoryId){
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        DialogCategoryDelete fragmentDialog = DialogCategoryDelete.newInstance(categoryId);
-        fragmentDialog.setTargetFragment(this, DIALOG_DELETE);
-        fragmentDialog.show(fragmentManager, "dialog_delete_category");
+        DialogManager.showDialogCategoryAdd(this);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && requestCode == DIALOG_EDIT) {
+        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_EDIT) {
             long categoryId = data.getLongExtra("categoryId", 1);
             String newName = data.getStringExtra("newName");
 
@@ -94,7 +70,7 @@ public class EditCategoriesActivityFragment extends Fragment implements LoaderMa
             contentValues.put(Category.COLUMN_TITLE, newName);
             getActivity().getContentResolver().update(uri, contentValues, null, null);
         }
-        if (resultCode == Activity.RESULT_OK && requestCode == DIALOG_ADD) {
+        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_ADD) {
             String newName = data.getStringExtra("newName");
 
             Uri uri = Category.CONTENT_URI;
@@ -102,7 +78,7 @@ public class EditCategoriesActivityFragment extends Fragment implements LoaderMa
             contentValues.put(Category.COLUMN_TITLE, newName);
             getActivity().getContentResolver().insert(uri, contentValues);
         }
-        if (resultCode == Activity.RESULT_OK && requestCode == DIALOG_DELETE) {
+        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_DELETE) {
             long deleteCategoryId = data.getLongExtra("deleteCategoryId", -1);
             long newCategoryId = data.getLongExtra("newCategoryId", 1);
 

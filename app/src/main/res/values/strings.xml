@@ -29,4 +29,6 @@
         <item>ic_settings</item>
     </string-array>
     <string name="title_activity_edit_categories">EditCategoriesActivity</string>
+    <string name="action_split">Объединить</string>
+    <string name="action_share">Поделиться</string>
 </resources>

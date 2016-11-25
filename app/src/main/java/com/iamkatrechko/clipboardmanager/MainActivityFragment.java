@@ -26,8 +26,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     private static final int CLIPS_LOADER = 0;
     private static final int CLIPS_BY_CATEGORY_LOADER = 1;
 
-    private static final int DIALOG_SPLIT_CLIPS = 611752;
-
     private ClipsCursorAdapter mCursorAdapter;
     private RecyclerView recyclerView;
 
@@ -101,13 +99,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         }
     }
 
-    private void showDialogSplitClips() {
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        DialogSplitClips fragmentDialog = DialogSplitClips.newInstance();
-        fragmentDialog.setTargetFragment(this, DIALOG_SPLIT_CLIPS);
-        fragmentDialog.show(fragmentManager, "DIALOG_SPLIT_CLIPS");
-    }
-
     public void onBackPressed(){
         if (isContextMenu){
             mCursorAdapter.resetSelectMode();
@@ -161,7 +152,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(!isContextMenu ? R.menu.menu_main : R.menu.list_context_menu, menu);
+        inflater.inflate(!isContextMenu ? R.menu.menu_main : R.menu.menu_main_context, menu);
         getActivity().setTitle(!isContextMenu ? R.string.app_name : R.string.select_records);
 
         boolean showOnlyFavorite = UtilPrefences.isShowOnlyFavorite(getActivity());
@@ -191,7 +182,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 break;
             // Соединить выделенные записи
             case R.id.action_split:
-                showDialogSplitClips();
+                DialogManager.showDialogSplitClips(this);
                 break;
             // Поделиться выделенными записями
             case R.id.action_share:
@@ -203,7 +194,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && requestCode == DIALOG_SPLIT_CLIPS){
+        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_SPLIT_CLIPS){
             String splitChar = data.getStringExtra("splitChar");
             boolean deleteOldClips = data.getBooleanExtra("deleteOldClips", false);
 

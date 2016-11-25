@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager;
+package com.iamkatrechko.clipboardmanager.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -11,6 +11,9 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+
+import com.iamkatrechko.clipboardmanager.R;
+import com.iamkatrechko.clipboardmanager.UtilPrefences;
 
 public class DialogSplitClips extends DialogFragment {
 
