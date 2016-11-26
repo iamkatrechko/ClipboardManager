@@ -31,6 +31,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     private long currentCategoryId = 2;
     private boolean isContextMenu = false;
+    private int mSelectedCount = 0;
 
     public static MainActivityFragment newInstance() {
         return new MainActivityFragment();
@@ -60,9 +61,10 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             }
 
             @Override
-            public void onSelectedChange(boolean isSelectedMode) {
+            public void onSelectedChange(boolean isSelectedMode, int selectedCount) {
                 isContextMenu = isSelectedMode;
                 getActivity().invalidateOptionsMenu();
+                mSelectedCount = selectedCount;
             }
         }, getActivity());
         mCursorAdapter.setEmptyView(v.findViewById(R.id.linearEmpty));
@@ -154,7 +156,12 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(!isContextMenu ? R.menu.menu_main : R.menu.menu_main_context, menu);
-        getActivity().setTitle(!isContextMenu ? R.string.app_name : R.string.select_records);
+        if (mSelectedCount == 0){
+            getActivity().setTitle(R.string.app_name);
+        }else {
+            getActivity().setTitle("" + mSelectedCount);
+            menu.findItem(R.id.action_split).setVisible(mSelectedCount > 1);
+        }
 
         boolean showOnlyFavorite = UtilPrefences.isShowOnlyFavorite(getActivity());
         MenuItem itemStar = menu.findItem(R.id.action_show_favorites);

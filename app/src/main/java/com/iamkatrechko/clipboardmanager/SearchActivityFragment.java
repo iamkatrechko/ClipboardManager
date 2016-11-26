@@ -54,9 +54,8 @@ public class SearchActivityFragment extends Fragment implements LoaderManager.Lo
             }
 
             @Override
-            public void onSelectedChange(boolean isSelectedMode) {
-                /*isContextMenu = isSelectedMode;
-                getActivity().invalidateOptionsMenu();*/
+            public void onSelectedChange(boolean isSelectedMode, int selectedCount) {
+
             }
         }, getActivity());
         mCursorAdapter.setEmptyView(v.findViewById(R.id.linearEmpty));

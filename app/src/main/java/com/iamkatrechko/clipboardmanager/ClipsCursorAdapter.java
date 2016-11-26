@@ -41,7 +41,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
         /**
          * Вызывается при включении/отключении режима множественного выделения
          */
-        void onSelectedChange(boolean isSelectedMode);
+        void onSelectedChange(boolean isSelectedMode, int selectedCount);
     }
 
     public ClipsCursorAdapter(Context context, ClipClickListener listener) {
@@ -141,6 +141,8 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
                     } else {
                         if (mMultiSelector.getSelectedPositions().size() == 0) {
                             resetSelectMode();
+                        }else{
+                            aClickListener.onSelectedChange(true, mMultiSelector.getSelectedPositions().size());
                         }
                     }
                 }
@@ -154,7 +156,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
                         mMultiSelector.setSelectable(true); // (4)
                         mMultiSelector.setSelected(ViewHolder.this, true); // (5)
                         if (mActivity != null) {
-                            aClickListener.onSelectedChange(true);
+                            aClickListener.onSelectedChange(true, 1);
                         }
                         return true;
                     }
@@ -247,7 +249,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
         mMultiSelector.setSelectable(false);
         mMultiSelector.clearSelections();
 
-        aClickListener.onSelectedChange(false);
+        aClickListener.onSelectedChange(false, 0);
     }
 
     /**

@@ -76,8 +76,8 @@ public class FloatingViewService extends Service{
             }
 
             @Override
-            public void onSelectedChange(boolean isSelectedMode) {
-
+            public void onSelectedChange(boolean isSelectedMode, int selectedCount) {
+                
             }
         });
         // TODO Добавить пустой view
