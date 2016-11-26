@@ -189,7 +189,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 break;
             // Удалить выделенные записи
             case R.id.action_delete:
-                mCursorAdapter.deleteSelectedItems();
+                DialogManager.showDialogDeleteConfirm(this);
                 break;
             // Соединить выделенные записи
             case R.id.action_split:
@@ -219,6 +219,11 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             long categoryId = data.getLongExtra("categoryId", 0);
 
             mCursorAdapter.changeCategory(categoryId);
+        }
+        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_DELETE_CONFIRM){
+            boolean delete = data.getBooleanExtra("delete", false);
+            if (delete)
+                mCursorAdapter.deleteSelectedItems();
         }
     }
 }

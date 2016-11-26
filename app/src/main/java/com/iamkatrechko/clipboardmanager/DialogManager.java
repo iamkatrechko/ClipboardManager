@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import com.iamkatrechko.clipboardmanager.dialogs.DialogCategoryDelete;
 import com.iamkatrechko.clipboardmanager.dialogs.DialogCategoryEdit;
 import com.iamkatrechko.clipboardmanager.dialogs.DialogChangeCategory;
+import com.iamkatrechko.clipboardmanager.dialogs.DialogDeleteConfirm;
 import com.iamkatrechko.clipboardmanager.dialogs.DialogSaveClip;
 import com.iamkatrechko.clipboardmanager.dialogs.DialogSplitClips;
 
@@ -16,6 +17,7 @@ class DialogManager {
     static final int DIALOG_EDIT = 125812;
     static final int DIALOG_CHANGE_CATEGORY = 121262;
     static final int DIALOG_CANCEL_CHANGES = 465444;
+    static final int DIALOG_DELETE_CONFIRM = 621262;
 
     static void showDialogSplitClips(Fragment fragment){
         FragmentManager fragmentManager = fragment.getActivity().getSupportFragmentManager();
@@ -56,6 +58,13 @@ class DialogManager {
         FragmentManager fragmentManager = fragment.getActivity().getSupportFragmentManager();
         DialogSaveClip fragmentDialog = DialogSaveClip.newInstance();
         fragmentDialog.setTargetFragment(fragment, DIALOG_CANCEL_CHANGES);
+        fragmentDialog.show(fragmentManager, "DIALOG_CANCEL_CHANGES");
+    }
+
+    static void showDialogDeleteConfirm(Fragment fragment) {
+        FragmentManager fragmentManager = fragment.getActivity().getSupportFragmentManager();
+        DialogDeleteConfirm fragmentDialog = DialogDeleteConfirm.newInstance();
+        fragmentDialog.setTargetFragment(fragment, DIALOG_DELETE_CONFIRM);
         fragmentDialog.show(fragmentManager, "DIALOG_CANCEL_CHANGES");
     }
 }
