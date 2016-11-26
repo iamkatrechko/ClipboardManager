@@ -115,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     /*case NAV_MENU_POS_WEEK:
                         getFragment(NAV_MENU_POS_WEEK);
                         break;*/
+                    case 4:
+                        startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                 }
                 return false;
             }

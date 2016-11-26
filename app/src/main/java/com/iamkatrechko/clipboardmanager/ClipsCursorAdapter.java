@@ -185,7 +185,6 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
 
     @Override
     public int getItemCount() {
-        Log.d("Adapter", "getItemCount");
         if (aClips == null) {
             showEmptyView(true);
             return 0;
@@ -201,7 +200,6 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
     }
 
     private void showEmptyView(boolean isShow){
-        Log.d("isShow", "" + isShow);
         if (mEmptyView != null) {
             mEmptyView.setVisibility(isShow ? View.VISIBLE : View.GONE);
         }else{
