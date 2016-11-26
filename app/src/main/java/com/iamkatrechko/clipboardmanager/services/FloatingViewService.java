@@ -27,10 +27,13 @@ import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.ClipsCursorAdapter;
 import com.iamkatrechko.clipboardmanager.R;
+import com.iamkatrechko.clipboardmanager.Util;
+import com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.*;
 import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
 
 public class FloatingViewService extends Service{
@@ -64,7 +67,7 @@ public class FloatingViewService extends Service{
         ivMove = (ImageView) mainView.findViewById(R.id.ivMove);
         mSpinner = (Spinner) mainView.findViewById(R.id.spinner);
 
-        ContentResolver cr = getContentResolver();
+        final ContentResolver cr = getContentResolver();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
         // Улучшает быстродействие, если размер макета RecyclerView не изменяется
@@ -72,6 +75,10 @@ public class FloatingViewService extends Service{
         mCursorAdapter = new ClipsCursorAdapter(getApplicationContext(), new ClipsCursorAdapter.ClipClickListener() {
             @Override
             public void onClick(long clipId) {
+                ClipboardCursor c = new ClipboardCursor(cr.query(Clip.buildClipUri(clipId), null, null, null, null));
+                c.moveToFirst();
+
+                Util.sendClipToMyAccessibilityService(getApplicationContext(), c.getContent());
                 Toast.makeText(getApplicationContext(), "Id = " + clipId, Toast.LENGTH_SHORT).show();
             }
 
@@ -110,8 +117,8 @@ public class FloatingViewService extends Service{
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
 
         final WindowManager.LayoutParams myParams = new WindowManager.LayoutParams(
-                Math.round(260 * displayMetrics.density),
-                Math.round(260 * displayMetrics.density),
+                Math.round(320 * displayMetrics.density),
+                Math.round(320 * displayMetrics.density),
                 WindowManager.LayoutParams.TYPE_PHONE,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);

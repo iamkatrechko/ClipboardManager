@@ -86,7 +86,7 @@ public class ClipboardService extends Service {
                 String clipText = Util.getClipboardText(getApplicationContext());
                 String clipDescription = Util.getClipboardLabel(getApplicationContext());
                 
-                if (clipDescription.equals("891652")){
+                if (clipDescription.equals("891652") || clipDescription.equals("126126126")){
                     Toast.makeText(getApplicationContext(), "Отмена: копирование из приложения", Toast.LENGTH_SHORT).show();
                 }else{
                     /*Uri uri = Clip.CONTENT_URI;

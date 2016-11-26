@@ -11,7 +11,9 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.util.Log;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -110,5 +112,16 @@ public class Util {
             }
         }
         return false;
+    }
+
+    public static boolean checkSupportActionPaste(AccessibilityNodeInfo source){
+        int supportedActions = source.getActions();
+        return  (supportedActions & AccessibilityNodeInfoCompat.ACTION_PASTE) == AccessibilityNodeInfoCompat.ACTION_PASTE;
+    }
+
+    public static void sendClipToMyAccessibilityService(Context context, String text){
+        ClipboardManager clipBoard = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
+        ClipData clip = android.content.ClipData.newPlainText("126126126", text);
+        clipBoard.setPrimaryClip(clip);
     }
 }
