@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -120,7 +119,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
             ivCopy = (ImageView) itemView.findViewById(R.id.ivCopy);
             ivFavorite = (ImageView) itemView.findViewById(R.id.ivFavorite);
 
-            if (UtilPrefences.isShowMetaInAdapter(aContext)) {
+            if (UtilPreferences.isShowMetaInAdapter(aContext)) {
                 tvId.setVisibility(View.VISIBLE);
                 tvCategoryId.setVisibility(View.VISIBLE);
                 tvIsDeleted.setVisibility(View.VISIBLE);
@@ -189,13 +188,18 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
             showEmptyView(true);
             return 0;
         } else {
-            int count = aClips.getCount();
+            int count = 0;
+            try {
+                count = aClips.getCount();
+            } catch (Exception ignored) {
+
+            }
             showEmptyView(count == 0);
             return count;
         }
     }
 
-    public void setEmptyView(View emptyView){
+    void setEmptyView(View emptyView){
         mEmptyView = emptyView;
     }
 
@@ -314,7 +318,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
      * Объекдиняет содержимое выделенных записей и отравляет в письме
      */
     void shareItems(){
-        String shareText = getSplitItemsText(UtilPrefences.getSplitChar(aContext), false);
+        String shareText = getSplitItemsText(UtilPreferences.getSplitChar(aContext), false);
         Util.shareText(aContext, shareText);
     }
 

@@ -5,9 +5,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -16,10 +13,10 @@ import android.preference.PreferenceActivity;
 import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+
+import com.iamkatrechko.clipboardmanager.services.ClipboardService;
 
 import java.util.List;
 
@@ -35,6 +32,10 @@ import java.util.List;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
+    public static final String PREF_ENABLE_SERVICE = "enable_service";
+    public static final String PREF_NOTIFICATION_PRIORITY = "notification_priority";
+    public static final String PREF_DISPLAY_NOTIFICATION = "display_notification";
+
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -44,14 +45,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringKey = preference.getKey();
             String stringValue = value.toString();
-            Log.d("Preferences", "P: " + preference.getKey() + ", V:" + stringValue);
-
-            if (stringKey.equals("display_notification")){
-                //TODO Включитьотключить отображение уведомления
-            }
-            if (stringKey.equals("notification_priority")){
-                //TODO Изменить приоритет уведомления
-            }
 
             if (preference instanceof ListPreference) {
                 // For list preferences, look up the correct display value in
@@ -73,6 +66,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             return true;
         }
     };
+
+
 
     /**
      * Helper method to determine if the device has an extra-large screen. For
@@ -161,6 +156,33 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class GeneralPreferenceFragment extends PreferenceFragment {
+        private Preference.OnPreferenceChangeListener preferenceChangeListener = new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                String stringKey = preference.getKey();
+                String stringValue = o.toString();
+                Log.d("Preferences", "Pref: " + stringKey + ", Value:" + stringValue);
+
+                if (stringKey.equals(PREF_ENABLE_SERVICE)){
+                    boolean enable = Boolean.parseBoolean(stringValue);
+                    if (enable){
+                        ClipboardService.startMyService(getActivity());
+                    }else{
+                        getActivity().stopService(new Intent(getActivity(), ClipboardService.class));
+                    }
+                }
+                if (stringKey.equals(PREF_DISPLAY_NOTIFICATION)){
+                    boolean show = Boolean.parseBoolean(stringValue);
+                    ClipboardService.startMyService(getActivity(), show);
+                }
+                if (stringKey.equals(PREF_NOTIFICATION_PRIORITY)){
+                    int priority = Integer.parseInt(stringValue);
+                    ClipboardService.startMyService(getActivity(), priority);
+                }
+                return true;
+            }
+        };
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -171,11 +193,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
+            findPreference(PREF_ENABLE_SERVICE).setOnPreferenceChangeListener(preferenceChangeListener);
+            findPreference(PREF_DISPLAY_NOTIFICATION).setOnPreferenceChangeListener(preferenceChangeListener);
+            findPreference(PREF_NOTIFICATION_PRIORITY).setOnPreferenceChangeListener(preferenceChangeListener);
+
             bindPreferenceSummaryToValue2(findPreference("showMetaInAdapter"));
-            bindPreferenceSummaryToValue2(findPreference("display_notification"));
-            bindPreferenceSummaryToValue(findPreference("notification_priority"));
             bindPreferenceSummaryToValue(findPreference("example_text"));
             bindPreferenceSummaryToValue(findPreference("example_list"));
+
+            setPreferenceText(PREF_NOTIFICATION_PRIORITY);
         }
 
         @Override
@@ -186,6 +212,22 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 return true;
             }
             return super.onOptionsItemSelected(item);
+        }
+
+        private void setPreferenceText(String preferenceName) {
+            Preference preference = findPreference(preferenceName);
+            String stringValue = PreferenceManager
+                    .getDefaultSharedPreferences(preference.getContext())
+                    .getString(preference.getKey(), "");
+
+            ListPreference listPreference = (ListPreference) preference;
+            int index = listPreference.findIndexOfValue(stringValue);
+
+            // Set the summary to reflect the new value.
+            preference.setSummary(
+                    index >= 0
+                            ? listPreference.getEntries()[index]
+                            : null);
         }
     }
 

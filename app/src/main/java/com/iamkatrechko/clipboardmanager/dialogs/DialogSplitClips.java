@@ -13,7 +13,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.UtilPrefences;
+import com.iamkatrechko.clipboardmanager.UtilPreferences;
 
 public class DialogSplitClips extends DialogFragment {
 
@@ -41,7 +41,7 @@ public class DialogSplitClips extends DialogFragment {
         etSplitChar = (EditText) view.findViewById(R.id.etSplitChar);
         cbDelete = (CheckBox) view.findViewById(R.id.cbDelete);
 
-        etSplitChar.setText(UtilPrefences.getSplitChar(getActivity()));
+        etSplitChar.setText(UtilPreferences.getSplitChar(getActivity()));
 
         return new AlertDialog.Builder(getActivity())
                 .setView(view)
@@ -51,7 +51,7 @@ public class DialogSplitClips extends DialogFragment {
                         String splitChar = etSplitChar.getText().toString();
                         boolean deleteOldClips = cbDelete.isChecked();
 
-                        UtilPrefences.setSplitChar(getActivity(), splitChar);
+                        UtilPreferences.setSplitChar(getActivity(), splitChar);
 
                         sendResult(splitChar, deleteOldClips);
                     }

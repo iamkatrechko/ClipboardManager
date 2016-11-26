@@ -19,6 +19,7 @@ public class HideNotificationService extends Service {
         notification = builder.build();
         startForeground(98431, notification);
         stopForeground(true);
+        stopSelf();
     }
 
     @Override

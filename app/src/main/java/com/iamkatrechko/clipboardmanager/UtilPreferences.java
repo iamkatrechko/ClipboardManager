@@ -3,11 +3,13 @@ package com.iamkatrechko.clipboardmanager;
 import android.content.Context;
 import android.preference.PreferenceManager;
 
-public class UtilPrefences {
+public class UtilPreferences {
 
     private static final String PREF_SHOW_ONLY_FAVORITE = "spOnlyFavorite";
     private static final String PREF_SHOW_META_IN_ADAPTER = "showMetaInAdapter";
     private static final String PREF_SPLIT_CHAR = "splitChar";
+
+
 
     /**
      * Отображатся ли в списке записей только избранные
@@ -61,5 +63,24 @@ public class UtilPrefences {
                 .edit()
                 .putString(PREF_SPLIT_CHAR, splitChar)
                 .apply();
+    }
+
+
+
+
+
+    public static boolean getEnableService(Context context){
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(SettingsActivity.PREF_ENABLE_SERVICE, true);
+    }
+
+    public static int getNotificationPriority(Context context){
+        return Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(SettingsActivity.PREF_NOTIFICATION_PRIORITY, "1"));
+    }
+
+    public static boolean getDisplayNotification(Context context){
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(SettingsActivity.PREF_DISPLAY_NOTIFICATION, true);
     }
 }

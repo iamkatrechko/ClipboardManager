@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -129,7 +128,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                         Clip._ID + " DESC"); // сортировка
             case CLIPS_BY_CATEGORY_LOADER:
                 long categoryId = args.getLong("categoryId");
-                boolean isOnlyFavoriteShow = UtilPrefences.isShowOnlyFavorite(getActivity());
+                boolean isOnlyFavoriteShow = UtilPreferences.isShowOnlyFavorite(getActivity());
                 String onlyFavorite = isOnlyFavoriteShow ? " and " + Clip.COLUMN_IS_FAVORITE + " = 1" : "";
                 return new CursorLoader(getActivity(),
                         Clip.CONTENT_URI, // Uri таблицы contacts
@@ -163,7 +162,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             menu.findItem(R.id.action_split).setVisible(mSelectedCount > 1);
         }
 
-        boolean showOnlyFavorite = UtilPrefences.isShowOnlyFavorite(getActivity());
+        boolean showOnlyFavorite = UtilPreferences.isShowOnlyFavorite(getActivity());
         MenuItem itemStar = menu.findItem(R.id.action_show_favorites);
         changeToolbarItemIcon(itemStar, showOnlyFavorite);
     }
@@ -177,9 +176,9 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 break;
             // Показывать только избранные
             case R.id.action_show_favorites:
-                boolean isOnly = UtilPrefences.isShowOnlyFavorite(getActivity());
+                boolean isOnly = UtilPreferences.isShowOnlyFavorite(getActivity());
                 changeToolbarItemIcon(item, !isOnly);
-                UtilPrefences.setShowOnlyFavorite(getActivity(), !isOnly);
+                UtilPreferences.setShowOnlyFavorite(getActivity(), !isOnly);
                 showClipsByCategoryId(currentCategoryId);
                 break;
             // Меню разработчика

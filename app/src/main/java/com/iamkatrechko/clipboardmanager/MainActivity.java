@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.*;
 import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
+import com.iamkatrechko.clipboardmanager.services.ClipboardService;
 
 import java.util.ArrayList;
 
@@ -64,6 +65,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
         initNavigationView();
 
+        if (UtilPreferences.getEnableService(this)){
+            ClipboardService.startMyService(this);
+        }
 
         getSupportLoaderManager().initLoader(CATEGORIES_LOADER, null, this);
     }

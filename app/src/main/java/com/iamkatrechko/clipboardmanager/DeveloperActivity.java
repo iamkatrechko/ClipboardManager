@@ -9,7 +9,6 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -31,7 +30,7 @@ public class DeveloperActivity extends AppCompatActivity {
         setContentView(R.layout.activity_developer);
 
         cbShowMeta = (CheckBox) findViewById(R.id.cbShowMeta);
-        cbShowMeta.setChecked(UtilPrefences.isShowMetaInAdapter(this));
+        cbShowMeta.setChecked(UtilPreferences.isShowMetaInAdapter(this));
 
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,7 +103,7 @@ public class DeveloperActivity extends AppCompatActivity {
         cbShowMeta.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                UtilPrefences.setShowMetaInAdapter(getApplicationContext(), b);
+                UtilPreferences.setShowMetaInAdapter(getApplicationContext(), b);
             }
         });
     }
