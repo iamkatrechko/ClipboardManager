@@ -1,7 +1,9 @@
 package com.iamkatrechko.clipboardmanager.services;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.appwidget.AppWidgetManager;
 import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,11 +13,13 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.Util;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.UtilPreferences;
+import com.iamkatrechko.clipboardmanager.WidgetService;
 import com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
 
 public class ClipboardService extends Service {
@@ -55,26 +59,17 @@ public class ClipboardService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand");
 
-        boolean displayNotification = intent.getBooleanExtra("displayNotification", true);
-        int notificationPriority = intent.getIntExtra("notificationPriority", 1);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setContentTitle("Clipboard Manager")
-                .setSmallIcon(R.drawable.ic_launcher);
-
-        switch (notificationPriority) {
-            case 1:
-                builder.setPriority(NotificationCompat.PRIORITY_HIGH);
-                break;
-            case 2:
-                builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
-                break;
-            case 3:
-                builder.setPriority(NotificationCompat.PRIORITY_MIN);
-                break;
+        final Intent intent2 = intent;
+        String action = intent.getAction();
+        if (action != null){
+            if (action.equals("ACTION_1")){
+                Log.d(TAG, "Нажата кнопочка");
+            }
+            return Service.START_NOT_STICKY;
         }
+        boolean displayNotification = intent.getBooleanExtra("displayNotification", true);
 
-        Notification notification = builder.build();
+        Notification notification = createNotification(intent);
         startForeground(98431, notification);
 
         //здесь вы можете запустить новый поток или задачу
@@ -85,7 +80,7 @@ public class ClipboardService extends Service {
                 Log.d(TAG, "Новая запись");
                 String clipText = Util.getClipboardText(getApplicationContext());
                 String clipDescription = Util.getClipboardLabel(getApplicationContext());
-                
+
                 if (clipDescription.equals("891652") || clipDescription.equals("126126126")){
                     Toast.makeText(getApplicationContext(), "Отмена: копирование из приложения", Toast.LENGTH_SHORT).show();
                 }else{
@@ -113,10 +108,11 @@ public class ClipboardService extends Service {
                         addNewClip(clipText);
                     }*/
                 }
+
+                ClipboardService.startMyService(getApplicationContext());
             }
         });
 
-        Log.d(TAG, "display = " + displayNotification);
         if (!displayNotification) {
             Intent hideIntent = new Intent(this, HideNotificationService.class);
             startService(hideIntent);
@@ -153,6 +149,50 @@ public class ClipboardService extends Service {
             intent.putExtra("clipId", Long.valueOf(newClipUri.getLastPathSegment()));
             startService(intent);
         }
+    }
+
+    private Notification createNotification(Intent intent){
+        int notificationPriority = intent.getIntExtra("notificationPriority", 1);
+
+        RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.custom_notification);
+
+        contentView.setTextViewText(R.id.tvCurrent, Util.getClipboardText(getApplicationContext()));
+
+        Intent activeRefresh = new Intent(getApplicationContext(), ClipboardService.class);                                                       //Настройка интента слушателя для кнопки "обновить"
+        activeRefresh.setAction("ACTION_1");                                                                //Установка метки для интента
+        PendingIntent pendingIntentUpdateC = PendingIntent.getService(getApplicationContext(), 0, activeRefresh, 0);
+        contentView.setOnClickPendingIntent(R.id.button6, pendingIntentUpdateC);
+
+
+
+        //RemoteViews Service needed to provide adapter for ListView
+        Intent svcIntent = new Intent(getApplicationContext(), WidgetService.class);
+        //passing app widget id to that RemoteViews Service
+        svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 1);
+        //setting a unique Uri to the intent
+        //don't know its purpose to me right now
+        svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
+        //setting adapter to listview of the widget
+        contentView.setRemoteAdapter(R.id.listViewWidget, svcIntent);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setContentTitle("Clipboard Manager")
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setCustomBigContentView(contentView);
+
+        switch (notificationPriority) {
+            case 1:
+                builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+                break;
+            case 2:
+                builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                break;
+            case 3:
+                builder.setPriority(NotificationCompat.PRIORITY_MIN);
+                break;
+        }
+
+        return builder.build();
     }
 
     @Override

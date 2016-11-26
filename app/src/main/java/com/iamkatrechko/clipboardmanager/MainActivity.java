@@ -351,7 +351,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         cursor = new CategoryCursor(data);
         for (int i = 0; i < data.getCount(); i++){
             cursor.moveToPosition(i);
-            Log.d("MainActivity", "Category: " + cursor.getID() + " - " + cursor.getTitle());
         }
         adapter.setChilders(cursor);
         adapter.notifyDataSetChanged();

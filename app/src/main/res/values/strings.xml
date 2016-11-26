@@ -40,10 +40,6 @@
     <string name="title_activity_settings">Settings</string>
 
 
-
-
-
-
     <!-- Настройки -->
     <string-array name="pref_priority_titles">
         <item>Высокий</item>
@@ -55,14 +51,6 @@
         <item>2</item>
         <item>3</item>
     </string-array>
-
-
-
-
-
-
-
-
 
 
     <!-- Strings related to Settings -->
@@ -137,4 +125,6 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="accessibility_service_description">Описание моего сервиса</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>
