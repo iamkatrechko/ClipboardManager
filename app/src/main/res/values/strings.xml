@@ -35,4 +35,6 @@
     <string name="splited">Объединено</string>
     <string name="select_cancel">Для объединения выделите больше 1-й записи</string>
     <string name="title_activity_search">SearchActivity</string>
+    <string name="enter_query_text">Введите искомый текст</string>
+    <string name="no_matches_found">Совпадений не найдено</string>
 </resources>

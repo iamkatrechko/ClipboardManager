@@ -30,6 +30,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
     private RecyclerView mRecyclerView;
     private Activity mActivity;
     private MultiSelector mMultiSelector;
+    private View mEmptyView;
 
     public interface ClipClickListener {
         /**
@@ -182,10 +183,30 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
 
     @Override
     public int getItemCount() {
+        Log.d("Adapter", "getItemCount");
         if (aClips == null) {
+            showEmptyView(true);
             return 0;
         } else {
-            return aClips.getCount();
+            int count = aClips.getCount();
+            showEmptyView(count == 0);
+            return count;
+        }
+    }
+
+    public void setEmptyView(View emptyView){
+        mEmptyView = emptyView;
+    }
+
+    private void showEmptyView(boolean isShow){
+        Log.d("isShow", "" + isShow);
+        if (mEmptyView != null) {
+            mEmptyView.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        }else{
+            return;
+        }
+        if (mRecyclerView != null) {
+            mRecyclerView.setVisibility(isShow ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -195,13 +216,6 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
             long id = ((ViewHolder) mRecyclerView.findViewHolderForPosition(pos))._id;
             idsList.add(id);
         }
-        /*
-        for (int i = getItemCount(); i >= 0; i--) {
-            if (mMultiSelector.isSelected(i, 0)) { // (1)
-                long id = ((ViewHolder) mRecyclerView.findViewHolderForPosition(i))._id;
-                idsList.add(id);
-            }
-        }*/
         mMultiSelector.getSelectedPositions();
         return idsList;
     }
@@ -213,6 +227,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
         resetSelectMode();
         aClips = new ClipboardCursor(cursor);
         notifyDataSetChanged();
+        getItemCount();
     }
 
     /**

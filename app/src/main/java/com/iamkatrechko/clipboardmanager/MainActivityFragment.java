@@ -65,6 +65,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 getActivity().invalidateOptionsMenu();
             }
         }, getActivity());
+        mCursorAdapter.setEmptyView(v.findViewById(R.id.linearEmpty));
         recyclerView.setAdapter(mCursorAdapter);
 
         showClipsByCategoryId(2);

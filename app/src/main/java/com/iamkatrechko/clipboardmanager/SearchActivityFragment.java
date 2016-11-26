@@ -59,6 +59,7 @@ public class SearchActivityFragment extends Fragment implements LoaderManager.Lo
                 getActivity().invalidateOptionsMenu();*/
             }
         }, getActivity());
+        mCursorAdapter.setEmptyView(v.findViewById(R.id.linearEmpty));
         recyclerView.setAdapter(mCursorAdapter);
 
         ibSearch.setOnClickListener(new View.OnClickListener() {

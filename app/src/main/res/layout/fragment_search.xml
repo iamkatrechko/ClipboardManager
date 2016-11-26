@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/content_search"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -17,7 +18,7 @@
             android:layout_height="match_parent"
             android:id="@+id/etSearch"
             android:background="#ffffff"
-            android:hint="Введите искомый текст"
+            android:hint="@string/enter_query_text"
             android:padding="8dp"
             android:paddingRight="8dp"
             android:layout_weight="1"
@@ -35,9 +36,35 @@
             android:padding="10dp"/>
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/recyclerView"/>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recyclerView"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/linearEmpty"
+            android:gravity="center">
+
+            <ImageView
+                android:src="@drawable/ic_search_black_48dp"
+                android:layout_height="128dp"
+                android:layout_width="128dp"
+                android:tint="#c1c1c1"/>
+
+            <TextView
+                android:text="@string/no_matches_found"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
 
 </LinearLayout>

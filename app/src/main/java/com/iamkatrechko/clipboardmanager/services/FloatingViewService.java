@@ -80,6 +80,7 @@ public class FloatingViewService extends Service{
 
             }
         });
+        // TODO Добавить пустой view
         recyclerView.setAdapter(mCursorAdapter);
 
         mCursorLoader = new CursorLoader(getApplicationContext(), Clip.CONTENT_URI, null, null, null, Clip._ID + " DESC");
