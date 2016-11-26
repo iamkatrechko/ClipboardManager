@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager;
+package com.iamkatrechko.clipboardmanager.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.RemoteViews;
+
+import com.iamkatrechko.clipboardmanager.R;
+import com.iamkatrechko.clipboardmanager.widget.WidgetService;
 
 /**
  * Implementation of App Widget functionality.
@@ -19,10 +22,10 @@ public class ClipboardWidget extends AppWidgetProvider {
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.clipboard_widget);
         views.setTextViewText(R.id.appwidget_text, widgetText);
-//RemoteViews Service needed to provide adapter for ListView
+        //RemoteViews Service needed to provide adapter for ListView
         Intent svcIntent = new Intent(context, WidgetService.class);
         //passing app widget id to that RemoteViews Service
-        svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 1);
+        svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         //setting a unique Uri to the intent
         //don't know its purpose to me right now
         svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));

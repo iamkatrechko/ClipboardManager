@@ -19,7 +19,7 @@ import android.widget.Toast;
 import com.iamkatrechko.clipboardmanager.Util;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.UtilPreferences;
-import com.iamkatrechko.clipboardmanager.WidgetService;
+import com.iamkatrechko.clipboardmanager.widget.WidgetService;
 import com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
 
 public class ClipboardService extends Service {
@@ -163,17 +163,9 @@ public class ClipboardService extends Service {
         PendingIntent pendingIntentUpdateC = PendingIntent.getService(getApplicationContext(), 0, activeRefresh, 0);
         contentView.setOnClickPendingIntent(R.id.button6, pendingIntentUpdateC);
 
-
-
-        //RemoteViews Service needed to provide adapter for ListView
-        Intent svcIntent = new Intent(getApplicationContext(), WidgetService.class);
-        //passing app widget id to that RemoteViews Service
-        svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 1);
-        //setting a unique Uri to the intent
-        //don't know its purpose to me right now
-        svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
-        //setting adapter to listview of the widget
-        contentView.setRemoteAdapter(R.id.listViewWidget, svcIntent);
+        for (int i = 0; i < 5; i++){
+            contentView.addView(R.id.ListClips, createClipListItem(String.valueOf(i)));
+        }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setContentTitle("Clipboard Manager")
@@ -193,6 +185,12 @@ public class ClipboardService extends Service {
         }
 
         return builder.build();
+    }
+
+    private RemoteViews createClipListItem(String text){
+        RemoteViews clipRemoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification_list_item);
+        clipRemoteViews.setTextViewText(R.id.textView3, text);
+        return clipRemoteViews;
     }
 
     @Override

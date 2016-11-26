@@ -1,6 +1,5 @@
-package com.iamkatrechko.clipboardmanager;
+package com.iamkatrechko.clipboardmanager.widget;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViewsService;

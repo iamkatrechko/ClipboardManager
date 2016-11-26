@@ -1,10 +1,12 @@
-package com.iamkatrechko.clipboardmanager;
+package com.iamkatrechko.clipboardmanager.widget;
 
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
+import com.iamkatrechko.clipboardmanager.R;
 
 import java.util.ArrayList;
 
@@ -19,12 +21,12 @@ public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
         /*appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);*/
 
-        //populateListItem();
+        populateListItem();
     }
 
     private void populateListItem() {
         for (int i = 0; i < 5; i++) {
-            listItemList.add("" + i);
+            listItemList.add("Запись №" + i);
         }
 
     }
@@ -46,7 +48,7 @@ public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public int getCount() {
-        return 10;
+        return listItemList.size();
     }
 
     @Override
@@ -68,7 +70,7 @@ public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
     public RemoteViews getViewAt(int position) {
         RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.list_view_item);
 
-        remoteView.setTextViewText(R.id.textView2, "151252");
+        remoteView.setTextViewText(R.id.textView2, listItemList.get(position));
 
         return remoteView;
     }
