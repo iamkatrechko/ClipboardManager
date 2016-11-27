@@ -118,15 +118,26 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         Log.d("Fragment", "onCreateLoader");
 
         switch (id) {
-            case CLIPS_LOADER:
+            /*case CLIPS_LOADER:
                 Log.d("Fragment", "onCreateLoader2");
                 return new CursorLoader(getActivity(),
                         Clip.CONTENT_URI, // Uri таблицы contacts
                         null, // все столбцы
                         null, // все записи
                         null, // без аргументов
-                        Clip._ID + " DESC"); // сортировка
+                        Clip._ID + " DESC"); // сортировка*/
             case CLIPS_BY_CATEGORY_LOADER:
+                String orderType = UtilPreferences.getOrderType(getActivity());
+                String orderQuery = null;
+                if (orderType.equals("3")){
+                    orderQuery = Clip.COLUMN_DATE;
+                }
+                if (orderType.equals("2")){
+                    orderQuery = Clip.COLUMN_DATE + " DESC";
+                }
+                if (orderType.equals("1")){
+                    orderQuery = Clip._ID;
+                }
                 long categoryId = args.getLong("categoryId");
                 boolean isOnlyFavoriteShow = UtilPreferences.isShowOnlyFavorite(getActivity());
                 String onlyFavorite = isOnlyFavoriteShow ? " and " + Clip.COLUMN_IS_FAVORITE + " = 1" : "";
@@ -135,7 +146,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                         null, // все столбцы
                         Clip.COLUMN_CATEGORY_ID + "=?" + onlyFavorite, // все записи
                         new String[]{String.valueOf(categoryId)}, // без аргументов
-                        Clip._ID + " DESC"); // сортировка
+                        orderQuery); // сортировка
             default:
                 return null;
         }
@@ -171,8 +182,13 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+            // Окно поиска
             case R.id.action_search:
                 getActivity().startActivity(new Intent(getActivity(), SearchActivity.class));
+                break;
+            // Настройка сортировки
+            case R.id.action_set_order:
+                DialogManager.showDialogSetOrderType(this);
                 break;
             // Показывать только избранные
             case R.id.action_show_favorites:
@@ -223,6 +239,11 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             boolean delete = data.getBooleanExtra("delete", false);
             if (delete)
                 mCursorAdapter.deleteSelectedItems();
+        }
+        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_SET_ORDER_TYPE){
+            String orderType = data.getStringExtra("orderType");
+            UtilPreferences.setOrderType(getActivity(), orderType);
+            showClipsByCategoryId(currentCategoryId);
         }
     }
 }

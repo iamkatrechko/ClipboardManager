@@ -13,6 +13,11 @@
         android:title="Поиск"
         app:showAsAction="never"/>
     <item
+        android:id="@+id/action_set_order"
+        android:orderInCategory="98"
+        android:title="Настройка сортировки"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/action_show_favorites"
         android:checkable="true"
         android:checked="false"

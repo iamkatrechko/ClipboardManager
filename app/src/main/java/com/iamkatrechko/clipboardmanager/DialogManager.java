@@ -14,6 +14,7 @@ import com.iamkatrechko.clipboardmanager.dialogs.DialogChangeCategory;
 import com.iamkatrechko.clipboardmanager.dialogs.DialogDeleteConfirm;
 import com.iamkatrechko.clipboardmanager.dialogs.DialogEnableAccessibility;
 import com.iamkatrechko.clipboardmanager.dialogs.DialogSaveClip;
+import com.iamkatrechko.clipboardmanager.dialogs.DialogSetOrderType;
 import com.iamkatrechko.clipboardmanager.dialogs.DialogSplitClips;
 
 class DialogManager {
@@ -24,6 +25,7 @@ class DialogManager {
     static final int DIALOG_CHANGE_CATEGORY = 121262;
     static final int DIALOG_CANCEL_CHANGES = 465444;
     static final int DIALOG_DELETE_CONFIRM = 621262;
+    static final int DIALOG_SET_ORDER_TYPE = 361372;
     static final int DIALOG_ENABLE_ACCESSIBILITY = 171251;
 
     static void showDialogSplitClips(Fragment fragment){
@@ -73,6 +75,13 @@ class DialogManager {
         DialogDeleteConfirm fragmentDialog = DialogDeleteConfirm.newInstance();
         fragmentDialog.setTargetFragment(fragment, DIALOG_DELETE_CONFIRM);
         fragmentDialog.show(fragmentManager, "DIALOG_CANCEL_CHANGES");
+    }
+
+    static void showDialogSetOrderType(Fragment fragment) {
+        FragmentManager fragmentManager = fragment.getActivity().getSupportFragmentManager();
+        DialogSetOrderType fragmentDialog = DialogSetOrderType.newInstance();
+        fragmentDialog.setTargetFragment(fragment, DIALOG_SET_ORDER_TYPE);
+        fragmentDialog.show(fragmentManager, "DIALOG_SET_ORDER_TYPE");
     }
 
     static void showDialogEnableAccessibility(final Activity activity) {

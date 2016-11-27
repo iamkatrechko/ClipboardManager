@@ -9,6 +9,7 @@ public class UtilPreferences {
     private static final String PREF_SHOW_ONLY_FAVORITE_IN_NOTIFICATION = "spOnlyFavoriteInNotification";
     private static final String PREF_SHOW_META_IN_ADAPTER = "showMetaInAdapter";
     private static final String PREF_SPLIT_CHAR = "splitChar";
+    private static final String PREF_ORDER_TYPE = "order_type";
 
 
 
@@ -84,7 +85,27 @@ public class UtilPreferences {
                 .apply();
     }
 
+    /**
+     * Возвращает тип сортировки записей
+     * @return 1 - пользовательский, 2 - по дате (сначала новые), 3 - по дате (сначала старые)
+     */
+    public static String getOrderType(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(PREF_ORDER_TYPE, "1");
+    }
 
+    /**
+     * Сохраняет тип сортировки записей
+     * 1 - пользовательский
+     * 2 - по дате (сначала новые)
+     * 3 - по дате (сначала старые)
+     */
+    public static void setOrderType(Context context, String orderType) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putString(PREF_ORDER_TYPE, orderType)
+                .apply();
+    }
 
 
 

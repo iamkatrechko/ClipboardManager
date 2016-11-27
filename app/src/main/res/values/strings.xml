@@ -40,6 +40,16 @@
     <string name="title_activity_settings">Settings</string>
 
 
+    <string-array name="orders_title">
+        <item>Пользовательская</item>
+        <item>По дате (сначала новые)</item>
+        <item>По дате (сначала старые)</item>
+    </string-array>
+    <string-array name="orders_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
     <!-- Настройки -->
     <string-array name="pref_priority_titles">
         <item>PRIORITY_MAX</item>
