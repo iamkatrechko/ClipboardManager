@@ -28,7 +28,6 @@ import android.widget.Toast;
 import com.iamkatrechko.clipboardmanager.ClipsCursorAdapter;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.Util;
-import com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +74,7 @@ public class FloatingViewService extends Service{
         mCursorAdapter = new ClipsCursorAdapter(getApplicationContext(), new ClipsCursorAdapter.ClipClickListener() {
             @Override
             public void onClick(long clipId) {
-                ClipboardCursor c = new ClipboardCursor(cr.query(Clip.buildClipUri(clipId), null, null, null, null));
+                ClipCursor c = new ClipCursor(cr.query(Clip.buildClipUri(clipId), null, null, null, null));
                 c.moveToFirst();
 
                 Util.sendClipToMyAccessibilityService(getApplicationContext(), c.getContent());

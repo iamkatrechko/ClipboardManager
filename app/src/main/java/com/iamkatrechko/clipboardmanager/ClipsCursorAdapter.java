@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.ViewHolder> {
     private Context aContext;
-    private ClipboardCursor aClips;
+    private ClipCursor aClips;
     private ClipClickListener aClickListener;
     private RecyclerView mRecyclerView;
     private Activity mActivity;
@@ -229,7 +229,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
      */
     public void setCursor(Cursor cursor) {
         resetSelectMode();
-        aClips = new ClipboardCursor(cursor);
+        aClips = new ClipCursor(cursor);
         notifyDataSetChanged();
         getItemCount();
     }
@@ -277,7 +277,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
         for (long id : getSelectedIds()){
             Uri uri = DatabaseDescription.Clip.buildClipUri(id);
 
-            ClipboardCursor cursor = new ClipboardCursor(aContext.getContentResolver().query(uri, null, null, null, null));
+            ClipCursor cursor = new ClipCursor(aContext.getContentResolver().query(uri, null, null, null, null));
             if (cursor.moveToFirst()) {
                 if (newClipText.equals("")){
                     newClipText += cursor.getContent();

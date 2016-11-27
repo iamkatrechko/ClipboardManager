@@ -81,8 +81,8 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
     }
 
     /** Оболочка для курсора со списком записей*/
-    public static class ClipboardCursor extends CursorWrapper {
-        public ClipboardCursor(Cursor cursor) {
+    public static class ClipCursor extends CursorWrapper {
+        public ClipCursor(Cursor cursor) {
             super(cursor);
         }
 

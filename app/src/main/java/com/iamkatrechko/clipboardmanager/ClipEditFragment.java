@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -28,7 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
-import com.iamkatrechko.clipboardmanager.dialogs.DialogSaveClip;
 
 import static com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.*;
 import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
@@ -281,7 +279,7 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
         if (data != null && data.moveToFirst()) {
             switch (loader.getId()) {
                 case ONE_CLIP_LOADER:
-                    ClipboardCursor clipsData = new ClipboardCursor(data);
+                    ClipCursor clipsData = new ClipCursor(data);
 
                     etTitle.setText(clipsData.getTitle());
                     etContent.setText(clipsData.getContent());
