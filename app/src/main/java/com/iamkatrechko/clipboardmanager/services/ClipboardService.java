@@ -87,9 +87,9 @@ public class ClipboardService extends Service {
                 long id = intent.getLongExtra("id", -1);
                 Uri uri = Clip.buildClipUri(id);
                 ClipCursor cursor = new ClipCursor(getContentResolver().query(uri, null,null, null, null));
-                cursor.moveToFirst();
-                Util.copyToClipboard(getApplicationContext(), cursor.getContent());
-                Log.d(TAG, "Скопировать: " + id);
+                if (cursor.moveToFirst()){
+                    Util.copyToClipboard(getApplicationContext(), cursor.getContent());
+                }
                 //TODO Сделать настройку "Если уже существует: ничего не делать || изменить дату на новую
                 startMyService(getApplicationContext());
             }
@@ -176,7 +176,7 @@ public class ClipboardService extends Service {
         Intent intentAdd = new Intent(getApplicationContext(), ClipEditActivity.class);
         intentAdd.setAction("ACTION_ADD");
         PendingIntent pIntentAdd = PendingIntent.getActivity(getApplicationContext(), 612452, intentAdd, 0);
-        generalRemoteViews.setOnClickPendingIntent(R.id.button6, pIntentAdd);
+        generalRemoteViews.setOnClickPendingIntent(R.id.btnAdd, pIntentAdd);
 
         generalRemoteViews.removeAllViews(R.id.ListClips);
         ClipCursor lastRecords = new ClipCursor(getContentResolver().query(Clip.CONTENT_URI,
