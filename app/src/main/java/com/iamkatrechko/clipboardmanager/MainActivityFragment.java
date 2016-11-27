@@ -54,8 +54,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         mCursorAdapter = new ClipsCursorAdapter(getActivity(), new ClipsCursorAdapter.ClipClickListener(){
             @Override
             public void onClick(long clipId) {
-                Intent i = new Intent(getActivity(), ClipEditActivity.class);
-                i.putExtra("URI", Clip.buildClipUri(clipId));
+                Intent i = ClipEditActivity.newIntent(getActivity(),
+                        Clip.buildClipUri(clipId));
                 startActivity(i);
             }
 
@@ -82,7 +82,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     }
 
     public void addNewClip(){
-        Intent i = new Intent(getActivity(), ClipEditActivity.class);
+        Intent i = ClipEditActivity.newIntent(getActivity(), null);
         startActivity(i);
     }
 
