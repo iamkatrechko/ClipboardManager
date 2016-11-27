@@ -15,6 +15,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import com.iamkatrechko.clipboardmanager.ClipEditActivity;
 import com.iamkatrechko.clipboardmanager.Util;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.UtilPreferences;
@@ -172,10 +173,10 @@ public class ClipboardService extends Service {
 
         generalRemoteViews.setTextViewText(R.id.tvCurrent, currentClipText);
 
-        Intent activeRefresh = new Intent(getApplicationContext(), ClipboardService.class);                                                       //Настройка интента слушателя для кнопки "обновить"
-        activeRefresh.setAction("ACTION_1");                                                                //Установка метки для интента
-        PendingIntent pendingIntentUpdateC = PendingIntent.getService(getApplicationContext(), 0, activeRefresh, 0);
-        generalRemoteViews.setOnClickPendingIntent(R.id.button6, pendingIntentUpdateC);
+        Intent intentAdd = new Intent(getApplicationContext(), ClipEditActivity.class);
+        intentAdd.setAction("ACTION_ADD");
+        PendingIntent pIntentAdd = PendingIntent.getActivity(getApplicationContext(), 612452, intentAdd, 0);
+        generalRemoteViews.setOnClickPendingIntent(R.id.button6, pIntentAdd);
 
         generalRemoteViews.removeAllViews(R.id.ListClips);
         ClipCursor lastRecords = new ClipCursor(getContentResolver().query(Clip.CONTENT_URI,

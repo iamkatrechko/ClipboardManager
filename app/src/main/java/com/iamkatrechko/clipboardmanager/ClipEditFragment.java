@@ -121,8 +121,10 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
 
         if (addingNewClip) {
             isEditMode = true;
-            currentCategoryId = 0;
-            etTitle.setText("Новое название");
+            currentCategoryId = 1;
+            Bundle args = new Bundle();
+            args.putLong("categoryId", currentCategoryId);
+            getLoaderManager().restartLoader(ONE_CATEGORY_LOADER, args, this);
             etContent.requestFocus();
         } else {
             getLoaderManager().initLoader(ONE_CLIP_LOADER, null, this);
@@ -162,6 +164,10 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
 
     public void saveClip() {
         // Создание объекта ContentValues с парами "ключ—значение"
+        if (etContent.getText().length() == 0){
+            Toast.makeText(getActivity(), "Введите текст записи!", Toast.LENGTH_SHORT).show();
+            return;
+        }
         ContentValues contentValues = new ContentValues();
         contentValues.put(Clip.COLUMN_TITLE, etTitle.getText().toString());
         contentValues.put(Clip.COLUMN_CONTENT, etContent.getText().toString());
@@ -169,8 +175,15 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
         contentValues.put(Clip.COLUMN_CATEGORY_ID, currentCategoryId);
 
         if (addingNewClip) {
-            //FIXME Добавить дату создания записи
-            contentValues.put(Clip.COLUMN_DATE, "newDate");
+            //FIXME Добавить аттрибуты по умолчанию
+            int titleLength = 25;
+            if (etTitle.getText().length() == 0) {
+                if (etContent.getText().length() < titleLength){
+                    titleLength = etContent.getText().length();
+                }
+                contentValues.put(Clip.COLUMN_TITLE, etContent.getText().toString().substring(0, titleLength));
+            }
+            contentValues.put(Clip.COLUMN_DATE, Util.getCurrentTime());
             contentValues.put(Clip.COLUMN_IS_DELETED, "0");
 
             Uri newClipUri = getActivity().getContentResolver().insert(Clip.CONTENT_URI, contentValues);

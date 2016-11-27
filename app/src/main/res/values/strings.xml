@@ -127,4 +127,6 @@
     <string name="accessibility_service_description">Описание моего сервиса</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="enter_title">Введите название</string>
+    <string name="enter_content">Введите текст записи</string>
 </resources>

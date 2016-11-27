@@ -34,18 +34,6 @@ public class ClipEditActivity extends AppCompatActivity {
                     .replace(R.id.container, ClipEditFragment.newInstance(uri))
                     .commit();
         }
-
-
-        /*final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ClipEditFragment clipsFragment =
-                        (ClipEditFragment) getSupportFragmentManager().findFragmentById(R.id.container);
-                clipsFragment.saveClip();
-                fab.setImageResource(R.drawable.ic_save);
-            }
-        });*/
     }
 
     @Override
