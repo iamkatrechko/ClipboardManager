@@ -107,4 +107,9 @@ public class UtilPreferences {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(SettingsActivity.PREF_DISPLAY_HISTORY, true);
     }
+
+    public static boolean getShowSaveDialogBeforeExit(Context context){
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(SettingsActivity.PREF_SHOW_SAVE_DIALOG_BEFORE_EXIT, true);
+    }
 }

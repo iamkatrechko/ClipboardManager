@@ -41,6 +41,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity{
     public static final String PREF_DISPLAY_HISTORY = "display_history";
     public static final String PREF_ACCESSIBILITY_SERVICE = "enable_accessibility_service";
 
+    public static final String PREF_SHOW_SAVE_DIALOG_BEFORE_EXIT = "show_save_dialog_before_exit";
+
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -180,15 +182,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity{
                         getActivity().stopService(new Intent(getActivity(), ClipboardService.class));
                     }
                 }
-                if (stringKey.equals(PREF_ACCESSIBILITY_SERVICE)){
-                    if (stringValue.equals("true")){
-                        if (!Util.isAccessibilityEnabled(getActivity())){
-                            DialogManager.showDialogEnableAccessibility(getActivity());
-                            return false;
-                        }
+                if (stringKey.equals(PREF_ACCESSIBILITY_SERVICE)) {
+                    if (!Util.isAccessibilityEnabled(getActivity())) {
+                        DialogManager.showDialogEnableAccessibility(getActivity());
+                        return false;
                     }
                 }
-                Log.d("asfasf", "asfasfsaf");
                 return true;
             }
         };
@@ -282,22 +281,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity{
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             Log.d("onActivityResult", "" + requestCode);
             if (requestCode == 122161){
-                if (Util.isAccessibilityEnabled(getActivity())){
-                    PreferenceManager.getDefaultSharedPreferences(getActivity())
-                            .edit()
-                            .putBoolean(PREF_ACCESSIBILITY_SERVICE, true)
-                            .apply();
-                }else{
-                    PreferenceManager.getDefaultSharedPreferences(getActivity())
-                            .edit()
-                            .putBoolean(PREF_ACCESSIBILITY_SERVICE, false)
-                            .apply();
-                }
-                Preference preference = findPreference(PREF_ACCESSIBILITY_SERVICE);
-                preferenceChangeListener.onPreferenceChange(preference,
-                        PreferenceManager
-                                .getDefaultSharedPreferences(preference.getContext())
-                                .getBoolean(preference.getKey(), false));
+                // TODO Типа изменение флажка на ВКЛ
             }
         }
     }

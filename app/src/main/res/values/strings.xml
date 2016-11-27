@@ -42,14 +42,18 @@
 
     <!-- Настройки -->
     <string-array name="pref_priority_titles">
-        <item>Высокий</item>
-        <item>Средний</item>
-        <item>Низкий</item>
+        <item>PRIORITY_MAX</item>
+        <item>PRIORITY_HIGH</item>
+        <item>PRIORITY_DEFAULT</item>
+        <item>PRIORITY_LOW</item>
+        <item>PRIORITY_MIN</item>
     </string-array>
     <string-array name="pref_priority_values">
         <item>1</item>
         <item>2</item>
         <item>3</item>
+        <item>4</item>
+        <item>5</item>
     </string-array>
 
 
@@ -129,4 +133,5 @@
     <string name="add_widget">Add widget</string>
     <string name="enter_title">Введите название</string>
     <string name="enter_content">Введите текст записи</string>
+    <string name="current_clipboard_text">Текущая запись в буфере обмена:</string>
 </resources>

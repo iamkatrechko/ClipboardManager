@@ -378,7 +378,12 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
     public void backButtonWasPressed() {
         if (isEditMode) {
             if (saveNeed) {
-                DialogManager.showDialogCancel(this);
+                if (UtilPreferences.getShowSaveDialogBeforeExit(getActivity())) {
+                    DialogManager.showDialogCancel(this);
+                }else{
+                    saveClip();
+                    getActivity().finish();
+                }
                 //Toast.makeText(getActivity(), "Нужно сохранить", Toast.LENGTH_SHORT).show();
             } else {
                 getActivity().finish();

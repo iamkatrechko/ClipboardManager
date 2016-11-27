@@ -148,7 +148,7 @@ public class ClipboardService extends Service {
         boolean displayHistory = UtilPreferences.getDisplayHistory(getApplicationContext());
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setContentTitle(getResources().getString(R.string.app_name))
+                .setContentTitle(getResources().getString(R.string.current_clipboard_text))
                 .setContentText("> " + Util.getClipboardText(getApplicationContext()))
                 .setSmallIcon(R.drawable.ic_launcher);
 
@@ -159,12 +159,18 @@ public class ClipboardService extends Service {
 
         switch (notificationPriority) {
             case 1:
-                builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+                builder.setPriority(NotificationCompat.PRIORITY_MAX);
                 break;
             case 2:
-                builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                builder.setPriority(NotificationCompat.PRIORITY_HIGH);
                 break;
             case 3:
+                builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                break;
+            case 4:
+                builder.setPriority(NotificationCompat.PRIORITY_LOW);
+                break;
+            case 5:
                 builder.setPriority(NotificationCompat.PRIORITY_MIN);
                 break;
         }
