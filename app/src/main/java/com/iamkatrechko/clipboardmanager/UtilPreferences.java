@@ -83,4 +83,9 @@ public class UtilPreferences {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(SettingsActivity.PREF_DISPLAY_NOTIFICATION, true);
     }
+
+    public static boolean getDisplayHistory(Context context){
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(SettingsActivity.PREF_DISPLAY_HISTORY, true);
+    }
 }

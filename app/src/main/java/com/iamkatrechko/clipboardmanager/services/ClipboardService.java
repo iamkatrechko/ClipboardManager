@@ -35,15 +35,6 @@ public class ClipboardService extends Service {
         startMyService(context, UtilPreferences.getDisplayNotification(context), UtilPreferences.getNotificationPriority(context));
     }
 
-    public static void startMyService(Context context, boolean displayNotification){
-        startMyService(context, displayNotification, UtilPreferences.getNotificationPriority(context));
-    }
-
-    public static void startMyService(Context context, int notificationPriority){
-        startMyService(context, UtilPreferences.getDisplayNotification(context), notificationPriority);
-
-    }
-
     public static void startMyService(Context context, boolean displayNotification, int notificationPriority){
         Intent i = new Intent(context, ClipboardService.class);
         i.putExtra("displayNotification", displayNotification);
@@ -103,9 +94,9 @@ public class ClipboardService extends Service {
             }
             return Service.START_NOT_STICKY;
         }
-        boolean displayNotification = intent.getBooleanExtra("displayNotification", true);
+        boolean displayNotification = UtilPreferences.getDisplayNotification(getApplicationContext());
 
-        Notification notification = createNotification(intent);
+        Notification notification = createNotification();
         startForeground(98431, notification);
 
         if (!displayNotification) {
@@ -146,8 +137,8 @@ public class ClipboardService extends Service {
         }
     }
 
-    private Notification createNotification(Intent intent){
-        int notificationPriority = intent.getIntExtra("notificationPriority", 1);
+    private Notification createNotification(){
+        int notificationPriority = UtilPreferences.getNotificationPriority(getApplicationContext());
 
         RemoteViews contentView = createGeneralRemoteViews();
 

@@ -21,6 +21,13 @@
         android:key="notification_priority"
         android:title="Приоритет уведомления"/>
 
+    <SwitchPreference
+        android:dependency="display_notification"
+        android:defaultValue="true"
+        android:key="display_history"
+        android:summary="Отображать историю буфера обмена в уведомлении"
+        android:title="История буфера"/>
+
     <!-- NOTE: EditTextPreference accepts EditText attributes. -->
     <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
     <EditTextPreference

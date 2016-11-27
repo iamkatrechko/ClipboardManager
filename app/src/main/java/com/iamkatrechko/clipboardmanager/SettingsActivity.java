@@ -4,6 +4,7 @@ package com.iamkatrechko.clipboardmanager;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,10 +32,11 @@ import java.util.List;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
-public class SettingsActivity extends AppCompatPreferenceActivity {
+public class SettingsActivity extends AppCompatPreferenceActivity{
     public static final String PREF_ENABLE_SERVICE = "enable_service";
     public static final String PREF_NOTIFICATION_PRIORITY = "notification_priority";
     public static final String PREF_DISPLAY_NOTIFICATION = "display_notification";
+    public static final String PREF_DISPLAY_HISTORY = "display_history";
 
     /**
      * A preference value change listener that updates the preference's summary
@@ -150,12 +152,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
 
+
+
     /**
      * This fragment shows general preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class GeneralPreferenceFragment extends PreferenceFragment {
+    public static class GeneralPreferenceFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener{
+        SharedPreferences prefs;
+
         private Preference.OnPreferenceChangeListener preferenceChangeListener = new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object o) {
@@ -171,16 +177,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                         getActivity().stopService(new Intent(getActivity(), ClipboardService.class));
                     }
                 }
-                if (stringKey.equals(PREF_DISPLAY_NOTIFICATION)){
-                    boolean show = Boolean.parseBoolean(stringValue);
-                    ClipboardService.startMyService(getActivity(), show);
-                }
-                if (stringKey.equals(PREF_NOTIFICATION_PRIORITY)){
-                    int priority = Integer.parseInt(stringValue);
-                    ClipboardService.startMyService(getActivity(), priority);
-                    // TODO
-                    //setPreferenceText(stringKey);
-                }
                 return true;
             }
         };
@@ -191,13 +187,14 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             addPreferencesFromResource(R.xml.pref_general);
             setHasOptionsMenu(true);
 
+            prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+            prefs.registerOnSharedPreferenceChangeListener(this);
+
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
             findPreference(PREF_ENABLE_SERVICE).setOnPreferenceChangeListener(preferenceChangeListener);
-            findPreference(PREF_DISPLAY_NOTIFICATION).setOnPreferenceChangeListener(preferenceChangeListener);
-            findPreference(PREF_NOTIFICATION_PRIORITY).setOnPreferenceChangeListener(preferenceChangeListener);
 
             bindPreferenceSummaryToValue2(findPreference("showMetaInAdapter"));
             bindPreferenceSummaryToValue(findPreference("example_text"));
@@ -230,6 +227,29 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     index >= 0
                             ? listPreference.getEntries()[index]
                             : null);
+        }
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String stringKey) {
+            Log.d("onSharedPrefChanged", stringKey);
+
+            if (stringKey.equals(PREF_NOTIFICATION_PRIORITY)){
+                // TODO
+                setPreferenceText(stringKey);
+                ClipboardService.startMyService(getActivity());
+            }
+            if (stringKey.equals(PREF_DISPLAY_NOTIFICATION)){
+                ClipboardService.startMyService(getActivity());
+            }
+            if (stringKey.equals(PREF_DISPLAY_HISTORY)){
+                ClipboardService.startMyService(getActivity());
+            }
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+            prefs.unregisterOnSharedPreferenceChangeListener(this);
         }
     }
 
