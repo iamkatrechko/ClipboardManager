@@ -154,21 +154,11 @@ public class ClipboardService extends Service {
     private Notification createNotification(Intent intent){
         int notificationPriority = intent.getIntExtra("notificationPriority", 1);
 
-        RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.custom_notification);
-
-        contentView.setTextViewText(R.id.tvCurrent, Util.getClipboardText(getApplicationContext()));
-
-        Intent activeRefresh = new Intent(getApplicationContext(), ClipboardService.class);                                                       //Настройка интента слушателя для кнопки "обновить"
-        activeRefresh.setAction("ACTION_1");                                                                //Установка метки для интента
-        PendingIntent pendingIntentUpdateC = PendingIntent.getService(getApplicationContext(), 0, activeRefresh, 0);
-        contentView.setOnClickPendingIntent(R.id.button6, pendingIntentUpdateC);
-
-        for (int i = 0; i < 5; i++){
-            contentView.addView(R.id.ListClips, createClipListItem(String.valueOf(i)));
-        }
+        RemoteViews contentView = createGeneralRemoteViews();
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setContentTitle("Clipboard Manager")
+                .setContentText(Util.getClipboardText(getApplicationContext()))
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setCustomBigContentView(contentView);
 
@@ -187,9 +177,26 @@ public class ClipboardService extends Service {
         return builder.build();
     }
 
+    private RemoteViews createGeneralRemoteViews() {
+        RemoteViews generalRemoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification);
+
+        generalRemoteViews.setTextViewText(R.id.tvCurrent, Util.getClipboardText(getApplicationContext()));
+
+        Intent activeRefresh = new Intent(getApplicationContext(), ClipboardService.class);                                                       //Настройка интента слушателя для кнопки "обновить"
+        activeRefresh.setAction("ACTION_1");                                                                //Установка метки для интента
+        PendingIntent pendingIntentUpdateC = PendingIntent.getService(getApplicationContext(), 0, activeRefresh, 0);
+        generalRemoteViews.setOnClickPendingIntent(R.id.button6, pendingIntentUpdateC);
+
+        generalRemoteViews.removeAllViews(R.id.ListClips);
+        for (int i = 0; i < 5; i++){
+            generalRemoteViews.addView(R.id.ListClips, createClipListItem("Запись №" + i));
+        }
+        return generalRemoteViews;
+    }
+
     private RemoteViews createClipListItem(String text){
         RemoteViews clipRemoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification_list_item);
-        clipRemoteViews.setTextViewText(R.id.textView3, text);
+        clipRemoteViews.setTextViewText(R.id.tvTitle, text);
         return clipRemoteViews;
     }
 
@@ -203,11 +210,11 @@ public class ClipboardService extends Service {
     public void onDestroy() {
         super.onDestroy();
         clipBoard.removePrimaryClipChangedListener(null);
-        Log.i(TAG, "Service: onDestroy");
+        Log.i(TAG, "onDestroy");
     }
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        Log.i(TAG, "Service: onTaskRemoved");
+        Log.i(TAG, "onTaskRemoved");
     }
 }

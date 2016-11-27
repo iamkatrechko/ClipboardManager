@@ -178,6 +178,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 if (stringKey.equals(PREF_NOTIFICATION_PRIORITY)){
                     int priority = Integer.parseInt(stringValue);
                     ClipboardService.startMyService(getActivity(), priority);
+                    // TODO
+                    //setPreferenceText(stringKey);
                 }
                 return true;
             }

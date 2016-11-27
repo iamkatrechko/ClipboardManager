@@ -1,7 +1,25 @@
-<TextView
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/tvTitle"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    tools:text="Название записи"/>
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:gravity="center_vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvTitle"
+        tools:text="Название записи"
+        android:lines="1"
+        android:layout_weight="1"
+        android:layout_marginLeft="4dp"/>
+
+    <ImageView
+        android:id="@+id/ivDelete"
+        android:src="@drawable/ic_delete"
+        android:tint="@color/defaultTint"
+        android:layout_height="28dp"
+        android:layout_width="28dp"
+        android:padding="2dp"/>
+</LinearLayout>
