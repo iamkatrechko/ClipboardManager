@@ -8,10 +8,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.transition.Visibility;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -80,8 +83,10 @@ public class ClipboardService extends Service {
 
         String action = intent.getAction();
         if (action != null){
-            if (action.equals("ACTION_1")){
-                Log.d(TAG, "Нажата кнопочка");
+            if (action.equals("ACTION_FAVORITE")){
+                boolean show = UtilPreferences.isShowOnlyFavoriteInNotification(getApplicationContext());
+                UtilPreferences.setShowOnlyFavoriteInNotification(getApplicationContext(), !show);
+                startMyService(getApplicationContext());
             }
             if (action.equals("ACTION_COPY")){
                 long id = intent.getLongExtra("id", -1);
@@ -144,7 +149,7 @@ public class ClipboardService extends Service {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setContentTitle(getResources().getString(R.string.app_name))
-                .setContentText(Util.getClipboardText(getApplicationContext()))
+                .setContentText("> " + Util.getClipboardText(getApplicationContext()))
                 .setSmallIcon(R.drawable.ic_launcher);
 
         if (displayHistory) {
@@ -168,27 +173,56 @@ public class ClipboardService extends Service {
     }
 
     private RemoteViews createGeneralRemoteViews() {
+        boolean showOnlyFavorite = UtilPreferences.isShowOnlyFavoriteInNotification(getApplicationContext());
+
         RemoteViews generalRemoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification);
         String currentClipText = Util.getClipboardText(getApplicationContext());
 
-        generalRemoteViews.setTextViewText(R.id.tvCurrent, currentClipText);
+        generalRemoteViews.setTextViewText(R.id.tvCurrent, "> " + currentClipText);
 
         Intent intentAdd = new Intent(getApplicationContext(), ClipEditActivity.class);
         intentAdd.setAction("ACTION_ADD");
         PendingIntent pIntentAdd = PendingIntent.getActivity(getApplicationContext(), 612452, intentAdd, 0);
         generalRemoteViews.setOnClickPendingIntent(R.id.btnAdd, pIntentAdd);
 
+        Intent intentFavorite = new Intent(getApplicationContext(), ClipboardService.class);
+        intentFavorite.setAction("ACTION_FAVORITE");
+        PendingIntent pIntentFavorite = PendingIntent.getService(getApplicationContext(), 171251, intentFavorite, 0);
+        generalRemoteViews.setOnClickPendingIntent(R.id.ivStar, pIntentFavorite);
+
+        ClipCursor lastRecords;
+        if (showOnlyFavorite){
+            generalRemoteViews.setImageViewResource(R.id.ivStar, R.drawable.ic_star);
+            generalRemoteViews.setInt(R.id.ivStar, "setColorFilter", Color.parseColor("#009688"));
+
+            lastRecords = new ClipCursor(getContentResolver().query(Clip.CONTENT_URI,
+                    null,
+                    Clip.COLUMN_CONTENT + " <> ? AND " + Clip.COLUMN_IS_FAVORITE + " = ?",
+                    new String[]{currentClipText, "1"},
+                    Clip.COLUMN_DATE + " DESC LIMIT 4"));
+        } else {
+            generalRemoteViews.setImageViewResource(R.id.ivStar, R.drawable.ic_star_border);
+            generalRemoteViews.setInt(R.id.ivStar, "setColorFilter", Color.parseColor("#808080"));
+
+            lastRecords = new ClipCursor(getContentResolver().query(Clip.CONTENT_URI,
+                    null,
+                    Clip.COLUMN_CONTENT + " <> ?",
+                    new String[]{currentClipText},
+                    Clip.COLUMN_DATE + " DESC LIMIT 4"));
+        }
+
         generalRemoteViews.removeAllViews(R.id.ListClips);
-        ClipCursor lastRecords = new ClipCursor(getContentResolver().query(Clip.CONTENT_URI,
-                null,
-                Clip.COLUMN_CONTENT + " <> ?",
-                new String[]{currentClipText},
-                Clip.COLUMN_DATE + " DESC LIMIT 4"));
+
+
         for (int i = 0; i < lastRecords.getCount(); i++){
             lastRecords.moveToPosition(i);
             long id = lastRecords.getID();
             String title = lastRecords.getTitle();
-            generalRemoteViews.addView(R.id.ListClips, createClipListItem(id, title));
+            RemoteViews clipRemoteViews = createClipListItem(id, title);
+            if (i == 0){
+                clipRemoteViews.setViewVisibility(R.id.flSeparator, View.GONE);
+            }
+            generalRemoteViews.addView(R.id.ListClips, clipRemoteViews);
         }
         return generalRemoteViews;
     }

@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 public class UtilPreferences {
 
     private static final String PREF_SHOW_ONLY_FAVORITE = "spOnlyFavorite";
+    private static final String PREF_SHOW_ONLY_FAVORITE_IN_NOTIFICATION = "spOnlyFavoriteInNotification";
     private static final String PREF_SHOW_META_IN_ADAPTER = "showMetaInAdapter";
     private static final String PREF_SPLIT_CHAR = "splitChar";
 
@@ -62,6 +63,24 @@ public class UtilPreferences {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putString(PREF_SPLIT_CHAR, splitChar)
+                .apply();
+    }
+
+    /**
+     * Отображатся ли в списке записей только избранные (в уведомлении)
+     */
+    public static boolean isShowOnlyFavoriteInNotification(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(PREF_SHOW_ONLY_FAVORITE_IN_NOTIFICATION, false);
+    }
+
+    /**
+     * Сохраняет булевую запись о том, отображаются ли в списке записей только избранные (в уведомлении)
+     */
+    public static void setShowOnlyFavoriteInNotification(Context context, boolean isOnlyFavorite) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(PREF_SHOW_ONLY_FAVORITE_IN_NOTIFICATION, isOnlyFavorite)
                 .apply();
     }
 
