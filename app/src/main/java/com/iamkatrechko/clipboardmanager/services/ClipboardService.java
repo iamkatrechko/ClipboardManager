@@ -139,14 +139,17 @@ public class ClipboardService extends Service {
 
     private Notification createNotification(){
         int notificationPriority = UtilPreferences.getNotificationPriority(getApplicationContext());
-
-        RemoteViews contentView = createGeneralRemoteViews();
+        boolean displayHistory = UtilPreferences.getDisplayHistory(getApplicationContext());
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setContentTitle("Clipboard Manager")
+                .setContentTitle(getResources().getString(R.string.app_name))
                 .setContentText(Util.getClipboardText(getApplicationContext()))
-                .setSmallIcon(R.drawable.ic_launcher)
-                .setCustomBigContentView(contentView);
+                .setSmallIcon(R.drawable.ic_launcher);
+
+        if (displayHistory) {
+            RemoteViews contentView = createGeneralRemoteViews();
+            builder.setCustomBigContentView(contentView);
+        }
 
         switch (notificationPriority) {
             case 1:
