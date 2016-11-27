@@ -11,11 +11,13 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.services.ClipboardService;
 
@@ -37,6 +39,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity{
     public static final String PREF_NOTIFICATION_PRIORITY = "notification_priority";
     public static final String PREF_DISPLAY_NOTIFICATION = "display_notification";
     public static final String PREF_DISPLAY_HISTORY = "display_history";
+    public static final String PREF_ACCESSIBILITY_SERVICE = "enable_accessibility_service";
 
     /**
      * A preference value change listener that updates the preference's summary
@@ -177,6 +180,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity{
                         getActivity().stopService(new Intent(getActivity(), ClipboardService.class));
                     }
                 }
+                if (stringKey.equals(PREF_ACCESSIBILITY_SERVICE)){
+                    if (stringValue.equals("true")){
+                        if (!Util.isAccessibilityEnabled(getActivity())){
+                            DialogManager.showDialogEnableAccessibility(getActivity());
+                            return false;
+                        }
+                    }
+                }
+                Log.d("asfasf", "asfasfsaf");
                 return true;
             }
         };
@@ -184,17 +196,31 @@ public class SettingsActivity extends AppCompatPreferenceActivity{
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            if (Util.isAccessibilityEnabled(getActivity())){
+                PreferenceManager.getDefaultSharedPreferences(getActivity())
+                        .edit()
+                        .putBoolean(PREF_ACCESSIBILITY_SERVICE, true)
+                        .apply();
+            }else{
+                PreferenceManager.getDefaultSharedPreferences(getActivity())
+                        .edit()
+                        .putBoolean(PREF_ACCESSIBILITY_SERVICE, false)
+                        .apply();
+            }
             addPreferencesFromResource(R.xml.pref_general);
             setHasOptionsMenu(true);
 
             prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
             prefs.registerOnSharedPreferenceChangeListener(this);
 
+
+
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
             findPreference(PREF_ENABLE_SERVICE).setOnPreferenceChangeListener(preferenceChangeListener);
+            findPreference(PREF_ACCESSIBILITY_SERVICE).setOnPreferenceChangeListener(preferenceChangeListener);
 
             bindPreferenceSummaryToValue2(findPreference("showMetaInAdapter"));
             bindPreferenceSummaryToValue(findPreference("example_text"));
@@ -250,6 +276,29 @@ public class SettingsActivity extends AppCompatPreferenceActivity{
         public void onPause() {
             super.onPause();
             prefs.unregisterOnSharedPreferenceChangeListener(this);
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            Log.d("onActivityResult", "" + requestCode);
+            if (requestCode == 122161){
+                if (Util.isAccessibilityEnabled(getActivity())){
+                    PreferenceManager.getDefaultSharedPreferences(getActivity())
+                            .edit()
+                            .putBoolean(PREF_ACCESSIBILITY_SERVICE, true)
+                            .apply();
+                }else{
+                    PreferenceManager.getDefaultSharedPreferences(getActivity())
+                            .edit()
+                            .putBoolean(PREF_ACCESSIBILITY_SERVICE, false)
+                            .apply();
+                }
+                Preference preference = findPreference(PREF_ACCESSIBILITY_SERVICE);
+                preferenceChangeListener.onPreferenceChange(preference,
+                        PreferenceManager
+                                .getDefaultSharedPreferences(preference.getContext())
+                                .getBoolean(preference.getKey(), false));
+            }
         }
     }
 
@@ -310,5 +359,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity{
             }
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

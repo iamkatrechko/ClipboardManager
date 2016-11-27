@@ -1,5 +1,6 @@
 package com.iamkatrechko.clipboardmanager;
 
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.ActivityManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -13,6 +14,7 @@ import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.util.Log;
+import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
@@ -108,6 +110,15 @@ public class Util {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isAccessibilityEnabled(Context context) {
+        for (AccessibilityServiceInfo id : ((AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE)).getEnabledAccessibilityServiceList(-1)) {
+            if (id.getId().contains("com.iamkatrechko.clipboardmanager/.services.MyAccessibilityService")) {
                 return true;
             }
         }

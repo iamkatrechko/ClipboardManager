@@ -1,12 +1,18 @@
 package com.iamkatrechko.clipboardmanager;
 
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 
 import com.iamkatrechko.clipboardmanager.dialogs.DialogCategoryDelete;
 import com.iamkatrechko.clipboardmanager.dialogs.DialogCategoryEdit;
 import com.iamkatrechko.clipboardmanager.dialogs.DialogChangeCategory;
 import com.iamkatrechko.clipboardmanager.dialogs.DialogDeleteConfirm;
+import com.iamkatrechko.clipboardmanager.dialogs.DialogEnableAccessibility;
 import com.iamkatrechko.clipboardmanager.dialogs.DialogSaveClip;
 import com.iamkatrechko.clipboardmanager.dialogs.DialogSplitClips;
 
@@ -18,6 +24,7 @@ class DialogManager {
     static final int DIALOG_CHANGE_CATEGORY = 121262;
     static final int DIALOG_CANCEL_CHANGES = 465444;
     static final int DIALOG_DELETE_CONFIRM = 621262;
+    static final int DIALOG_ENABLE_ACCESSIBILITY = 171251;
 
     static void showDialogSplitClips(Fragment fragment){
         FragmentManager fragmentManager = fragment.getActivity().getSupportFragmentManager();
@@ -66,5 +73,31 @@ class DialogManager {
         DialogDeleteConfirm fragmentDialog = DialogDeleteConfirm.newInstance();
         fragmentDialog.setTargetFragment(fragment, DIALOG_DELETE_CONFIRM);
         fragmentDialog.show(fragmentManager, "DIALOG_CANCEL_CHANGES");
+    }
+
+    static void showDialogEnableAccessibility(final Activity activity) {
+        /*FragmentManager fragmentManager = fragment.getActivity().getSupportFragmentManager();
+        DialogEnableAccessibility fragmentDialog = DialogEnableAccessibility.newInstance();
+        fragmentDialog.setTargetFragment(fragment, DIALOG_ENABLE_ACCESSIBILITY);
+        fragmentDialog.show(fragmentManager, "DIALOG_ENABLE_ACCESSIBILITY");*/
+        new AlertDialog.Builder(activity)
+                .setTitle("Название")
+                .setMessage("Для включения необходимо перейти в настройки и включить специальную слежбу блаблабла")
+                .setPositiveButton("Перейти",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int id) {
+                                Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                                activity.startActivityForResult(intent, 122161);
+                            }
+                        })
+                /*.setNeutralButton("Гав",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int id) {
+                                dialog.cancel();
+                            }
+                        })*/
+                .setNegativeButton("Отмена", null).create().show();
     }
 }

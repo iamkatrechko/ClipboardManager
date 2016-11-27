@@ -30,25 +30,25 @@ public class MyAccessibilityService extends AccessibilityService {
         final int eventType = event.getEventType();
         String eventText = null;
         switch(eventType) {
-            case AccessibilityEvent.TYPE_VIEW_CLICKED:
+            /*case AccessibilityEvent.TYPE_VIEW_CLICKED:
                 eventText = "Clicked: ";
                 break;
             case AccessibilityEvent.TYPE_VIEW_FOCUSED:
                 eventText = "Focused: ";
-                break;
+                break;*/
             case AccessibilityEvent.TYPE_VIEW_LONG_CLICKED:
                 eventText = "Long Clicked: ";
                 if (source.getClassName().equals("android.widget.EditText")){
                     activeSource = source;
                     startService(new Intent(this, FloatingViewService.class));
                     if (Util.checkSupportActionPaste(source)){
-                        //source.performAction(ACTION_PASTE);
+                        source.performAction(ACTION_PASTE);
                     }
                 }
                 break;
         }
 
-        Log.d(TAG, eventText);
+        //Log.d(TAG, eventText);
     }
 
     @Override

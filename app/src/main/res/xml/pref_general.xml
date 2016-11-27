@@ -28,6 +28,12 @@
         android:summary="Отображать историю буфера обмена в уведомлении"
         android:title="История буфера"/>
 
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="enable_accessibility_service"
+        android:summary="Для отображения окна быстрой вставки при редактировании текста"
+        android:title="Специальная служба"/>
+
     <!-- NOTE: EditTextPreference accepts EditText attributes. -->
     <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
     <EditTextPreference
