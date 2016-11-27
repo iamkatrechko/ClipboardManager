@@ -190,7 +190,7 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
 
             if (newClipUri != null) {
                 /*listener.onAddEditCompleted(newClipUri);*/
-                Toast.makeText(getActivity(), "Создано", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Добавлено", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getActivity(), "Ошибка создания", Toast.LENGTH_SHORT).show();
             }

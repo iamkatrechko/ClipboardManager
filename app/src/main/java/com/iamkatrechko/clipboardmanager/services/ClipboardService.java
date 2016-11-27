@@ -12,7 +12,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.transition.Visibility;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -22,7 +21,6 @@ import com.iamkatrechko.clipboardmanager.ClipEditActivity;
 import com.iamkatrechko.clipboardmanager.Util;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.UtilPreferences;
-import com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper;
 import com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
 
 import static com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.*;
@@ -30,20 +28,16 @@ import static com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.*;
 public class ClipboardService extends Service {
     private static final String TAG = "ClipboardService";
 
+    private static final String ACTION_SHOW_ONLY_FAVORITE = "action_show_only_favorite";
+    private static final String ACTION_COPY_TO_CLIPBOARD = "action_copy_to_clipboard";
+
     private ClipboardManager clipBoard;
 
     public ClipboardService() {
     }
 
     public static void startMyService(Context context){
-        startMyService(context, UtilPreferences.getDisplayNotification(context), UtilPreferences.getNotificationPriority(context));
-    }
-
-    public static void startMyService(Context context, boolean displayNotification, int notificationPriority){
-        Intent i = new Intent(context, ClipboardService.class);
-        i.putExtra("displayNotification", displayNotification);
-        i.putExtra("notificationPriority", notificationPriority);
-        context.startService(i);
+        context.startService(new Intent(context, ClipboardService.class));
     }
 
     @Override
@@ -53,7 +47,7 @@ public class ClipboardService extends Service {
         clipBoard.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
             @Override
             public void onPrimaryClipChanged() {
-                Log.d(TAG, "Новая запись");
+                Log.d(TAG, "Отловлена новая запись в буфере обмена");
                 String clipText = Util.getClipboardText(getApplicationContext());
                 String clipDescription = Util.getClipboardLabel(getApplicationContext());
 
@@ -83,12 +77,12 @@ public class ClipboardService extends Service {
 
         String action = intent.getAction();
         if (action != null){
-            if (action.equals("ACTION_FAVORITE")){
+            if (action.equals(ACTION_SHOW_ONLY_FAVORITE)){
                 boolean show = UtilPreferences.isShowOnlyFavoriteInNotification(getApplicationContext());
                 UtilPreferences.setShowOnlyFavoriteInNotification(getApplicationContext(), !show);
                 startMyService(getApplicationContext());
             }
-            if (action.equals("ACTION_COPY")){
+            if (action.equals(ACTION_COPY_TO_CLIPBOARD)){
                 long id = intent.getLongExtra("id", -1);
                 Uri uri = Clip.buildClipUri(id);
                 ClipCursor cursor = new ClipCursor(getContentResolver().query(uri, null,null, null, null));
@@ -115,6 +109,11 @@ public class ClipboardService extends Service {
         return Service.START_NOT_STICKY;
     }
 
+    /**
+     * Проверка существования данной записи в базе данных
+     * @param clipText Текст проверяемой записи
+     * @return true - существует, false - не существует
+     */
     private boolean recordAlreadyExists(String clipText) {
         Cursor cursor = getContentResolver().query(Clip.CONTENT_URI,
                 null,
@@ -124,15 +123,17 @@ public class ClipboardService extends Service {
         return cursor != null && (cursor.getCount() != 0);
     }
 
+    /**
+     * Добавление новой записи в базу данных
+     * @param content Содержимое записи
+     */
     private void addNewClip(String content){
         int titleLength = 25;
-        String formattedDate = Util.getCurrentTime();
 
         ContentValues contentValues = Clip.getDefaultContentValues();
         if (content.length() < titleLength) titleLength = content.length();
         contentValues.put(Clip.COLUMN_TITLE, content.substring(0, titleLength));
         contentValues.put(Clip.COLUMN_CONTENT, content);
-        contentValues.put(Clip.COLUMN_DATE, formattedDate);
 
         Uri newClipUri = getContentResolver().insert(Clip.CONTENT_URI, contentValues);
 
@@ -192,7 +193,7 @@ public class ClipboardService extends Service {
         generalRemoteViews.setOnClickPendingIntent(R.id.btnAdd, pIntentAdd);
 
         Intent intentFavorite = new Intent(getApplicationContext(), ClipboardService.class);
-        intentFavorite.setAction("ACTION_FAVORITE");
+        intentFavorite.setAction(ACTION_SHOW_ONLY_FAVORITE);
         PendingIntent pIntentFavorite = PendingIntent.getService(getApplicationContext(), 171251, intentFavorite, 0);
         generalRemoteViews.setOnClickPendingIntent(R.id.ivStar, pIntentFavorite);
 
@@ -238,7 +239,7 @@ public class ClipboardService extends Service {
         clipRemoteViews.setTextViewText(R.id.tvTitle, text);
 
         Intent serviceCopy = new Intent(getApplicationContext(), ClipboardService.class);
-        serviceCopy.setAction("ACTION_COPY");
+        serviceCopy.setAction(ACTION_COPY_TO_CLIPBOARD);
         serviceCopy.putExtra("id", id);
         PendingIntent pIntentCopy = PendingIntent.getService(getApplicationContext(), (int) id, serviceCopy, 0);
         clipRemoteViews.setOnClickPendingIntent(R.id.ivCopy, pIntentCopy);
