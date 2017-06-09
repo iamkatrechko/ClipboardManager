@@ -13,7 +13,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.UtilPreferences;
+import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
 
 public class DialogSplitClips extends DialogFragment {
 

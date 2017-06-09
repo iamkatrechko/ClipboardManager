@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager;
+package com.iamkatrechko.clipboardmanager.util;
 
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.ActivityManager;
@@ -17,6 +17,8 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
+
+import com.iamkatrechko.clipboardmanager.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

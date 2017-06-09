@@ -1,7 +1,9 @@
-package com.iamkatrechko.clipboardmanager;
+package com.iamkatrechko.clipboardmanager.util;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
+
+import com.iamkatrechko.clipboardmanager.activity.SettingsActivity;
 
 public class UtilPreferences {
 

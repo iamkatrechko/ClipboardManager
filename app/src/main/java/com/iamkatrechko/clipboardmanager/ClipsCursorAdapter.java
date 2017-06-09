@@ -19,6 +19,8 @@ import com.bignerdranch.android.multiselector.SwappingHolder;
 import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
 import com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
 import com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.*;
+import com.iamkatrechko.clipboardmanager.util.Util;
+import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
 
 import java.util.ArrayList;
 
@@ -95,7 +97,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
         vHolder.tvContent.setTypeface(null, clipInClipboard ? Typeface.BOLD : Typeface.NORMAL);
     }
 
-    class ViewHolder extends SwappingHolder {
+    public class ViewHolder extends SwappingHolder {
         long _id;
         TextView tvId;
         TextView tvTitle;
@@ -199,7 +201,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
         }
     }
 
-    void setEmptyView(View emptyView){
+    public void setEmptyView(View emptyView){
         mEmptyView = emptyView;
     }
 
@@ -247,7 +249,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
     /**
      * Выключает режим множественного выделения и сбрасывает выделения элементов
      */
-    void resetSelectMode() {
+    public void resetSelectMode() {
         mMultiSelector.setSelectable(false);
         mMultiSelector.clearSelections();
 
@@ -257,7 +259,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
     /**
      * Удаляет из базы данных выбранные множественным выделением записи
      */
-    void deleteSelectedItems() {
+    public void deleteSelectedItems() {
         for (long id : getSelectedIds()){
             Uri uri = DatabaseDescription.Clip.buildClipUri(id);
             aContext.getContentResolver().delete(uri, null, null);
@@ -298,7 +300,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
      * @param splitChar Строка-разделитель между записями
      * @param deleteOld Требуется ли удалить объединенные записи
      */
-    void splitItems(String splitChar, boolean deleteOld) {
+    public void splitItems(String splitChar, boolean deleteOld) {
         if (mMultiSelector.getSelectedPositions().size() > 1) {
             String newClipText = getSplitItemsText(splitChar, deleteOld);
 
@@ -317,7 +319,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
     /**
      * Объекдиняет содержимое выделенных записей и отравляет в письме
      */
-    void shareItems(){
+    public void shareItems(){
         String shareText = getSplitItemsText(UtilPreferences.getSplitChar(aContext), false);
         Util.shareText(aContext, shareText);
     }
@@ -325,7 +327,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
     /**
      * Изменяет категорию выделенных записей
      */
-    void changeCategory(long categoryId){
+    public void changeCategory(long categoryId){
         for (long id : getSelectedIds()){
             Uri uri = DatabaseDescription.Clip.buildClipUri(id);
 

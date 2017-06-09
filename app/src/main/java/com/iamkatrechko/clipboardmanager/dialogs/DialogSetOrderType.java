@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.UtilPreferences;
+import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
 
 public class DialogSetOrderType extends DialogFragment {
 

@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager;
+package com.iamkatrechko.clipboardmanager.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,9 +18,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.iamkatrechko.clipboardmanager.activity.ClipEditActivity;
+import com.iamkatrechko.clipboardmanager.ClipsCursorAdapter;
+import com.iamkatrechko.clipboardmanager.activity.DeveloperActivity;
+import com.iamkatrechko.clipboardmanager.DialogManager;
+import com.iamkatrechko.clipboardmanager.R;
+import com.iamkatrechko.clipboardmanager.activity.SearchActivity;
+import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
+
 import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
 
-public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final int CLIPS_LOADER = 0;
     private static final int CLIPS_BY_CATEGORY_LOADER = 1;
@@ -32,8 +40,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     private boolean isContextMenu = false;
     private int mSelectedCount = 0;
 
-    public static MainActivityFragment newInstance() {
-        return new MainActivityFragment();
+    public static MainFragment newInstance() {
+        return new MainFragment();
     }
 
     @Override

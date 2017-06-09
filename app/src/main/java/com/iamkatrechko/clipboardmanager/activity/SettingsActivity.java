@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager;
+package com.iamkatrechko.clipboardmanager.activity;
 
 
 import android.annotation.TargetApi;
@@ -11,14 +11,15 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.iamkatrechko.clipboardmanager.DialogManager;
+import com.iamkatrechko.clipboardmanager.R;
+import com.iamkatrechko.clipboardmanager.util.Util;
 import com.iamkatrechko.clipboardmanager.services.ClipboardService;
 
 import java.util.List;
@@ -34,7 +35,7 @@ import java.util.List;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
-public class SettingsActivity extends AppCompatPreferenceActivity{
+public class SettingsActivity extends AppCompatPreferenceActivity {
     public static final String PREF_ENABLE_SERVICE = "enable_service";
     public static final String PREF_NOTIFICATION_PRIORITY = "notification_priority";
     public static final String PREF_DISPLAY_NOTIFICATION = "display_notification";

@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.iamkatrechko.clipboardmanager.Util;
+import com.iamkatrechko.clipboardmanager.util.Util;
 
 import static android.view.accessibility.AccessibilityNodeInfo.ACTION_PASTE;
 

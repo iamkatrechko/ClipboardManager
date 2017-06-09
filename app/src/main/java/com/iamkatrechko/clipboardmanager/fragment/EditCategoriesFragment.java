@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager;
+package com.iamkatrechko.clipboardmanager.fragment;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -16,16 +16,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.iamkatrechko.clipboardmanager.CategoriesCursorAdapter;
+import com.iamkatrechko.clipboardmanager.DialogManager;
+import com.iamkatrechko.clipboardmanager.R;
+
 import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
 
-public class EditCategoriesActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class EditCategoriesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     private final static String TAG = "EditCategoryFragment";
     private static final int CATEGORIES_LOADER = 0;
 
     private RecyclerView mRecyclerView;
     private CategoriesCursorAdapter mAdapter;
 
-    public EditCategoriesActivityFragment() {
+    public EditCategoriesFragment() {
     }
 
     @Override
@@ -41,12 +45,12 @@ public class EditCategoriesActivityFragment extends Fragment implements LoaderMa
         mAdapter = new CategoriesCursorAdapter(getActivity(), new CategoriesCursorAdapter.MyClickListener() {
             @Override
             public void onEditClick(long categoryId) {
-                DialogManager.showDialogCategoryEdit(EditCategoriesActivityFragment.this, categoryId);
+                DialogManager.showDialogCategoryEdit(EditCategoriesFragment.this, categoryId);
             }
 
             @Override
             public void onDeleteClick(long categotyId) {
-                DialogManager.showDialogCategoryDelete(EditCategoriesActivityFragment.this, categotyId);
+                DialogManager.showDialogCategoryDelete(EditCategoriesFragment.this, categotyId);
             }
         });
 

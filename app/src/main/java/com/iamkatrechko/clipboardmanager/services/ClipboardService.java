@@ -17,10 +17,10 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import com.iamkatrechko.clipboardmanager.ClipEditActivity;
-import com.iamkatrechko.clipboardmanager.Util;
+import com.iamkatrechko.clipboardmanager.activity.ClipEditActivity;
+import com.iamkatrechko.clipboardmanager.util.Util;
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.UtilPreferences;
+import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
 import com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
 
 import static com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.*;

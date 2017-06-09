@@ -27,7 +27,7 @@ import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.ClipsCursorAdapter;
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.Util;
+import com.iamkatrechko.clipboardmanager.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;

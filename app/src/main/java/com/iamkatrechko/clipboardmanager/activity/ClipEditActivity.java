@@ -1,14 +1,16 @@
-package com.iamkatrechko.clipboardmanager;
+package com.iamkatrechko.clipboardmanager.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
+import com.iamkatrechko.clipboardmanager.R;
+import com.iamkatrechko.clipboardmanager.fragment.ClipEditFragment;
 
 public class ClipEditActivity extends AppCompatActivity {
 

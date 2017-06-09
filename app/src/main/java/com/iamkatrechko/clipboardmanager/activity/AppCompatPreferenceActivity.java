@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager;
+package com.iamkatrechko.clipboardmanager.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

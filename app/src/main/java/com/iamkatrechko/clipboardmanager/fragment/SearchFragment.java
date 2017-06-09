@@ -1,8 +1,7 @@
-package com.iamkatrechko.clipboardmanager;
+package com.iamkatrechko.clipboardmanager.fragment;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -10,18 +9,19 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
+import com.iamkatrechko.clipboardmanager.activity.ClipEditActivity;
+import com.iamkatrechko.clipboardmanager.ClipsCursorAdapter;
+import com.iamkatrechko.clipboardmanager.R;
 
 import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
 
-public class SearchActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class SearchFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     private static final int SEARCH_CLIPS_LOADER = 1;
 
     private ClipsCursorAdapter mCursorAdapter;
@@ -30,8 +30,8 @@ public class SearchActivityFragment extends Fragment implements LoaderManager.Lo
     private EditText etSearch;
     private ImageButton ibSearch;
 
-    public static SearchActivityFragment newInstance() {
-        return new SearchActivityFragment();
+    public static SearchFragment newInstance() {
+        return new SearchFragment();
     }
 
     @Override

@@ -1,11 +1,10 @@
-package com.iamkatrechko.clipboardmanager;
+package com.iamkatrechko.clipboardmanager.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -18,7 +17,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
@@ -26,8 +24,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.iamkatrechko.clipboardmanager.R;
+import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
 import com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.*;
 import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
+import com.iamkatrechko.clipboardmanager.fragment.MainFragment;
 import com.iamkatrechko.clipboardmanager.services.ClipboardService;
 
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (fragmentManager.getFragments() == null) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, MainActivityFragment.newInstance())
+                    .replace(R.id.container, MainFragment.newInstance())
                     .commit();
         }
 
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivityFragment clipsFragment = (MainActivityFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+                MainFragment clipsFragment = (MainFragment) getSupportFragmentManager().findFragmentById(R.id.container);
                 clipsFragment.addNewClip();
             }
         });
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            MainActivityFragment clipsFragment = (MainActivityFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+            MainFragment clipsFragment = (MainFragment) getSupportFragmentManager().findFragmentById(R.id.container);
             clipsFragment.onBackPressed();
         }
     }
@@ -139,8 +140,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             startActivity(intent);
                             return true;
                         }
-                        MainActivityFragment clipsFragment =
-                                (MainActivityFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+                        MainFragment clipsFragment =
+                                (MainFragment) getSupportFragmentManager().findFragmentById(R.id.container);
                         cursor.moveToPosition(i1);
                         clipsFragment.showClipsByCategoryId(cursor.getID());
                         drawerLayout.closeDrawer(GravityCompat.START);

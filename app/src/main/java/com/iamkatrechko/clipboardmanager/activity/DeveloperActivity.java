@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager;
+package com.iamkatrechko.clipboardmanager.activity;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -14,6 +14,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.iamkatrechko.clipboardmanager.R;
+import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
 import com.iamkatrechko.clipboardmanager.services.ClipboardService;
 import com.iamkatrechko.clipboardmanager.services.FloatingCancelViewService;
 import com.iamkatrechko.clipboardmanager.services.FloatingViewService;
