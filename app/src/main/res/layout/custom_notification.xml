@@ -16,7 +16,7 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:src="@drawable/ic_launcher"
+                android:src="@drawable/ic_icon"
                 android:layout_height="32dp"
                 android:layout_width="32dp"
                 android:layout_margin="8dp"/>

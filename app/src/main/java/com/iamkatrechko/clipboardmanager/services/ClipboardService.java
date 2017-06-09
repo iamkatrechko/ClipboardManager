@@ -151,7 +151,7 @@ public class ClipboardService extends Service {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setContentTitle(getResources().getString(R.string.current_clipboard_text))
                 .setContentText("> " + Util.getClipboardText(getApplicationContext()))
-                .setSmallIcon(R.drawable.ic_launcher);
+                .setSmallIcon(R.drawable.ic_icon);
 
         if (displayHistory) {
             RemoteViews contentView = createGeneralRemoteViews();

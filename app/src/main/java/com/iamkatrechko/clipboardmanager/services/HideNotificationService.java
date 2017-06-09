@@ -14,7 +14,7 @@ public class HideNotificationService extends Service {
     @Override
     public void onCreate() {
         Notification.Builder builder = new Notification.Builder(this)
-                .setSmallIcon(R.drawable.ic_launcher);
+                .setSmallIcon(R.drawable.ic_icon);
         Notification notification;
         notification = builder.build();
         startForeground(98431, notification);
