@@ -16,7 +16,6 @@ import com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
 /**
  * Cубкласс ContentProvider, определяющий операции получения данных, вставки, обновления и удаления с базой данных.
  */
-
 public class ClipboardContentProvider extends ContentProvider {
     private final String TAG = "ContentProvider";
 

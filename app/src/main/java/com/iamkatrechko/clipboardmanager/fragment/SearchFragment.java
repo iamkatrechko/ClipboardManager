@@ -2,8 +2,8 @@ package com.iamkatrechko.clipboardmanager.fragment;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -15,21 +15,36 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.iamkatrechko.clipboardmanager.activity.ClipEditActivity;
-import com.iamkatrechko.clipboardmanager.ClipsCursorAdapter;
 import com.iamkatrechko.clipboardmanager.R;
+import com.iamkatrechko.clipboardmanager.activity.ClipEditActivity;
+import com.iamkatrechko.clipboardmanager.adapter.ClipsCursorAdapter;
 
-import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
+import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.Clip;
 
-public class SearchFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+/**
+ * Фрагмент экрана поиска заметок
+ * @author iamkatrechko
+ *         Date: 01.11.2016
+ */
+public class SearchFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    /** Идентификатор загрузчика найденых заметок */
     private static final int SEARCH_CLIPS_LOADER = 1;
 
+    /** Адаптер списка заметок */
     private ClipsCursorAdapter mCursorAdapter;
+    /** Виджет списка заметок */
     private RecyclerView recyclerView;
 
+    /** Текстовое поле поискового запроса */
     private EditText etSearch;
+    /** Кнопка применения запроса поиска */
     private ImageButton ibSearch;
 
+    /**
+     * Возвращает новый экземпляр фрагмента
+     * @return новый экземпляр фрагмента
+     */
     public static SearchFragment newInstance() {
         return new SearchFragment();
     }
@@ -45,7 +60,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
         recyclerView.setHasFixedSize(true);
 
-        mCursorAdapter = new ClipsCursorAdapter(getActivity(), new ClipsCursorAdapter.ClipClickListener(){
+        mCursorAdapter = new ClipsCursorAdapter(getActivity(), new ClipsCursorAdapter.ClipClickListener() {
             @Override
             public void onClick(long clipId) {
                 Intent i = new Intent(getActivity(), ClipEditActivity.class);
@@ -57,7 +72,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
             public void onSelectedChange(boolean isSelectedMode, int selectedCount) {
 
             }
-        }, getActivity());
+        });
         mCursorAdapter.setEmptyView(v.findViewById(R.id.linearEmpty));
         recyclerView.setAdapter(mCursorAdapter);
 
@@ -70,7 +85,11 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
         return v;
     }
 
-    private void searchOnText(String query){
+    /**
+     * Производит поиск по заметкам
+     * @param query текст запроса
+     */
+    private void searchOnText(String query) {
         if (query.length() == 0) return;
         Bundle bundle = new Bundle();
         bundle.putString("query", query);
@@ -87,7 +106,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
                         Clip.CONTENT_URI,
                         null, // все столбцы
                         Clip.COLUMN_TITLE + " LIKE '%" + query + "%' OR " +
-                        Clip.COLUMN_CONTENT + " LIKE '%" + query + "%'",
+                                Clip.COLUMN_CONTENT + " LIKE '%" + query + "%'",
                         null, // без аргументов
                         Clip._ID + " DESC"); // сортировка
             default:
@@ -102,6 +121,5 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 }

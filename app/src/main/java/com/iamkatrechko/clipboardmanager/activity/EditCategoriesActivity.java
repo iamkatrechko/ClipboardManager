@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.fragment.EditCategoriesFragment;
+import com.iamkatrechko.clipboardmanager.fragment.CategoriesListFragment;
 
 public class EditCategoriesActivity extends AppCompatActivity {
 
@@ -23,8 +23,8 @@ public class EditCategoriesActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditCategoriesFragment clipsFragment =
-                        (EditCategoriesFragment) getSupportFragmentManager().getFragments().get(0);
+                CategoriesListFragment clipsFragment =
+                        (CategoriesListFragment) getSupportFragmentManager().getFragments().get(0);
                 clipsFragment.showDialogAdd();
             }
         });

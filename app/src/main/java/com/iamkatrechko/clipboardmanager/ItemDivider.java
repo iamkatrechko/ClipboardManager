@@ -9,7 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-class ItemDivider extends RecyclerView.ItemDecoration {
+public class ItemDivider extends RecyclerView.ItemDecoration {
    private final Drawable divider;
 
    // constructor loads built-in Android list item divider

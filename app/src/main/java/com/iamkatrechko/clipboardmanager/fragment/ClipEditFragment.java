@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -28,63 +29,92 @@ import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.DialogManager;
 import com.iamkatrechko.clipboardmanager.R;
+import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
 import com.iamkatrechko.clipboardmanager.util.Util;
 import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
-import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
 
-import static com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.*;
-import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
+import static com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.CategoryCursor;
+import static com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.ClipCursor;
+import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.Clip;
 
-public class ClipEditFragment extends Fragment implements View.OnClickListener ,LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = "ClipEditFragment";
-    private static final String ARG_URI = "param1";
+/**
+ * Фрагмент экрана редактирования заметки
+ * @author iamkatrechko
+ *         Date: 01.11.2016
+ */
+public class ClipEditFragment extends Fragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
+    /** Тег для логирования */
+    private static final String TAG = ClipEditFragment.class.getSimpleName();
+
+    /** Ключ аргумента. URI заметки */
+    private static final String KEY_URI = "KEY_URI";
+
+    /** Идентификатор загрузчика заметки */
     private static final int ONE_CLIP_LOADER = 0;
+    /** Идентификатор загрузчика категории */
     private static final int ONE_CATEGORY_LOADER = 1;
 
-    private boolean addingNewClip = false;
-    private boolean isEditMode = false;
-    private boolean saveNeed = false;
+    /** Создание новой заметки */
+    private boolean addingNewClip;
+    /** Режим редактирования */
+    private boolean isEditMode;
+    /** Необходимость сохранения */
+    private boolean saveNeed;
 
+    /** URI текущей заметки */
     private Uri clipUri;
+    /** Текстовое поле с заголовком */
     private EditText etTitle;
+    /** Текстовое поле с содержимым */
     private EditText etContent;
+    /** Дата создания записи */
     private TextView tvDate;
+    /** Название категории */
     private TextView tvCategoryName;
+    /** Иконка принадлежности к избранным */
     private ImageView ivIsFavorite;
+    /** Иконка сохранения/редкатирования */
     private FloatingActionButton fab;
 
+    /** Идентификатор текущей категории */
     private long currentCategoryId = -1;
+    /** Флаг принадлежности к избранным */
     private boolean isFavorite = false;
 
+    /** Кнопка копирования в буфер */
     private ImageView ivCopy;
+    /** Кнопка "поделиться" */
     private ImageView ivShare;
+    /** Лэйаут с выбором категории */
     private LinearLayout linearCategory;
+    /** Слушатель редактирования полей заголовка и содержимого */
     private TextWatcher mTextWatcher = new TextWatcher() {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             saveNeed = true;
-            // текст только что изменили
-            //Log.d(TAG, s + " - " + start + " - " + before + " - " + count);
         }
 
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            // текст будет изменен
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-            // текст уже изменили
         }
     };
 
-    public static ClipEditFragment newInstance(Uri uri) {
+    /**
+     * Возвращает новый экземпляр фрагмента
+     * @param uri URI редактируемой заметки
+     * @return новый экземпляр фрагмента
+     */
+    public static ClipEditFragment newInstance(@Nullable Uri uri) {
         ClipEditFragment fragment = new ClipEditFragment();
 
         Bundle args = new Bundle();
-        args.putParcelable(ARG_URI, uri);
+        args.putParcelable(KEY_URI, uri);
         fragment.setArguments(args);
         return fragment;
     }
@@ -95,7 +125,7 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
         setHasOptionsMenu(true);
 
         if (getArguments() != null) {
-            clipUri = getArguments().getParcelable(ARG_URI);
+            clipUri = getArguments().getParcelable(KEY_URI);
             if (clipUri == null) {
                 addingNewClip = true;
             }
@@ -151,7 +181,7 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
                     toEditMode();
                     etContent.requestFocus();
                     return;
-                }else{
+                } else {
                     saveClip();
                 }
             }
@@ -159,6 +189,7 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
         return v;
     }
 
+    /** Переключает в режим редактирования */
     public void toEditMode() {
         isEditMode = true;
         etTitle.setEnabled(true);
@@ -166,9 +197,10 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
         fab.setImageResource(R.drawable.ic_done_24dp);
     }
 
+    /** Сохраняет заметку */
     public void saveClip() {
         // Создание объекта ContentValues с парами "ключ—значение"
-        if (etContent.getText().length() == 0){
+        if (etContent.getText().length() == 0) {
             Toast.makeText(getActivity(), "Введите текст записи!", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -182,7 +214,7 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
             //FIXME Добавить аттрибуты по умолчанию
             int titleLength = 25;
             if (etTitle.getText().length() == 0) {
-                if (etContent.getText().length() < titleLength){
+                if (etContent.getText().length() < titleLength) {
                     titleLength = etContent.getText().length();
                 }
                 contentValues.put(Clip.COLUMN_TITLE, etContent.getText().toString().substring(0, titleLength));
@@ -212,6 +244,7 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
         getActivity().finish();
     }
 
+    /** Удаляет текущую заметку */
     private void deleteClip() {
         if (!addingNewClip) {
             getActivity().getContentResolver().delete(clipUri, null, null);
@@ -219,18 +252,24 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
         getActivity().finish();
     }
 
+    /** Копирует заметку в буфер обмена */
     private void copyToClipboard() {
         Util.copyToClipboard(getActivity(), etContent.getText().toString());
     }
 
+    /** Расшаривает текущую заметку */
     private void share() {
         Util.shareText(getActivity(), etTitle.getText().toString());
     }
 
-    private void setIsFavorite(boolean favorite) {
+    /**
+     * Изменяет принадлежность заметки к избранным
+     * @param isFavorite принадлежность заметки к избранным
+     */
+    private void setIsFavorite(boolean isFavorite) {
         saveNeed = true;
-        isFavorite = favorite;
-        if (isFavorite) {
+        this.isFavorite = isFavorite;
+        if (this.isFavorite) {
             ivIsFavorite.setImageResource(R.drawable.ic_star);
         } else {
             ivIsFavorite.setImageResource(R.drawable.ic_star_border);
@@ -328,7 +367,6 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -379,12 +417,13 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener ,
         return super.onOptionsItemSelected(item);
     }
 
+    /** Нажатие на кнопку назад */
     public void backButtonWasPressed() {
         if (isEditMode) {
             if (saveNeed) {
                 if (UtilPreferences.getShowSaveDialogBeforeExit(getActivity())) {
                     DialogManager.showDialogCancel(this);
-                }else{
+                } else {
                     saveClip();
                     getActivity().finish();
                 }

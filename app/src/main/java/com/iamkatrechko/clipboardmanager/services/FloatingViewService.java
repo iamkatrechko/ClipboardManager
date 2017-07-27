@@ -25,7 +25,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.iamkatrechko.clipboardmanager.ClipsCursorAdapter;
+import com.iamkatrechko.clipboardmanager.adapter.ClipsCursorAdapter;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.util.Util;
 

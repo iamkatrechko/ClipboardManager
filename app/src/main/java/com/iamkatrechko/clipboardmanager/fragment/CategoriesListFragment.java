@@ -5,8 +5,9 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -16,20 +17,45 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.iamkatrechko.clipboardmanager.CategoriesCursorAdapter;
 import com.iamkatrechko.clipboardmanager.DialogManager;
 import com.iamkatrechko.clipboardmanager.R;
+import com.iamkatrechko.clipboardmanager.adapter.CategoriesCursorAdapter;
 
-import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
+import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.Category;
+import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.Clip;
 
-public class EditCategoriesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
-    private final static String TAG = "EditCategoryFragment";
+/**
+ * Фрагмент экрана со списком категорий
+ * @author iamkatrechko
+ *         Date: 01.11.2016
+ */
+public class CategoriesListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    /** Тег для логирования */
+    private final static String TAG = CategoriesListFragment.class.getSimpleName();
+
+    /** Идентификатор загрузчика категорий */
     private static final int CATEGORIES_LOADER = 0;
 
+    /** Виджет списка категорий */
     private RecyclerView mRecyclerView;
+    /** Адаптер списка категорий заметок */
     private CategoriesCursorAdapter mAdapter;
 
-    public EditCategoriesFragment() {
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mAdapter = new CategoriesCursorAdapter(new CategoriesCursorAdapter.MyClickListener() {
+            @Override
+            public void onEditClick(long categoryId) {
+                DialogManager.showDialogCategoryEdit(CategoriesListFragment.this, categoryId);
+            }
+
+            @Override
+            public void onDeleteClick(long categoryId) {
+                DialogManager.showDialogCategoryDelete(CategoriesListFragment.this, categoryId);
+            }
+        });
     }
 
     @Override
@@ -41,26 +67,14 @@ public class EditCategoriesFragment extends Fragment implements LoaderManager.Lo
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
         mRecyclerView.setHasFixedSize(true);
-
-        mAdapter = new CategoriesCursorAdapter(getActivity(), new CategoriesCursorAdapter.MyClickListener() {
-            @Override
-            public void onEditClick(long categoryId) {
-                DialogManager.showDialogCategoryEdit(EditCategoriesFragment.this, categoryId);
-            }
-
-            @Override
-            public void onDeleteClick(long categotyId) {
-                DialogManager.showDialogCategoryDelete(EditCategoriesFragment.this, categotyId);
-            }
-        });
-
         mRecyclerView.setAdapter(mAdapter);
 
         getLoaderManager().initLoader(CATEGORIES_LOADER, null, this);
         return v;
     }
 
-    public void showDialogAdd(){
+    /** Отображает диалог создания категории */
+    public void showDialogAdd() {
         DialogManager.showDialogCategoryAdd(this);
     }
 

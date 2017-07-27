@@ -28,11 +28,16 @@ import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
 import com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.*;
 import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
-import com.iamkatrechko.clipboardmanager.fragment.MainFragment;
+import com.iamkatrechko.clipboardmanager.fragment.ClipsListFragment;
 import com.iamkatrechko.clipboardmanager.services.ClipboardService;
 
 import java.util.ArrayList;
 
+/**
+ * Основаня активность экрана со списком заметок
+ * @author iamkatrechko
+ *         Date: 01.11.2016
+ */
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int CATEGORIES_LOADER = 1;
     private DrawerLayout drawerLayout;
@@ -52,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (fragmentManager.getFragments() == null) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, MainFragment.newInstance())
+                    .replace(R.id.container, ClipsListFragment.newInstance())
                     .commit();
         }
 
@@ -60,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainFragment clipsFragment = (MainFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+                ClipsListFragment clipsFragment = (ClipsListFragment) getSupportFragmentManager().findFragmentById(R.id.container);
                 clipsFragment.addNewClip();
             }
         });
@@ -78,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            MainFragment clipsFragment = (MainFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+            ClipsListFragment clipsFragment = (ClipsListFragment) getSupportFragmentManager().findFragmentById(R.id.container);
             clipsFragment.onBackPressed();
         }
     }
@@ -140,8 +145,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             startActivity(intent);
                             return true;
                         }
-                        MainFragment clipsFragment =
-                                (MainFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+                        ClipsListFragment clipsFragment =
+                                (ClipsListFragment) getSupportFragmentManager().findFragmentById(R.id.container);
                         cursor.moveToPosition(i1);
                         clipsFragment.showClipsByCategoryId(cursor.getID());
                         drawerLayout.closeDrawer(GravityCompat.START);

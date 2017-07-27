@@ -1,6 +1,5 @@
 package com.iamkatrechko.clipboardmanager.dialogs;
 
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -22,7 +21,7 @@ import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DialogCategoryDelete extends DialogFragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class DialogCategoryDelete extends DialogFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int CATEGORIES_LOADER = 1;
 
     private long deleteCategoryId;
@@ -119,13 +118,13 @@ public class DialogCategoryDelete extends DialogFragment implements LoaderManage
         data.moveToFirst();
         int i = 0;
         // Удаляем из списка категорий на перенос ту, что удаляется из базы
-        do{
+        do {
             if (data.getLong(0) != deleteCategoryId) {
                 categories[i] = data.getString(1);
                 hm.put(i, data.getLong(0));
                 i++;
             }
-        }while (data.moveToNext());
+        } while (data.moveToNext());
         adapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, categories);
         mSpinner.setAdapter(adapter);
     }

@@ -3,8 +3,8 @@ package com.iamkatrechko.clipboardmanager.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -18,30 +18,44 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.iamkatrechko.clipboardmanager.activity.ClipEditActivity;
-import com.iamkatrechko.clipboardmanager.ClipsCursorAdapter;
-import com.iamkatrechko.clipboardmanager.activity.DeveloperActivity;
 import com.iamkatrechko.clipboardmanager.DialogManager;
 import com.iamkatrechko.clipboardmanager.R;
+import com.iamkatrechko.clipboardmanager.activity.ClipEditActivity;
+import com.iamkatrechko.clipboardmanager.activity.DeveloperActivity;
 import com.iamkatrechko.clipboardmanager.activity.SearchActivity;
+import com.iamkatrechko.clipboardmanager.adapter.ClipsCursorAdapter;
 import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
 
-import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
+import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.Clip;
 
-public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+/**
+ * Основной фрагмент экрана со списком заметок
+ * @author iamkatrechko
+ *         Date: 01.11.2016
+ */
+public class ClipsListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final int CLIPS_LOADER = 0;
+    /** Идентификатор загрузчика заметок по категории */
     private static final int CLIPS_BY_CATEGORY_LOADER = 1;
 
-    private ClipsCursorAdapter mCursorAdapter;
+    /** Адаптер списка заметок */
+    private ClipsCursorAdapter clipsCursorAdapter;
+    /** Виджет списка заметок */
     private RecyclerView recyclerView;
 
+    /** Текущая выбранная категория */
     private long currentCategoryId = 2;
-    private boolean isContextMenu = false;
-    private int mSelectedCount = 0;
+    /** Включен ли режим выделения */
+    private boolean isContextMenu;
+    /** Количество выделенных элементов */
+    private int selectedCount = 0;
 
-    public static MainFragment newInstance() {
-        return new MainFragment();
+    /**
+     * Возвращает новый экземпляр фрагмента
+     * @return новый экземпляр фрагмента
+     */
+    public static ClipsListFragment newInstance() {
+        return new ClipsListFragment();
     }
 
     @Override
@@ -59,7 +73,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
         recyclerView.setHasFixedSize(true);
 
-        mCursorAdapter = new ClipsCursorAdapter(getActivity(), new ClipsCursorAdapter.ClipClickListener(){
+        clipsCursorAdapter = new ClipsCursorAdapter(getActivity(), new ClipsCursorAdapter.ClipClickListener() {
+
             @Override
             public void onClick(long clipId) {
                 Intent i = ClipEditActivity.newIntent(getActivity(),
@@ -71,25 +86,30 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             public void onSelectedChange(boolean isSelectedMode, int selectedCount) {
                 isContextMenu = isSelectedMode;
                 getActivity().invalidateOptionsMenu();
-                mSelectedCount = selectedCount;
+                ClipsListFragment.this.selectedCount = selectedCount;
             }
-        }, getActivity());
-        mCursorAdapter.setEmptyView(v.findViewById(R.id.linearEmpty));
-        recyclerView.setAdapter(mCursorAdapter);
+        });
+        clipsCursorAdapter.setEmptyView(v.findViewById(R.id.linearEmpty));
+        recyclerView.setAdapter(clipsCursorAdapter);
 
         showClipsByCategoryId(2);
         return v;
     }
 
-    public void showClipsByCategoryId(long categoryId){
-        mCursorAdapter.resetSelectMode();
+    /**
+     * Отображает список заметок по категории
+     * @param categoryId идентификатор категории
+     */
+    public void showClipsByCategoryId(long categoryId) {
+        clipsCursorAdapter.resetSelectMode();
         Bundle bundle = new Bundle();
         bundle.putLong("categoryId", categoryId);
         currentCategoryId = categoryId;
         getLoaderManager().restartLoader(CLIPS_BY_CATEGORY_LOADER, bundle, this);
     }
 
-    public void addNewClip(){
+    /** Открывает экран создания новой заметки */
+    public void addNewClip() {
         Intent i = ClipEditActivity.newIntent(getActivity(), null);
         startActivity(i);
     }
@@ -97,29 +117,26 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     /**
      * Меняет значок ToolBar"а (звездочку) в зависимости от того,
      * отображаются ли только избранные записи, или нет
-     * @param itemStar Элемент ToolBar'а
+     * @param itemStar           Элемент ToolBar'а
      * @param isOnlyFavoriteShow Отображаются только избранные записи
      */
-    private void changeToolbarItemIcon(MenuItem itemStar, boolean isOnlyFavoriteShow){
+    private void changeToolbarItemIcon(MenuItem itemStar, boolean isOnlyFavoriteShow) {
         if (isContextMenu) return;
-        if (isOnlyFavoriteShow){
+        if (isOnlyFavoriteShow) {
             itemStar.setIcon(R.drawable.ic_star_white);
-        }else{
+        } else {
             itemStar.setIcon(R.drawable.ic_star_border_white);
         }
     }
 
-    public void onBackPressed(){
-        if (isContextMenu){
-            mCursorAdapter.resetSelectMode();
-        }else{
+    /** Нажатие кнопки "назад" */
+    public void onBackPressed() {
+        if (isContextMenu) {
+            clipsCursorAdapter.resetSelectMode();
+        } else {
             getActivity().finish();
         }
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    // События /////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -137,13 +154,13 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             case CLIPS_BY_CATEGORY_LOADER:
                 String orderType = UtilPreferences.getOrderType(getActivity());
                 String orderQuery = null;
-                if (orderType.equals("3")){
+                if (orderType.equals("3")) {
                     orderQuery = Clip.COLUMN_DATE;
                 }
-                if (orderType.equals("2")){
+                if (orderType.equals("2")) {
                     orderQuery = Clip.COLUMN_DATE + " DESC";
                 }
-                if (orderType.equals("1")){
+                if (orderType.equals("1")) {
                     orderQuery = Clip._ID;
                 }
                 long categoryId = args.getLong("categoryId");
@@ -162,23 +179,23 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mCursorAdapter.setCursor(data);
+        clipsCursorAdapter.setCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mCursorAdapter.setCursor(null);
+        clipsCursorAdapter.setCursor(null);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(!isContextMenu ? R.menu.menu_main : R.menu.menu_main_context, menu);
-        if (mSelectedCount == 0){
+        if (selectedCount == 0) {
             getActivity().setTitle(R.string.app_name);
-        }else {
-            getActivity().setTitle("" + mSelectedCount);
-            menu.findItem(R.id.action_split).setVisible(mSelectedCount > 1);
+        } else {
+            getActivity().setTitle("" + selectedCount);
+            menu.findItem(R.id.action_split).setVisible(selectedCount > 1);
         }
 
         boolean showOnlyFavorite = UtilPreferences.isShowOnlyFavorite(getActivity());
@@ -220,7 +237,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 break;
             // Поделиться выделенными записями
             case R.id.action_share:
-                mCursorAdapter.shareItems();
+                clipsCursorAdapter.shareItems();
                 break;
             // Сменить категорию выделенных записей
             case R.id.action_change_category:
@@ -232,23 +249,23 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_SPLIT_CLIPS){
+        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_SPLIT_CLIPS) {
             String splitChar = data.getStringExtra("splitChar");
             boolean deleteOldClips = data.getBooleanExtra("deleteOldClips", false);
 
-            mCursorAdapter.splitItems(splitChar, deleteOldClips);
+            clipsCursorAdapter.splitItems(splitChar, deleteOldClips);
         }
-        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_CHANGE_CATEGORY){
+        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_CHANGE_CATEGORY) {
             long categoryId = data.getLongExtra("categoryId", 0);
 
-            mCursorAdapter.changeCategory(categoryId);
+            clipsCursorAdapter.changeCategory(categoryId);
         }
-        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_DELETE_CONFIRM){
+        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_DELETE_CONFIRM) {
             boolean delete = data.getBooleanExtra("delete", false);
             if (delete)
-                mCursorAdapter.deleteSelectedItems();
+                clipsCursorAdapter.deleteSelectedItems();
         }
-        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_SET_ORDER_TYPE){
+        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_SET_ORDER_TYPE) {
             String orderType = data.getStringExtra("orderType");
             UtilPreferences.setOrderType(getActivity(), orderType);
             showClipsByCategoryId(currentCategoryId);
