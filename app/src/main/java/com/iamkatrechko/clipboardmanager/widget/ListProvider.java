@@ -10,45 +10,50 @@ import com.iamkatrechko.clipboardmanager.R;
 
 import java.util.ArrayList;
 
+/**
+ * Поставщик данных для виджета списка
+ * @author iamkatrechko
+ *         Date: 01.11.2016
+ */
 public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
-    private ArrayList<String> listItemList = new ArrayList<>();
-    private Context context;
+
+    /** Список заметок */
+    private ArrayList<String> clips = new ArrayList<>();
+    /** Имя пакета */
+    private String packageName;
     //private int appWidgetId;
 
     public ListProvider(Context context, Intent intent) {
         Log.d("ListProvider", "ListProvider");
-        this.context = context;
+        packageName = context.getPackageName();
         /*appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);*/
 
         populateListItem();
     }
 
+    /** Генерирует список записей */
     private void populateListItem() {
         for (int i = 0; i < 5; i++) {
-            listItemList.add("Запись №" + i);
+            clips.add("Запись №" + i);
         }
-
     }
 
     @Override
     public void onCreate() {
-
     }
 
     @Override
     public void onDataSetChanged() {
-
     }
 
     @Override
     public void onDestroy() {
-
     }
 
     @Override
     public int getCount() {
-        return listItemList.size();
+        return clips.size();
     }
 
     @Override
@@ -61,17 +66,10 @@ public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
         return true;
     }
 
-    /*
-    *Similar to getView of Adapter where instead of View
-    *we return RemoteViews
-    *
-    */
     @Override
     public RemoteViews getViewAt(int position) {
-        RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.list_view_item);
-
-        remoteView.setTextViewText(R.id.textView2, listItemList.get(position));
-
+        RemoteViews remoteView = new RemoteViews(packageName, R.layout.list_view_item);
+        remoteView.setTextViewText(R.id.text_view_title, clips.get(position));
         return remoteView;
     }
 

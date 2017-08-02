@@ -16,6 +16,11 @@ import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper;
 import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
 
+/**
+ * Диалог редактирования категории
+ * @author iamkatrechko
+ *         Date: 01.11.2016
+ */
 public class DialogCategoryEdit extends DialogFragment {
     private long categoryId = 0;
     private boolean isAddNewCategory = false;

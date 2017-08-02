@@ -2,29 +2,49 @@ package com.iamkatrechko.clipboardmanager.services;
 
 import android.app.Notification;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 
 import com.iamkatrechko.clipboardmanager.R;
 
+/**
+ * Сервис для скрытия уведомления другого сервиса
+ * @author iamkatrechko
+ *         Date: 08.11.2016
+ */
 public class HideNotificationService extends Service {
-    public HideNotificationService() {
+
+    /** Ключ идентификатора уведомления */
+    private static final String KEY_NOTIFICATION_ID = "KEY_NOTIFICATION_ID";
+
+    /**
+     * Возвращает интент сервиса
+     * @param context        контекст
+     * @param notificationId идентификатор уведомления
+     * @return интент сервиса
+     */
+    public static Intent newIntent(Context context, int notificationId) {
+        Intent hideIntent = new Intent(context, HideNotificationService.class);
+        hideIntent.putExtra(KEY_NOTIFICATION_ID, notificationId);
+        return hideIntent;
     }
 
     @Override
-    public void onCreate() {
-        Notification.Builder builder = new Notification.Builder(this)
-                .setSmallIcon(R.drawable.ic_icon);
-        Notification notification;
-        notification = builder.build();
-        startForeground(98431, notification);
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Notification notification = new Notification.Builder(this)
+                .setSmallIcon(R.drawable.ic_icon)
+                .build();
+        startForeground(intent.getIntExtra(KEY_NOTIFICATION_ID, 0), notification);
         stopForeground(true);
         stopSelf();
+        return super.onStartCommand(intent, flags, startId);
     }
 
+    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return null;
     }
 }

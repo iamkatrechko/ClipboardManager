@@ -21,9 +21,14 @@ import com.iamkatrechko.clipboardmanager.services.FloatingCancelViewService;
 import com.iamkatrechko.clipboardmanager.services.FloatingViewService;
 import com.iamkatrechko.clipboardmanager.services.HideNotificationService;
 
+/**
+ * Активность меню разработчика
+ * @author iamkatrechko
+ *         Date: 01.11.2016
+ */
 public class DeveloperActivity extends AppCompatActivity {
-    public static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE= 5469;
 
+    public static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE= 5469;
     private CheckBox cbShowMeta;
 
     @Override

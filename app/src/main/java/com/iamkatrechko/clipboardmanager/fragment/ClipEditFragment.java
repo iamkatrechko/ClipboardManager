@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.iamkatrechko.clipboardmanager.DialogManager;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
+import com.iamkatrechko.clipboardmanager.util.ClipUtils;
 import com.iamkatrechko.clipboardmanager.util.Util;
 import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
 
@@ -254,7 +255,7 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener, 
 
     /** Копирует заметку в буфер обмена */
     private void copyToClipboard() {
-        Util.copyToClipboard(getActivity(), etContent.getText().toString());
+        ClipUtils.copyToClipboard(getContext(), etContent.getText().toString());
     }
 
     /** Расшаривает текущую заметку */

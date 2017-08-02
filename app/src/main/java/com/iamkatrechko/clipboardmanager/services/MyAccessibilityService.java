@@ -1,6 +1,5 @@
 package com.iamkatrechko.clipboardmanager.services;
 
-
 import android.accessibilityservice.AccessibilityService;
 import android.content.ClipboardManager;
 import android.content.Intent;
@@ -8,14 +7,22 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.iamkatrechko.clipboardmanager.util.ClipUtils;
 import com.iamkatrechko.clipboardmanager.util.Util;
 
 import static android.view.accessibility.AccessibilityNodeInfo.ACTION_PASTE;
 
+/**
+ * Специальная служба для вставки заметок в поля ввода
+ * @author iamkatrechko
+ *         Date: 01.11.2016
+ */
 public class MyAccessibilityService extends AccessibilityService {
+
+    /** Тег для логирования */
     private static final String TAG = "MyAccessibilityService";
     private AccessibilityNodeInfo activeSource;
-    ClipboardManager mClipboardManager;
+    private ClipboardManager mClipboardManager;
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
@@ -25,11 +32,9 @@ public class MyAccessibilityService extends AccessibilityService {
             return;
         }
 
-
-
         final int eventType = event.getEventType();
         String eventText = null;
-        switch(eventType) {
+        switch (eventType) {
             /*case AccessibilityEvent.TYPE_VIEW_CLICKED:
                 eventText = "Clicked: ";
                 break;
@@ -38,17 +43,15 @@ public class MyAccessibilityService extends AccessibilityService {
                 break;*/
             case AccessibilityEvent.TYPE_VIEW_LONG_CLICKED:
                 eventText = "Long Clicked: ";
-                if (source.getClassName().equals("android.widget.EditText")){
+                if (source.getClassName().equals("android.widget.EditText")) {
                     activeSource = source;
                     startService(new Intent(this, FloatingViewService.class));
-                    if (Util.checkSupportActionPaste(source)){
+                    if (Util.checkSupportActionPaste(source)) {
                         source.performAction(ACTION_PASTE);
                     }
                 }
                 break;
         }
-
-        //Log.d(TAG, eventText);
     }
 
     @Override
@@ -59,13 +62,14 @@ public class MyAccessibilityService extends AccessibilityService {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d(TAG, "onCreate");
 
         mClipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         mClipboardManager.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
             @Override
             public void onPrimaryClipChanged() {
-                String label = Util.getClipboardLabel(getApplicationContext());
-                if (label.equals("126126126")) {
+                String label = ClipUtils.getClipboardLabel(MyAccessibilityService.this);
+                if (label.equals(ClipUtils.CLIP_LABEL_ACCESSIBILITY)) {
                     try {
                         if (Util.checkSupportActionPaste(activeSource)) {
                             activeSource.performAction(ACTION_PASTE);
@@ -76,7 +80,6 @@ public class MyAccessibilityService extends AccessibilityService {
                 }
             }
         });
-        Log.d(TAG, "onCreate");
     }
 
     @Override

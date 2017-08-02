@@ -32,7 +32,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
     private static final int SEARCH_CLIPS_LOADER = 1;
 
     /** Адаптер списка заметок */
-    private ClipsCursorAdapter mCursorAdapter;
+    private ClipsCursorAdapter clipsCursorAdapter;
     /** Виджет списка заметок */
     private RecyclerView recyclerView;
 
@@ -60,7 +60,8 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
         recyclerView.setHasFixedSize(true);
 
-        mCursorAdapter = new ClipsCursorAdapter(getActivity(), new ClipsCursorAdapter.ClipClickListener() {
+        clipsCursorAdapter = new ClipsCursorAdapter(getActivity(), new ClipsCursorAdapter.ClipClickListener() {
+
             @Override
             public void onClick(long clipId) {
                 Intent i = new Intent(getActivity(), ClipEditActivity.class);
@@ -70,11 +71,10 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
 
             @Override
             public void onSelectedChange(boolean isSelectedMode, int selectedCount) {
-
             }
         });
-        mCursorAdapter.setEmptyView(v.findViewById(R.id.linearEmpty));
-        recyclerView.setAdapter(mCursorAdapter);
+        clipsCursorAdapter.setEmptyView(v.findViewById(R.id.linearEmpty));
+        recyclerView.setAdapter(clipsCursorAdapter);
 
         ibSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,11 +104,11 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
                 String query = args.getString("query");
                 return new CursorLoader(getActivity(),
                         Clip.CONTENT_URI,
-                        null, // все столбцы
+                        null,
                         Clip.COLUMN_TITLE + " LIKE '%" + query + "%' OR " +
                                 Clip.COLUMN_CONTENT + " LIKE '%" + query + "%'",
-                        null, // без аргументов
-                        Clip._ID + " DESC"); // сортировка
+                        null,
+                        Clip._ID + " DESC");
             default:
                 return null;
         }
@@ -116,7 +116,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mCursorAdapter.setCursor(data);
+        clipsCursorAdapter.setCursor(data);
     }
 
     @Override

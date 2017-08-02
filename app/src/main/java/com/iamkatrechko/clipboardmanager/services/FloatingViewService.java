@@ -27,7 +27,7 @@ import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.adapter.ClipsCursorAdapter;
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.util.Util;
+import com.iamkatrechko.clipboardmanager.util.ClipUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +35,11 @@ import java.util.List;
 import static com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.*;
 import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
 
+/**
+ * Плавающий виджет со списком заметок
+ * @author iamkatrechko
+ *         Date: 01.11.2016
+ */
 public class FloatingViewService extends Service{
     static String TAG = "FloatingViewService";
     private WindowManager windowManager;
@@ -77,7 +82,7 @@ public class FloatingViewService extends Service{
                 ClipCursor c = new ClipCursor(cr.query(Clip.buildClipUri(clipId), null, null, null, null));
                 c.moveToFirst();
 
-                Util.sendClipToMyAccessibilityService(getApplicationContext(), c.getContent());
+                ClipUtils.sendClipToMyAccessibilityService(getApplicationContext(), c.getContent());
                 Toast.makeText(getApplicationContext(), "Id = " + clipId, Toast.LENGTH_SHORT).show();
             }
 

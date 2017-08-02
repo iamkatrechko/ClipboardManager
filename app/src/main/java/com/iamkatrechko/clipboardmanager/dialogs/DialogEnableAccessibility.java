@@ -1,6 +1,5 @@
 package com.iamkatrechko.clipboardmanager.dialogs;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
@@ -10,19 +9,19 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 
+/**
+ * Диалог включения служебного сервиса
+ * @author iamkatrechko
+ *         Date: 01.11.2016
+ */
 public class DialogEnableAccessibility extends DialogFragment {
 
+    /**
+     * Возвращает новый экземпляр диалога
+     * @return новый экземпляр диалога
+     */
     public static DialogEnableAccessibility newInstance() {
         return new DialogEnableAccessibility();
-    }
-
-    private void sendResult(boolean save) {
-        if (getTargetFragment() == null) {
-            return;
-        }
-        Intent a = new Intent();
-        a.putExtra("save", save);
-        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, a);
     }
 
     @NonNull
@@ -39,13 +38,6 @@ public class DialogEnableAccessibility extends DialogFragment {
                                 startActivityForResult(intent, 122161);
                             }
                         })
-                /*.setNeutralButton("Гав",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int id) {
-                                dialog.cancel();
-                            }
-                        })*/
                 .setNegativeButton("Отмена", null).create();
     }
 }

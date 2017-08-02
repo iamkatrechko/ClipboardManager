@@ -9,12 +9,25 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
+/**
+ * Диалог сохранения заметки перед выходом
+ * @author iamkatrechko
+ *         Date: 01.11.2016
+ */
 public class DialogSaveClip extends DialogFragment {
 
+    /**
+     * Возвращает новый экземпляр диалога
+     * @return новый экземпляр диалога
+     */
     public static DialogSaveClip newInstance() {
         return new DialogSaveClip();
     }
 
+    /**
+     * Возвращает данные обратно во фрагмент
+     * @param save флаг сохранения заметки
+     */
     private void sendResult(boolean save) {
         if (getTargetFragment() == null) {
             return;
@@ -37,13 +50,6 @@ public class DialogSaveClip extends DialogFragment {
                                 sendResult(false);
                             }
                         })
-                /*.setNeutralButton("Гав",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int id) {
-                                dialog.cancel();
-                            }
-                        })*/
                 .setNegativeButton("Отмена", null).create();
     }
 }

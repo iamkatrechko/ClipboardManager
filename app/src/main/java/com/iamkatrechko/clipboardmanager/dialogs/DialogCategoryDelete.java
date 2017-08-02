@@ -21,9 +21,17 @@ import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Диалог удаления категории
+ * @author iamkatrechko
+ *         Date: 01.11.2016
+ */
 public class DialogCategoryDelete extends DialogFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    /** Идентификатор загрузчика категорий */
     private static final int CATEGORIES_LOADER = 1;
 
+    /** Идентификатор удаляемой категории */
     private long deleteCategoryId;
     private Spinner mSpinner;
     private boolean moveInNewCategory = true;
@@ -31,6 +39,11 @@ public class DialogCategoryDelete extends DialogFragment implements LoaderManage
     private Map<Integer, Long> hm = new HashMap<>();
     private int moveCategoryPos = 0;
 
+    /**
+     * Возвращает новый экземпляр диалога
+     * @param categoryId идентификатор удаляемой категории
+     * @return новый экземпляр диалога
+     */
     public static DialogCategoryDelete newInstance(long categoryId) {
         DialogCategoryDelete fragment = new DialogCategoryDelete();
         Bundle args = new Bundle();
@@ -131,6 +144,5 @@ public class DialogCategoryDelete extends DialogFragment implements LoaderManage
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 }

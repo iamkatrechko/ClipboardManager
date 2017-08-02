@@ -9,15 +9,28 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 
+import com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.CategoryCursor;
 import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
-import com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.*;
 
+/**
+ * Диалог смены категории для заметки
+ * @author iamkatrechko
+ *         Date: 01.11.2016
+ */
 public class DialogChangeCategory extends DialogFragment {
 
+    /**
+     * Возвращает новый экземпляр диалога
+     * @return новый экземпляр диалога
+     */
     public static DialogChangeCategory newInstance() {
         return new DialogChangeCategory();
     }
 
+    /**
+     * Возвращает данные обратно во фрагмент
+     * @param categoryId идентификатор выбранной категории
+     */
     private void sendResult(long categoryId) {
         if (getTargetFragment() == null) {
             return;
@@ -37,7 +50,7 @@ public class DialogChangeCategory extends DialogFragment {
 
         final String[] mItemsNames = new String[categories.getCount()];
         final long[] mItemsValues = new long[categories.getCount()];
-        for (int i = 0; i < categories.getCount(); i++){
+        for (int i = 0; i < categories.getCount(); i++) {
             categories.moveToPosition(i);
             mItemsNames[i] = categories.getTitle();
             mItemsValues[i] = categories.getID();

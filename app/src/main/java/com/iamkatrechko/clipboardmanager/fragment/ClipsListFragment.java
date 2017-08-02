@@ -77,9 +77,7 @@ public class ClipsListFragment extends Fragment implements LoaderManager.LoaderC
 
             @Override
             public void onClick(long clipId) {
-                Intent i = ClipEditActivity.newIntent(getActivity(),
-                        Clip.buildClipUri(clipId));
-                startActivity(i);
+                startActivity(ClipEditActivity.newIntent(getActivity(), Clip.buildClipUri(clipId)));
             }
 
             @Override

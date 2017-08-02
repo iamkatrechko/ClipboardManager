@@ -24,22 +24,6 @@ public class CategoriesCursorAdapter extends RecyclerView.Adapter<CategoriesCurs
     /** Слушатель нажатий */
     private MyClickListener mMyClickListener;
 
-    /** Слушатель нажатий */
-    public interface MyClickListener {
-
-        /**
-         * Редактирование категории
-         * @param categoryId идентификатор категории
-         */
-        void onEditClick(long categoryId);
-
-        /**
-         * Удаление категории
-         * @param categoryId идентификатор категории
-         */
-        void onDeleteClick(long categoryId);
-    }
-
     /**
      * Конструктор
      * @param clickListener слушатель нажатий
@@ -80,6 +64,22 @@ public class CategoriesCursorAdapter extends RecyclerView.Adapter<CategoriesCurs
      */
     public void setCursor(Cursor categoryCursor) {
         aCategoryCursor = new CategoryCursor(categoryCursor);
+    }
+
+    /** Слушатель нажатий */
+    public interface MyClickListener {
+
+        /**
+         * Редактирование категории
+         * @param categoryId идентификатор категории
+         */
+        void onEditClick(long categoryId);
+
+        /**
+         * Удаление категории
+         * @param categoryId идентификатор категории
+         */
+        void onDeleteClick(long categoryId);
     }
 
     /** Холдер основного элемента списка */

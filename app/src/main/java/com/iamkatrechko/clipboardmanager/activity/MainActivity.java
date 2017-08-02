@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -25,11 +24,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
-import com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.*;
+import com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.CategoryCursor;
 import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
 import com.iamkatrechko.clipboardmanager.fragment.ClipsListFragment;
 import com.iamkatrechko.clipboardmanager.services.ClipboardService;
+import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
 
 import java.util.ArrayList;
 
@@ -39,12 +38,18 @@ import java.util.ArrayList;
  *         Date: 01.11.2016
  */
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final int CATEGORIES_LOADER = 1;
-    private DrawerLayout drawerLayout;
-    private FloatingActionButton fab;
 
+    /** Идентификатор загрузчика категорий */
+    private static final int CATEGORIES_LOADER = 1;
+
+    /** Виджет бокового меню */
+    private DrawerLayout drawerLayout;
+
+    /** Виджет списка бокового меню */
     private ExpandableListView listView;
+    /** Адаптер бокового меню */
     private ExpListAdapter adapter;
+    /** Курсор со списком категорий */
     private CategoryCursor cursor;
 
     @Override
@@ -61,17 +66,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     .commit();
         }
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ClipsListFragment clipsFragment = (ClipsListFragment) getSupportFragmentManager().findFragmentById(R.id.container);
                 clipsFragment.addNewClip();
             }
         });
+
         initNavigationView();
 
-        if (UtilPreferences.getEnableService(this)){
+        if (UtilPreferences.getEnableService(this)) {
             ClipboardService.startMyService(this);
         }
 
@@ -140,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 Log.d("MainActivity", "CheckedIndex: " + index);
                 switch (i) {
                     case 1:
-                        if (i1 > cursor.getCount() - 1){
+                        if (i1 > cursor.getCount() - 1) {
                             Intent intent = new Intent(MainActivity.this, EditCategoriesActivity.class);
                             startActivity(intent);
                             return true;
@@ -157,7 +162,45 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case CATEGORIES_LOADER:
+                Log.d("MainActivity", "onCreateLoader");
+                return new CursorLoader(this,
+                        DatabaseDescription.Category.CONTENT_URI, // Uri таблицы contacts
+                        null, // все столбцы
+                        null, // все записи
+                        null, // без аргументов
+                        null); // сортировка
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.d("MainActivity", "onLoadFinished");
+        cursor = new CategoryCursor(data);
+        for (int i = 0; i < data.getCount(); i++) {
+            cursor.moveToPosition(i);
+        }
+        adapter.setChilders(cursor);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     public static class ExpListAdapter extends BaseExpandableListAdapter {
+
         private static final int TYPE_HEADER = 0;
         private static final int TYPE_ITEM = 1;
 
@@ -166,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         private Context mContext;
         private CategoryCursor aCursorCategories;
 
-        public ExpListAdapter (Context context, String[] names, String[] icons){
+        public ExpListAdapter(Context context, String[] names, String[] icons) {
             mContext = context;
             aGroupNames = names;
             aIconNames = icons;
@@ -179,13 +222,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         @Override
         public int getChildrenCount(int groupPosition) {
-            if (groupPosition == 1){
-                if (aCursorCategories != null){
+            if (groupPosition == 1) {
+                if (aCursorCategories != null) {
                     return aCursorCategories.getCount() + 1;
-                }else{
+                } else {
                     return 0;
                 }
-            }else{
+            } else {
                 return 0;
             }
         }
@@ -282,13 +325,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             TextView textChild = (TextView) convertView.findViewById(R.id.textChild);
             ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
 
-            if (isLastChild){
+            if (isLastChild) {
                 textChild.setText("Настроить категории");
                 imageView.setImageResource(R.drawable.ic_settings);
                 return convertView;
             }
 
-            if (aCursorCategories != null){
+            if (aCursorCategories != null) {
                 aCursorCategories.moveToPosition(childPosition);
                 imageView.setImageResource(R.drawable.ic_label);
                 textChild.setText(aCursorCategories.getTitle());
@@ -330,45 +373,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             return position == 0;
         }
 
-        public void setChilders(CategoryCursor cursor){
+        public void setChilders(CategoryCursor cursor) {
             aCursorCategories = cursor;
         }
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case CATEGORIES_LOADER:
-                Log.d("MainActivity", "onCreateLoader");
-                return new CursorLoader(this,
-                        DatabaseDescription.Category.CONTENT_URI, // Uri таблицы contacts
-                        null, // все столбцы
-                        null, // все записи
-                        null, // без аргументов
-                        null); // сортировка
-            default:
-                return null;
-        }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d("MainActivity", "onLoadFinished");
-        cursor = new CategoryCursor(data);
-        for (int i = 0; i < data.getCount(); i++){
-            cursor.moveToPosition(i);
-        }
-        adapter.setChilders(cursor);
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
     }
 }

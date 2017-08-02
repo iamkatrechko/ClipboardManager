@@ -20,13 +20,16 @@ import com.iamkatrechko.clipboardmanager.fragment.ClipEditFragment;
  */
 public class ClipEditActivity extends AppCompatActivity {
 
+    /** Ключ аргумента. Uri заметки */
+    private static final String KEY_URI = "KEY_URI";
+
     /**
      * Возвращает интент активности
      * @param clipUri URI редактируемой записи
      */
     public static Intent newIntent(Context context, @Nullable Uri clipUri) {
         Intent intent = new Intent(context, ClipEditActivity.class);
-        intent.putExtra("URI", clipUri);
+        intent.putExtra(KEY_URI, clipUri);
         return intent;
     }
 
@@ -34,17 +37,14 @@ public class ClipEditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clip_edit);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            // Show the Up button in the action bar.
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        Uri uri = getIntent().getParcelableExtra("URI");
-
+        Uri uri = getIntent().getParcelableExtra(KEY_URI);
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (fragmentManager.getFragments() == null) {
             fragmentManager.beginTransaction()
@@ -54,10 +54,6 @@ public class ClipEditActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }

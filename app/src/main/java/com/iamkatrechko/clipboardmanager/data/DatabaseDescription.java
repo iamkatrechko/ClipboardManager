@@ -8,17 +8,21 @@ import android.provider.BaseColumns;
 import com.iamkatrechko.clipboardmanager.util.Util;
 
 /**
- * одержит описание таблицы
+ * Описание таблиц с заметками
+ * @author iamkatrechko
+ *         Date: 01.11.2016
  */
-
 public class DatabaseDescription {
+
     /** Имя ContentProvider */
     public static final String AUTHORITY = "com.iamkatrechko.clipboardmanager.data";
     /** Базовый URI для взаимодействия с ContentProvider */
     private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
-    /** Вложенный класс, определяющий содержимое таблицы clips */
+    /** Описание таблицы clips */
     public static final class Clip implements BaseColumns {
+
+        /** Имя таблицы */
         public static final String TABLE_NAME = "clips";
         /** Объект Uri для таблицы clips */
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
@@ -41,7 +45,11 @@ public class DatabaseDescription {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static ContentValues getDefaultContentValues(){
+        /**
+         * Возвращает значения для записи по умолчанию
+         * @return значения по умолчанию
+         */
+        public static ContentValues getDefaultContentValues() {
             ContentValues contentValues = new ContentValues();
 
             contentValues.put(COLUMN_TITLE, "defaultTitle");
@@ -55,7 +63,10 @@ public class DatabaseDescription {
         }
     }
 
-    public static final class Category implements BaseColumns{
+    /** Описание таблицы с категориями */
+    public static final class Category implements BaseColumns {
+
+        /** Имя таблицы */
         public static final String TABLE_NAME = "categories";
         /** Объект Uri для таблицы clips */
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();

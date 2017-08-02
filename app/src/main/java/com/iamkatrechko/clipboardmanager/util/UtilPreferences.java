@@ -5,6 +5,11 @@ import android.preference.PreferenceManager;
 
 import com.iamkatrechko.clipboardmanager.activity.SettingsActivity;
 
+/**
+ * Утилиты по работы с SharedPreferences
+ * @author iamkatrechko
+ *         Date: 01.11.2016
+ */
 public class UtilPreferences {
 
     private static final String PREF_SHOW_ONLY_FAVORITE = "spOnlyFavorite";
@@ -12,8 +17,6 @@ public class UtilPreferences {
     private static final String PREF_SHOW_META_IN_ADAPTER = "showMetaInAdapter";
     private static final String PREF_SPLIT_CHAR = "splitChar";
     private static final String PREF_ORDER_TYPE = "order_type";
-
-
 
     /**
      * Отображатся ли в списке записей только избранные
@@ -110,28 +113,27 @@ public class UtilPreferences {
     }
 
 
-
-    public static boolean getEnableService(Context context){
+    public static boolean getEnableService(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(SettingsActivity.PREF_ENABLE_SERVICE, true);
     }
 
-    public static int getNotificationPriority(Context context){
+    public static int getNotificationPriority(Context context) {
         return Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(context)
                 .getString(SettingsActivity.PREF_NOTIFICATION_PRIORITY, "1"));
     }
 
-    public static boolean getDisplayNotification(Context context){
+    public static boolean getDisplayNotification(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(SettingsActivity.PREF_DISPLAY_NOTIFICATION, true);
     }
 
-    public static boolean getDisplayHistory(Context context){
+    public static boolean getDisplayHistory(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(SettingsActivity.PREF_DISPLAY_HISTORY, true);
     }
 
-    public static boolean getShowSaveDialogBeforeExit(Context context){
+    public static boolean getShowSaveDialogBeforeExit(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(SettingsActivity.PREF_SHOW_SAVE_DIALOG_BEFORE_EXIT, true);
     }

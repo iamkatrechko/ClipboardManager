@@ -17,6 +17,11 @@ import com.iamkatrechko.clipboardmanager.dialogs.DialogSaveClip;
 import com.iamkatrechko.clipboardmanager.dialogs.DialogSetOrderType;
 import com.iamkatrechko.clipboardmanager.dialogs.DialogSplitClips;
 
+/**
+ * Менеджер диалогов
+ * @author iamkatrechko
+ *         Date: 01.11.2016
+ */
 public class DialogManager {
     public static final int DIALOG_SPLIT_CLIPS = 611752;
     public static final int DIALOG_DELETE = 823663;

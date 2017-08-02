@@ -4,17 +4,16 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViewsService;
 
+/**
+ * Сервис виджета со списком
+ * @author iamkatrechko
+ *         Date: 01.11.2016
+ */
 public class WidgetService extends RemoteViewsService {
-	/*
-	 * So pretty simple just defining the Adapter of the listview
-	 * here Adapter is ListProvider
-	 * */
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         Log.d("WidgetService", "WidgetService");
-
-        return (new ListProvider(this.getApplicationContext(), intent));
+        return (new ListProvider(getApplicationContext(), intent));
     }
-
 }

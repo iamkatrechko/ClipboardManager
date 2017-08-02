@@ -9,12 +9,25 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
+/**
+ * Диалог подтверждения удаления
+ * @author iamkatrechko
+ *         Date: 01.11.2016
+ */
 public class DialogDeleteConfirm extends DialogFragment {
 
+    /**
+     * Возвращает новый экземпляр фрагмента
+     * @return новый экземпляр фрагмента
+     */
     public static DialogDeleteConfirm newInstance() {
         return new DialogDeleteConfirm();
     }
 
+    /**
+     * Возвращает данные обратно во фрагмент
+     * @param delete флаг подтверждения удаления
+     */
     private void sendResult(boolean delete) {
         if (getTargetFragment() == null) {
             return;

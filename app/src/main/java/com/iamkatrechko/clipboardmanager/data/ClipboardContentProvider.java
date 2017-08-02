@@ -7,55 +7,57 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
+import com.iamkatrechko.clipboardmanager.data.DatabaseDescription.Category;
+import com.iamkatrechko.clipboardmanager.data.DatabaseDescription.Clip;
 
 /**
- * Cубкласс ContentProvider, определяющий операции получения данных, вставки, обновления и удаления с базой данных.
+ * Провайдер данных с заметками
+ * @author iamkatrechko
+ *         Date: 01.11.2016
  */
 public class ClipboardContentProvider extends ContentProvider {
-    private final String TAG = "ContentProvider";
 
-    /** Экземпляр базы данных записей */
-    private ClipboardDatabaseHelper dbHelper;
+    /** Тег для логирования */
+    private static final String TAG = ClipboardContentProvider.class.getSimpleName();
     /** UriMatcher помогает ContentProvider определить выполняемую операцию */
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-    // Константы, используемые для определения выполняемой операции
-    private static final int ONE_CLIP = 1;                                                          // Одна запись
-    private static final int CLIPS = 2;                                                             // Таблица записей
-    private static final int ONE_CATEGORY = 3;                                                             // Одна запись
-    private static final int CATEGORIES = 4;                                                             // Таблица записей
+    /** Тип запроса. Одна заметка */
+    private static final int ONE_CLIP = 1;
+    /** Тип запроса. Несколько заметок */
+    private static final int CLIPS = 2;
+    /** Тип запроса. Одна категория */
+    private static final int ONE_CATEGORY = 3;
+    /** Тип запроса. Несколько категорий */
+    private static final int CATEGORIES = 4;
 
-    // Статический блок для настройки UriMatcher объекта ContentProvider
     static {
-        // Uri для записи с заданным идентификатором
         uriMatcher.addURI(DatabaseDescription.AUTHORITY, Clip.TABLE_NAME + "/#", ONE_CLIP);
-        // Uri для таблицы
         uriMatcher.addURI(DatabaseDescription.AUTHORITY, Clip.TABLE_NAME, CLIPS);
-        // Uri для записи с заданным идентификатором
         uriMatcher.addURI(DatabaseDescription.AUTHORITY, DatabaseDescription.Category.TABLE_NAME + "/#", ONE_CATEGORY);
-        // Uri для таблицы
         uriMatcher.addURI(DatabaseDescription.AUTHORITY, DatabaseDescription.Category.TABLE_NAME, CATEGORIES);
     }
+
+    /** Экземпляр базы данных записей */
+    private ClipboardDatabaseHelper dbHelper;
 
     @Override
     public boolean onCreate() {
         dbHelper = new ClipboardDatabaseHelper(getContext());
-        Log.d("ContentProvider", "Объект ContentProvider создан успешно");
-
+        Log.d(TAG, "Успешное создание");
         return true;                                                                                // Объект ContentProvider создан успешно
     }
 
     @Nullable
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        // Создание SQLiteQueryBuilder для запроса к таблице clips
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        Log.d(TAG, "query");
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-        Log.d("ContentProvider", "query");
 
         switch (uriMatcher.match(uri)) {
             case ONE_CLIP: // Выбрать запись с заданным идентификатором
@@ -76,7 +78,7 @@ public class ClipboardContentProvider extends ContentProvider {
                 break;
             default:
                 throw new UnsupportedOperationException(
-                getContext().getString(R.string.invalid_query_uri) + uri);
+                        getContext().getString(R.string.invalid_query_uri) + uri);
         }
 
         // Выполнить запрос для получения одной или всех записей
@@ -90,7 +92,8 @@ public class ClipboardContentProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
+        Log.d(TAG, "insert");
         Uri newUri = null;
         String tableName;
 
@@ -134,7 +137,8 @@ public class ClipboardContentProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String s, String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String s, String[] selectionArgs) {
+        Log.d(TAG, "delete");
         int numberOfRowsDeleted;
 
         switch (uriMatcher.match(uri)) {
@@ -153,7 +157,7 @@ public class ClipboardContentProvider extends ContentProvider {
                 // Удаление записи
                 numberOfRowsDeleted = dbHelper.getWritableDatabase().delete(
                         Category.TABLE_NAME, Category._ID + "=" + id2, selectionArgs);
-				//TODO добавить удаление записей данной категории
+                //TODO добавить удаление записей данной категории
                 break;
             default:
                 throw new UnsupportedOperationException(
@@ -169,7 +173,8 @@ public class ClipboardContentProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String s, String[] selectionArgs) {
+    public int update(@NonNull Uri uri, ContentValues values, String s, String[] selectionArgs) {
+        Log.d(TAG, "update");
         int numberOfRowsUpdated; // 1, если обновление успешно; 0 при неудаче
 
         switch (uriMatcher.match(uri)) {
@@ -213,7 +218,7 @@ public class ClipboardContentProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public String getType(Uri uri) {
+    public String getType(@NonNull Uri uri) {
         return null;
     }
 }

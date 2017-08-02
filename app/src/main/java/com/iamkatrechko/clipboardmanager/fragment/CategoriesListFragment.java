@@ -38,14 +38,15 @@ public class CategoriesListFragment extends Fragment implements LoaderManager.Lo
     private static final int CATEGORIES_LOADER = 0;
 
     /** Виджет списка категорий */
-    private RecyclerView mRecyclerView;
+    private RecyclerView recyclerView;
     /** Адаптер списка категорий заметок */
-    private CategoriesCursorAdapter mAdapter;
+    private CategoriesCursorAdapter categoriesAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAdapter = new CategoriesCursorAdapter(new CategoriesCursorAdapter.MyClickListener() {
+        categoriesAdapter = new CategoriesCursorAdapter(new CategoriesCursorAdapter.MyClickListener() {
+
             @Override
             public void onEditClick(long categoryId) {
                 DialogManager.showDialogCategoryEdit(CategoriesListFragment.this, categoryId);
@@ -63,11 +64,10 @@ public class CategoriesListFragment extends Fragment implements LoaderManager.Lo
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_edit_categories, container, false);
 
-        mRecyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
-
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setAdapter(mAdapter);
+        recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(categoriesAdapter);
 
         getLoaderManager().initLoader(CATEGORIES_LOADER, null, this);
         return v;
@@ -78,6 +78,7 @@ public class CategoriesListFragment extends Fragment implements LoaderManager.Lo
         DialogManager.showDialogCategoryAdd(this);
     }
 
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_EDIT) {
             long categoryId = data.getLongExtra("categoryId", 1);
@@ -135,14 +136,13 @@ public class CategoriesListFragment extends Fragment implements LoaderManager.Lo
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (mAdapter != null) {
-            mAdapter.setCursor(data);
-            mAdapter.notifyDataSetChanged();
+        if (categoriesAdapter != null) {
+            categoriesAdapter.setCursor(data);
+            categoriesAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 }
