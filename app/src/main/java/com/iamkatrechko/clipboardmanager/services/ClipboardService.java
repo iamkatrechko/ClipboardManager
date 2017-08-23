@@ -1,26 +1,22 @@
 package com.iamkatrechko.clipboardmanager.services;
 
 import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.view.View;
-import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.activity.ClipEditActivity;
 import com.iamkatrechko.clipboardmanager.data.DatabaseDescription.Clip;
 import com.iamkatrechko.clipboardmanager.util.ClipUtils;
+import com.iamkatrechko.clipboardmanager.RemoteViewCreator;
 import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
 
 import static com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.ClipCursor;
@@ -32,17 +28,14 @@ import static com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.Cli
  */
 public class ClipboardService extends Service {
 
+    /** Команда отображения избранных заметок */
+    public static final String ACTION_SHOW_ONLY_FAVORITE = "action_show_only_favorite";
+    /** Команда копирования заметки в буфер */
+    public static final String ACTION_COPY_TO_CLIPBOARD = "action_copy_to_clipboard";
     /** Тег для логирования */
     private static final String TAG = ClipboardService.class.getSimpleName();
-
     /** Идентификатор уведомления сервиса */
     private static final int NOTIFICATION_ID = 98431;
-
-    /** Команда отображения избранных заметок */
-    private static final String ACTION_SHOW_ONLY_FAVORITE = "action_show_only_favorite";
-    /** Команда копирования заметки в буфер */
-    private static final String ACTION_COPY_TO_CLIPBOARD = "action_copy_to_clipboard";
-
     /** Менеджер буфера обмена */
     private ClipboardManager clipBoard;
 
@@ -171,8 +164,7 @@ public class ClipboardService extends Service {
                 .setSmallIcon(R.drawable.ic_icon);
 
         if (displayHistory) {
-            RemoteViews contentView = createGeneralRemoteViews();
-            builder.setCustomBigContentView(contentView);
+            builder.setCustomBigContentView(RemoteViewCreator.createHistoryRemoteView(this));
         }
 
         switch (notificationPriority) {
@@ -194,74 +186,6 @@ public class ClipboardService extends Service {
         }
 
         return builder.build();
-    }
-
-    private RemoteViews createGeneralRemoteViews() {
-        boolean showOnlyFavorite = UtilPreferences.isShowOnlyFavoriteInNotification(this);
-
-        RemoteViews generalRemoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification);
-        String currentClipText = ClipUtils.getClipboardText(this);
-
-        generalRemoteViews.setTextViewText(R.id.tvCurrent, "> " + currentClipText);
-
-        Intent intentAdd = new Intent(this, ClipEditActivity.class);
-        intentAdd.setAction("ACTION_ADD");
-        PendingIntent pIntentAdd = PendingIntent.getActivity(this, 612452, intentAdd, 0);
-        generalRemoteViews.setOnClickPendingIntent(R.id.btnAdd, pIntentAdd);
-
-        Intent intentFavorite = new Intent(this, ClipboardService.class);
-        intentFavorite.setAction(ACTION_SHOW_ONLY_FAVORITE);
-        PendingIntent pIntentFavorite = PendingIntent.getService(this, 171251, intentFavorite, 0);
-        generalRemoteViews.setOnClickPendingIntent(R.id.ivStar, pIntentFavorite);
-
-        ClipCursor lastRecords;
-        if (showOnlyFavorite) {
-            generalRemoteViews.setImageViewResource(R.id.ivStar, R.drawable.ic_star);
-            generalRemoteViews.setInt(R.id.ivStar, "setColorFilter", Color.parseColor("#009688"));
-
-            lastRecords = new ClipCursor(getContentResolver().query(Clip.CONTENT_URI,
-                    null,
-                    Clip.COLUMN_CONTENT + " <> ? AND " + Clip.COLUMN_IS_FAVORITE + " = ?",
-                    new String[]{currentClipText, "1"},
-                    Clip.COLUMN_DATE + " DESC LIMIT 4"));
-        } else {
-            generalRemoteViews.setImageViewResource(R.id.ivStar, R.drawable.ic_star_border);
-            generalRemoteViews.setInt(R.id.ivStar, "setColorFilter", Color.parseColor("#808080"));
-
-            lastRecords = new ClipCursor(getContentResolver().query(Clip.CONTENT_URI,
-                    null,
-                    Clip.COLUMN_CONTENT + " <> ?",
-                    new String[]{currentClipText},
-                    Clip.COLUMN_DATE + " DESC LIMIT 4"));
-        }
-
-        generalRemoteViews.removeAllViews(R.id.ListClips);
-
-
-        for (int i = 0; i < lastRecords.getCount(); i++) {
-            lastRecords.moveToPosition(i);
-            long id = lastRecords.getID();
-            String title = lastRecords.getTitle();
-            RemoteViews clipRemoteViews = createClipListItem(id, title);
-            if (i == 0) {
-                clipRemoteViews.setViewVisibility(R.id.flSeparator, View.GONE);
-            }
-            generalRemoteViews.addView(R.id.ListClips, clipRemoteViews);
-        }
-        return generalRemoteViews;
-    }
-
-    private RemoteViews createClipListItem(long id, String text) {
-        RemoteViews clipRemoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification_list_item);
-        clipRemoteViews.setTextViewText(R.id.tvTitle, text);
-
-        Intent serviceCopy = new Intent(this, ClipboardService.class);
-        serviceCopy.setAction(ACTION_COPY_TO_CLIPBOARD);
-        serviceCopy.putExtra("id", id);
-        PendingIntent pIntentCopy = PendingIntent.getService(this, (int) id, serviceCopy, 0);
-        clipRemoteViews.setOnClickPendingIntent(R.id.ivCopy, pIntentCopy);
-
-        return clipRemoteViews;
     }
 
     @Override
