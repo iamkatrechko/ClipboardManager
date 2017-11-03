@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
@@ -99,7 +100,7 @@ public class CancelViewService extends Service {
         final WindowManager.LayoutParams myParams = new WindowManager.LayoutParams(
                 Math.round(340 * displayMetrics.density),
                 Math.round(48 * displayMetrics.density),
-                WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.TYPE_TOAST,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
 
@@ -109,9 +110,12 @@ public class CancelViewService extends Service {
         myParams.x = 0;
         myParams.y = size.y / 3;
 
-        //windowManager.addView(mainView, myParams);
-/*
-        mainView.animate().alphaBy(1.0f).alpha(0.0f).setDuration(ANIMATE_DURATION_TIME).setStartDelay(ANIMATE_DELAY_TIME);
+        windowManager.addView(mainView, myParams);
+        mainView.animate()
+                .alphaBy(1.0f)
+                .alpha(0.0f)
+                .setDuration(ANIMATE_DURATION_TIME)
+                .setStartDelay(ANIMATE_DELAY_TIME);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -121,7 +125,7 @@ public class CancelViewService extends Service {
                 } catch (Exception ignored) {
                 }
             }
-        }, ANIMATE_DELAY_TO_STOP_TIME);*/
+        }, ANIMATE_DELAY_TO_STOP_TIME);
         return Service.START_NOT_STICKY;
     }
 
