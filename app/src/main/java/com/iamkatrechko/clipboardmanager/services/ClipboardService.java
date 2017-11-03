@@ -11,6 +11,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.iamkatrechko.clipboardmanager.NotificationManager;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.RemoteViewCreator;
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip;
@@ -110,8 +111,7 @@ public class ClipboardService extends Service {
         }
         boolean displayNotification = UtilPreferences.getDisplayNotification(this);
 
-        Notification notification = createNotification();
-        startForeground(NOTIFICATION_ID, notification);
+        startForeground(NOTIFICATION_ID, new NotificationManager().getNotification(this));
 
         if (!displayNotification) {
             startService(HideNotificationService.newIntent(this, NOTIFICATION_ID));
@@ -131,40 +131,6 @@ public class ClipboardService extends Service {
         if (newClipUri != null) {
             startService(CancelViewService.newIntent(this, newClipUri.getLastPathSegment()));
         }
-    }
-
-    private Notification createNotification() {
-        int notificationPriority = UtilPreferences.getNotificationPriority(this);
-        boolean displayHistory = UtilPreferences.getDisplayHistory(this);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setContentTitle(getResources().getString(R.string.current_clipboard_text))
-                .setContentText("> " + ClipUtils.getClipboardText(this))
-                .setSmallIcon(R.drawable.ic_icon);
-
-        if (displayHistory) {
-            builder.setCustomBigContentView(RemoteViewCreator.createHistoryRemoteView(this));
-        }
-
-        switch (notificationPriority) {
-            case 1:
-                builder.setPriority(NotificationCompat.PRIORITY_MAX);
-                break;
-            case 2:
-                builder.setPriority(NotificationCompat.PRIORITY_HIGH);
-                break;
-            case 3:
-                builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
-                break;
-            case 4:
-                builder.setPriority(NotificationCompat.PRIORITY_LOW);
-                break;
-            case 5:
-                builder.setPriority(NotificationCompat.PRIORITY_MIN);
-                break;
-        }
-
-        return builder.build();
     }
 
     @Override
