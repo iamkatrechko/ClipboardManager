@@ -16,7 +16,7 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
+import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
 
 import java.util.HashMap;
 import java.util.Map;

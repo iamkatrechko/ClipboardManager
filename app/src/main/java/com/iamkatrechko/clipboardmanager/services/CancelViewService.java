@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.net.Uri;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
@@ -19,17 +18,17 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
+import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
 
 /**
  * Сервис для отображения кнопки "отмена сохранения записи"
  * @author iamkatrechko
  *         Date: 09.11.2016
  */
-public class FloatingCancelViewService extends Service {
+public class CancelViewService extends Service {
 
     /** Тег для логирования */
-    final private static String TAG = FloatingCancelViewService.class.getSimpleName();
+    final private static String TAG = CancelViewService.class.getSimpleName();
 
     /** Ключ идентификатора заметки для удаления */
     private static final String KEY_CLIP_ID = "KEY_CLIP_ID";
@@ -58,7 +57,7 @@ public class FloatingCancelViewService extends Service {
      * @return интент
      */
     public static Intent newIntent(Context context, String clipId) {
-        Intent intent = new Intent(context, FloatingCancelViewService.class);
+        Intent intent = new Intent(context, CancelViewService.class);
         intent.putExtra(KEY_CLIP_ID, Long.valueOf(clipId));
         return intent;
     }
@@ -89,7 +88,7 @@ public class FloatingCancelViewService extends Service {
             public void onClick(View view) {
                 windowManager.removeView(mainView);
                 contentResolver.delete(uriDelete, null, null);
-                Toast.makeText(FloatingCancelViewService.this, "Удалено: " + deleteClipId, Toast.LENGTH_SHORT).show();
+                Toast.makeText(CancelViewService.this, "Удалено: " + deleteClipId, Toast.LENGTH_SHORT).show();
                 stopSelf();
             }
         });
@@ -110,8 +109,8 @@ public class FloatingCancelViewService extends Service {
         myParams.x = 0;
         myParams.y = size.y / 3;
 
-        windowManager.addView(mainView, myParams);
-
+        //windowManager.addView(mainView, myParams);
+/*
         mainView.animate().alphaBy(1.0f).alpha(0.0f).setDuration(ANIMATE_DURATION_TIME).setStartDelay(ANIMATE_DELAY_TIME);
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -122,7 +121,7 @@ public class FloatingCancelViewService extends Service {
                 } catch (Exception ignored) {
                 }
             }
-        }, ANIMATE_DELAY_TO_STOP_TIME);
+        }, ANIMATE_DELAY_TO_STOP_TIME);*/
         return Service.START_NOT_STICKY;
     }
 

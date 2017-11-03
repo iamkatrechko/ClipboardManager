@@ -13,8 +13,8 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper;
-import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
+import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper;
+import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
 
 /**
  * Диалог редактирования категории

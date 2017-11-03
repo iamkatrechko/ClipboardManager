@@ -21,8 +21,8 @@ import com.iamkatrechko.clipboardmanager.DialogManager;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.adapter.CategoriesCursorAdapter;
 
-import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.Category;
-import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.Clip;
+import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Category;
+import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip;
 
 /**
  * Фрагмент экрана со списком категорий

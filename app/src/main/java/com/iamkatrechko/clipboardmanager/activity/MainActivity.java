@@ -24,8 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.CategoryCursor;
-import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
+import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.CategoryCursor;
+import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
 import com.iamkatrechko.clipboardmanager.fragment.ClipsListFragment;
 import com.iamkatrechko.clipboardmanager.services.ClipboardService;
 import com.iamkatrechko.clipboardmanager.util.UtilPreferences;

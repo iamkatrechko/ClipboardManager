@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.data;
+package com.iamkatrechko.clipboardmanager.data.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,9 +7,6 @@ import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
-import com.iamkatrechko.clipboardmanager.data.DatabaseDescription.Category;
-import com.iamkatrechko.clipboardmanager.data.DatabaseDescription.Clip;
 
 /**
  * Класс по работе с базой данных с заметками
@@ -34,20 +31,20 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         final String CREATE_CATEGORIES_TABLE =
-                "CREATE TABLE " + Category.TABLE_NAME + "(" +
-                        Category._ID + " INTEGER PRIMARY KEY, " +
-                        Category.COLUMN_TITLE + " TEXT);";
+                "CREATE TABLE " + DatabaseDescription.Category.TABLE_NAME + "(" +
+                        DatabaseDescription.Category._ID + " INTEGER PRIMARY KEY, " +
+                        DatabaseDescription.Category.COLUMN_TITLE + " TEXT);";
         sqLiteDatabase.execSQL(CREATE_CATEGORIES_TABLE);
 
         final String CREATE_CLIPS_TABLE =
-                "CREATE TABLE " + Clip.TABLE_NAME + "(" +
-                        Clip._ID + " INTEGER PRIMARY KEY, " +
-                        Clip.COLUMN_TITLE + " TEXT, " +
-                        Clip.COLUMN_CONTENT + " TEXT, " +
-                        Clip.COLUMN_DATE + " TEXT, " +
-                        Clip.COLUMN_IS_FAVORITE + " INTEGER, " +
-                        Clip.COLUMN_CATEGORY_ID + " INTEGER, " +
-                        Clip.COLUMN_IS_DELETED + " INTEGER);";
+                "CREATE TABLE " + DatabaseDescription.Clip.TABLE_NAME + "(" +
+                        DatabaseDescription.Clip._ID + " INTEGER PRIMARY KEY, " +
+                        DatabaseDescription.Clip.COLUMN_TITLE + " TEXT, " +
+                        DatabaseDescription.Clip.COLUMN_CONTENT + " TEXT, " +
+                        DatabaseDescription.Clip.COLUMN_DATE + " TEXT, " +
+                        DatabaseDescription.Clip.COLUMN_IS_FAVORITE + " INTEGER, " +
+                        DatabaseDescription.Clip.COLUMN_CATEGORY_ID + " INTEGER, " +
+                        DatabaseDescription.Clip.COLUMN_IS_DELETED + " INTEGER);";
         sqLiteDatabase.execSQL(CREATE_CLIPS_TABLE);
 
         generateTestData(sqLiteDatabase);
@@ -64,7 +61,7 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
      */
     private void generateTestData(SQLiteDatabase sqLiteDatabase) {
         for (int i = 1; i < 10; i++) {
-            String query = "INSERT INTO " + Clip.TABLE_NAME + " (title, content, date, is_favorite, category_id, is_deleted) values(" +
+            String query = "INSERT INTO " + DatabaseDescription.Clip.TABLE_NAME + " (title, content, date, is_favorite, category_id, is_deleted) values(" +
                     "'Название " + i + "', " +
                     "'Содержимое " + i + "', " +
                     "'" + i * 86400000 + "', " +
@@ -77,8 +74,8 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
         String[] categories = new String[]{"Основная категория", "Категория №2", "Категория №3", "Категория №4"};
         for (String categoryName : categories) {
             ContentValues contentValues = new ContentValues();
-            contentValues.put(Category.COLUMN_TITLE, categoryName);
-            sqLiteDatabase.insert(Category.TABLE_NAME, null, contentValues);
+            contentValues.put(DatabaseDescription.Category.COLUMN_TITLE, categoryName);
+            sqLiteDatabase.insert(DatabaseDescription.Category.TABLE_NAME, null, contentValues);
         }
 
         /*for (int i = 1; i < 5; i++){
@@ -103,7 +100,7 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
          * @return идентификатор заметки
          */
         public long getID() {
-            return getWrappedCursor().getLong(getColumnIndex(Clip._ID));
+            return getWrappedCursor().getLong(getColumnIndex(DatabaseDescription.Clip._ID));
         }
 
         /**
@@ -111,7 +108,7 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
          * @return заголовок заметки
          */
         public String getTitle() {
-            return getWrappedCursor().getString(getColumnIndex(Clip.COLUMN_TITLE));
+            return getWrappedCursor().getString(getColumnIndex(DatabaseDescription.Clip.COLUMN_TITLE));
         }
 
         /**
@@ -119,7 +116,7 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
          * @return содержимое заметки
          */
         public String getContent() {
-            return getWrappedCursor().getString(getColumnIndex(Clip.COLUMN_CONTENT));
+            return getWrappedCursor().getString(getColumnIndex(DatabaseDescription.Clip.COLUMN_CONTENT));
         }
 
         /**
@@ -127,7 +124,7 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
          * @return дата заметки
          */
         public String getDate() {
-            return getWrappedCursor().getString(getColumnIndex(Clip.COLUMN_DATE));
+            return getWrappedCursor().getString(getColumnIndex(DatabaseDescription.Clip.COLUMN_DATE));
         }
 
         /**
@@ -135,7 +132,7 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
          * @return принадлежность к избранным
          */
         public boolean isFavorite() {
-            int buf = getWrappedCursor().getInt(getColumnIndex(Clip.COLUMN_IS_FAVORITE));
+            int buf = getWrappedCursor().getInt(getColumnIndex(DatabaseDescription.Clip.COLUMN_IS_FAVORITE));
             return (buf == 1);
         }
 
@@ -144,7 +141,7 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
          * @return идентификатор категории заметки
          */
         public int getCategoryId() {
-            return getWrappedCursor().getInt(getColumnIndex(Clip.COLUMN_CATEGORY_ID));
+            return getWrappedCursor().getInt(getColumnIndex(DatabaseDescription.Clip.COLUMN_CATEGORY_ID));
         }
 
         /**
@@ -152,7 +149,7 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
          * @return была ли заметка удалена
          */
         public boolean isDeleted() {
-            int buf = getWrappedCursor().getInt(getColumnIndex(Clip.COLUMN_IS_DELETED));
+            int buf = getWrappedCursor().getInt(getColumnIndex(DatabaseDescription.Clip.COLUMN_IS_DELETED));
             return (buf == 1);
         }
     }
@@ -173,7 +170,7 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
          * @return идентификатор категории
          */
         public long getID() {
-            return getWrappedCursor().getLong(getColumnIndex(Category._ID));
+            return getWrappedCursor().getLong(getColumnIndex(DatabaseDescription.Category._ID));
         }
 
         /**
@@ -181,7 +178,7 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
          * @return заголовок категории
          */
         public String getTitle() {
-            return getWrappedCursor().getString(getColumnIndex(Category.COLUMN_TITLE));
+            return getWrappedCursor().getString(getColumnIndex(DatabaseDescription.Category.COLUMN_TITLE));
         }
     }
 }

@@ -7,10 +7,9 @@ import android.graphics.Color;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.activity.ClipEditActivity;
-import com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper;
-import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
+import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper;
+import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
 import com.iamkatrechko.clipboardmanager.services.ClipboardService;
 import com.iamkatrechko.clipboardmanager.util.ClipUtils;
 import com.iamkatrechko.clipboardmanager.util.UtilPreferences;

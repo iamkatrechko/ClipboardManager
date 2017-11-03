@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.data;
+package com.iamkatrechko.clipboardmanager.data.database;
 
 import android.content.ContentUris;
 import android.content.ContentValues;

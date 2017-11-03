@@ -3,10 +3,8 @@ package com.iamkatrechko.clipboardmanager.services;
 import android.app.Notification;
 import android.app.Service;
 import android.content.ClipboardManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -14,12 +12,13 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.data.DatabaseDescription.Clip;
-import com.iamkatrechko.clipboardmanager.util.ClipUtils;
 import com.iamkatrechko.clipboardmanager.RemoteViewCreator;
+import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip;
+import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository;
+import com.iamkatrechko.clipboardmanager.util.ClipUtils;
 import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
 
-import static com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.ClipCursor;
+import static com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.ClipCursor;
 
 /**
  * Сервис для прослушки буфера обмена
@@ -38,10 +37,8 @@ public class ClipboardService extends Service {
     private static final int NOTIFICATION_ID = 98431;
     /** Менеджер буфера обмена */
     private ClipboardManager clipBoard;
-
-    /** Конструктор по умолчанию */
-    public ClipboardService() {
-    }
+    /** Репозиторий с записями в базе данных */
+    private ClipboardRepository repository;
 
     /**
      * Запускает сервис
@@ -53,7 +50,8 @@ public class ClipboardService extends Service {
 
     @Override
     public void onCreate() {
-        Log.i(TAG, "onCreate");
+        Log.d(TAG, "onCreate");
+        repository = ClipboardRepository.Companion.getInstance();
         clipBoard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         clipBoard.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
             @Override
@@ -62,22 +60,27 @@ public class ClipboardService extends Service {
                 String clipText = ClipUtils.getClipboardText(ClipboardService.this);
                 String clipDescription = ClipUtils.getClipboardLabel(ClipboardService.this);
 
+                Context context = getApplicationContext();
                 if (clipDescription.equals(ClipUtils.CLIP_LABEL) || clipDescription.equals(ClipUtils.CLIP_LABEL_ACCESSIBILITY)) {
-                    Toast.makeText(ClipboardService.this, "Отмена: копирование из приложения", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "Отмена: копирование из приложения");
+                    Toast.makeText(context, "Отмена: копирование из приложения", Toast.LENGTH_SHORT).show();
                 } else {
                     if (clipText.length() == 0) {
-                        Toast.makeText(ClipboardService.this, "Пустая запись", Toast.LENGTH_SHORT).show();
-                        ClipboardService.startMyService(ClipboardService.this);//Для обновления уведомления
+                        Toast.makeText(context, R.string.empty_record, Toast.LENGTH_SHORT).show();
+                        // Обновляем уведомление
+                        ClipboardService.startMyService(context);
                         return;
                     }
-                    if (recordAlreadyExists(clipText)) {
-                        Toast.makeText(ClipboardService.this, "Запись уже существует (в базе)", Toast.LENGTH_SHORT).show();
-                        ClipboardService.startMyService(ClipboardService.this);//Для обновления уведомления
+                    if (repository.alreadyExists(context, clipText)) {
+                        Toast.makeText(context, R.string.record_already_exists, Toast.LENGTH_SHORT).show();
+                        // Обновляем уведомление
+                        ClipboardService.startMyService(context);
                         return;
                     }
                     addNewClip(clipText);
                 }
-                ClipboardService.startMyService(ClipboardService.this);
+                // Обновляем уведомление
+                ClipboardService.startMyService(context);
             }
         });
     }
@@ -120,37 +123,13 @@ public class ClipboardService extends Service {
     }
 
     /**
-     * Проверка существования данной записи в базе данных
-     * @param clipText Текст проверяемой записи
-     * @return true - существует, false - не существует
-     */
-    private boolean recordAlreadyExists(String clipText) {
-        Cursor cursor = getContentResolver().query(Clip.CONTENT_URI,
-                null,
-                Clip.COLUMN_CONTENT + " = ?",
-                new String[]{clipText},
-                null);
-        return cursor != null && (cursor.getCount() != 0);
-    }
-
-    /**
      * Добавление новой записи в базу данных
-     * @param content Содержимое записи
+     * @param text текст записи
      */
-    private void addNewClip(String content) {
-        int titleLength = 25;
-
-        ContentValues contentValues = Clip.getDefaultContentValues();
-        if (content.length() < titleLength) {
-            titleLength = content.length();
-        }
-        contentValues.put(Clip.COLUMN_TITLE, content.substring(0, titleLength));
-        contentValues.put(Clip.COLUMN_CONTENT, content);
-
-        Uri newClipUri = getContentResolver().insert(Clip.CONTENT_URI, contentValues);
-
+    private void addNewClip(String text) {
+        Uri newClipUri = repository.addNewClip(this, text);
         if (newClipUri != null) {
-            startActivity(FloatingCancelViewService.newIntent(this, newClipUri.getLastPathSegment()));
+            startService(CancelViewService.newIntent(this, newClipUri.getLastPathSegment()));
         }
     }
 
@@ -190,15 +169,14 @@ public class ClipboardService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+        throw new UnsupportedOperationException("Не реализовано");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        clipBoard.removePrimaryClipChangedListener(null);
         Log.i(TAG, "onDestroy");
+        clipBoard.removePrimaryClipChangedListener(null);
     }
 
     @Override

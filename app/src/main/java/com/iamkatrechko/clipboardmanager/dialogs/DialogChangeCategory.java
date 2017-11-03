@@ -9,8 +9,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 
-import com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.CategoryCursor;
-import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
+import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.CategoryCursor;
+import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
 
 /**
  * Диалог смены категории для заметки

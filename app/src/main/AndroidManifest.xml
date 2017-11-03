@@ -41,11 +41,11 @@
         </service>
         <service android:name=".services.FloatingViewService">
         </service>
-        <service android:name=".services.FloatingCancelViewService">
+        <service android:name=".services.CancelViewService">
         </service>
 
         <provider
-            android:name=".data.ClipboardContentProvider"
+            android:name=".data.database.ClipboardContentProvider"
             android:authorities="com.iamkatrechko.clipboardmanager.data"
             />
 
@@ -88,6 +88,9 @@
             android:name=".widget.WidgetService"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS"
+            />
+        <service
+            android:name=".services.CancelViewService"
             />
 
         <receiver android:name=".widget.ClipboardWidget">

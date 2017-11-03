@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
 import com.iamkatrechko.clipboardmanager.services.ClipboardService;
-import com.iamkatrechko.clipboardmanager.services.FloatingCancelViewService;
+import com.iamkatrechko.clipboardmanager.services.CancelViewService;
 import com.iamkatrechko.clipboardmanager.services.FloatingViewService;
 import com.iamkatrechko.clipboardmanager.services.HideNotificationService;
 
@@ -97,11 +97,11 @@ public class DeveloperActivity extends AppCompatActivity {
                                 Uri.parse("package:" + getPackageName()));
                         startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE);
                     }else{
-                        Intent intent = new Intent(getApplicationContext(), FloatingCancelViewService.class);
+                        Intent intent = new Intent(getApplicationContext(), CancelViewService.class);
                         startService(intent);
                     }
                 }else {
-                    Intent intent = new Intent(getApplicationContext(), FloatingCancelViewService.class);
+                    Intent intent = new Intent(getApplicationContext(), CancelViewService.class);
                     startService(intent);
                 }
             }

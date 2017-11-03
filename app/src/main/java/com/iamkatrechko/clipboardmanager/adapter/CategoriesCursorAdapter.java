@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.iamkatrechko.clipboardmanager.ItemDivider;
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.CategoryCursor;
+import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.CategoryCursor;
 
 /**
  * Адаптер списка категорий заметок

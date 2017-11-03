@@ -8,6 +8,9 @@
     <string name="invalid_delete_uri">Invalid delete Uri:</string>
     <string name="insert_failed">Insert failed: s</string>
 
+    <string name="empty_record">Пустая запись</string>
+    <string name="record_already_exists">Запись уже существует в базе</string>
+
     <string name="select_records">Выберите записи...</string>
     <string name="copy_in_app">Добавлено в менеджер буфера</string>
     <string name="select_app_to_share">Выберите приложение...</string>

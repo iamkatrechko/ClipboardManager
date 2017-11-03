@@ -32,8 +32,8 @@ import com.iamkatrechko.clipboardmanager.util.ClipUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.*;
-import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.*;
+import static com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.*;
+import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.*;
 
 /**
  * Плавающий виджет со списком заметок

@@ -19,7 +19,7 @@ import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.activity.ClipEditActivity;
 import com.iamkatrechko.clipboardmanager.adapter.ClipsCursorAdapter;
 
-import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.Clip;
+import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip;
 
 /**
  * Фрагмент экрана поиска заметок

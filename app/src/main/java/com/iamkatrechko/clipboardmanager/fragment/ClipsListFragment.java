@@ -26,7 +26,7 @@ import com.iamkatrechko.clipboardmanager.activity.SearchActivity;
 import com.iamkatrechko.clipboardmanager.adapter.ClipsCursorAdapter;
 import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
 
-import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.Clip;
+import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip;
 
 /**
  * Основной фрагмент экрана со списком заметок

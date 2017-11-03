@@ -29,14 +29,14 @@ import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.DialogManager;
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.data.DatabaseDescription;
+import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
 import com.iamkatrechko.clipboardmanager.util.ClipUtils;
 import com.iamkatrechko.clipboardmanager.util.Util;
 import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
 
-import static com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.CategoryCursor;
-import static com.iamkatrechko.clipboardmanager.data.ClipboardDatabaseHelper.ClipCursor;
-import static com.iamkatrechko.clipboardmanager.data.DatabaseDescription.Clip;
+import static com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.CategoryCursor;
+import static com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.ClipCursor;
+import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip;
 
 /**
  * Фрагмент экрана редактирования заметки
