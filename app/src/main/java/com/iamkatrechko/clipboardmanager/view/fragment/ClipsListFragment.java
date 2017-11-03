@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.fragment;
+package com.iamkatrechko.clipboardmanager.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,12 +18,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.iamkatrechko.clipboardmanager.DialogManager;
+import com.iamkatrechko.clipboardmanager.view.DialogManager;
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.activity.ClipEditActivity;
-import com.iamkatrechko.clipboardmanager.activity.DeveloperActivity;
-import com.iamkatrechko.clipboardmanager.activity.SearchActivity;
-import com.iamkatrechko.clipboardmanager.adapter.ClipsCursorAdapter;
+import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity;
+import com.iamkatrechko.clipboardmanager.view.activity.DeveloperActivity;
+import com.iamkatrechko.clipboardmanager.view.activity.SearchActivity;
+import com.iamkatrechko.clipboardmanager.view.adapter.ClipsCursorAdapter;
 import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
 
 import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip;

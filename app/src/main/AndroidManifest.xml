@@ -19,7 +19,7 @@
         android:theme="@style/AppTheme"
         >
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".view.activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
             >
@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.ClipEditActivity"
+            android:name=".view.activity.ClipEditActivity"
             android:theme="@style/AppTheme.NoActionBar"
             >
         </activity>
@@ -49,22 +49,22 @@
             android:authorities="com.iamkatrechko.clipboardmanager.data"
             />
 
-        <activity android:name=".activity.DeveloperActivity">
+        <activity android:name=".view.activity.DeveloperActivity">
         </activity>
         <activity
-            android:name=".activity.EditCategoriesActivity"
+            android:name=".view.activity.EditCategoriesActivity"
             android:label="@string/title_activity_edit_categories"
             android:theme="@style/AppTheme.NoActionBar"
             >
         </activity>
         <activity
-            android:name=".activity.SearchActivity"
+            android:name=".view.activity.SearchActivity"
             android:label="@string/title_activity_search"
             android:theme="@style/AppTheme.NoActionBar"
             >
         </activity>
         <activity
-            android:name=".activity.SettingsActivity"
+            android:name=".view.activity.SettingsActivity"
             android:label="@string/title_activity_settings"
             >
         </activity>

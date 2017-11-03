@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager;
+package com.iamkatrechko.clipboardmanager.view;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -8,14 +8,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 
-import com.iamkatrechko.clipboardmanager.dialogs.DialogCategoryDelete;
-import com.iamkatrechko.clipboardmanager.dialogs.DialogCategoryEdit;
-import com.iamkatrechko.clipboardmanager.dialogs.DialogChangeCategory;
-import com.iamkatrechko.clipboardmanager.dialogs.DialogDeleteConfirm;
-import com.iamkatrechko.clipboardmanager.dialogs.DialogEnableAccessibility;
-import com.iamkatrechko.clipboardmanager.dialogs.DialogSaveClip;
-import com.iamkatrechko.clipboardmanager.dialogs.DialogSetOrderType;
-import com.iamkatrechko.clipboardmanager.dialogs.DialogSplitClips;
+import com.iamkatrechko.clipboardmanager.view.dialogs.DialogCategoryDelete;
+import com.iamkatrechko.clipboardmanager.view.dialogs.DialogCategoryEdit;
+import com.iamkatrechko.clipboardmanager.view.dialogs.DialogChangeCategory;
+import com.iamkatrechko.clipboardmanager.view.dialogs.DialogDeleteConfirm;
+import com.iamkatrechko.clipboardmanager.view.dialogs.DialogSaveClip;
+import com.iamkatrechko.clipboardmanager.view.dialogs.DialogSetOrderType;
+import com.iamkatrechko.clipboardmanager.view.dialogs.DialogSplitClips;
 
 /**
  * Менеджер диалогов

@@ -3,7 +3,7 @@ package com.iamkatrechko.clipboardmanager.util;
 import android.content.Context;
 import android.preference.PreferenceManager;
 
-import com.iamkatrechko.clipboardmanager.activity.SettingsActivity;
+import com.iamkatrechko.clipboardmanager.view.activity.SettingsActivity;
 
 /**
  * Утилиты по работы с SharedPreferences
@@ -112,8 +112,12 @@ public class UtilPreferences {
                 .apply();
     }
 
-
-    public static boolean getEnableService(Context context) {
+    /**
+     * Включен ли сервис из настроек
+     * @param context контекст
+     * @return флаг включенного сервиса
+     */
+    public static boolean isEnabledService(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(SettingsActivity.PREF_ENABLE_SERVICE, true);
     }

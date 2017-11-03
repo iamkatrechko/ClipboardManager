@@ -54,6 +54,7 @@ public class ClipboardService extends Service {
                     return;
                 }
                 if (repository.alreadyExists(context, clipText)) {
+                    //TODO Сделать настройку "Если уже существует: ничего не делать || изменить дату на новую
                     Toast.makeText(context, R.string.record_already_exists, Toast.LENGTH_SHORT).show();
                     // Обновляем уведомление
                     ClipboardService.startMyService(context);
@@ -100,7 +101,6 @@ public class ClipboardService extends Service {
                 if (text != null) {
                     ClipUtils.copyToClipboard(this, text);
                 }
-                //TODO Сделать настройку "Если уже существует: ничего не делать || изменить дату на новую
                 startMyService(this);
             }
             return Service.START_NOT_STICKY;

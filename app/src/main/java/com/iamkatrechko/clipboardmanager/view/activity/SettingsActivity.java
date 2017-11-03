@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.activity;
+package com.iamkatrechko.clipboardmanager.view.activity;
 
 
 import android.annotation.TargetApi;
@@ -17,7 +17,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.iamkatrechko.clipboardmanager.DialogManager;
+import com.iamkatrechko.clipboardmanager.view.DialogManager;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.util.Util;
 import com.iamkatrechko.clipboardmanager.services.ClipboardService;

@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.activity;
+package com.iamkatrechko.clipboardmanager.view.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.fragment.SearchFragment;
+import com.iamkatrechko.clipboardmanager.view.fragment.SearchFragment;
 
 /**
  * Активность поиска заметок

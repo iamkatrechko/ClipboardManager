@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.activity;
+package com.iamkatrechko.clipboardmanager.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.fragment.CategoriesListFragment;
+import com.iamkatrechko.clipboardmanager.view.fragment.CategoriesListFragment;
 
 /**
  * Активность редактирования категории

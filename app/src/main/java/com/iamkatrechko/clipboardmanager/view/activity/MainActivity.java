@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.activity;
+package com.iamkatrechko.clipboardmanager.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -26,9 +26,7 @@ import android.widget.Toast;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.CategoryCursor;
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
-import com.iamkatrechko.clipboardmanager.fragment.ClipsListFragment;
-import com.iamkatrechko.clipboardmanager.services.ClipboardService;
-import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
+import com.iamkatrechko.clipboardmanager.view.fragment.ClipsListFragment;
 
 import java.util.ArrayList;
 

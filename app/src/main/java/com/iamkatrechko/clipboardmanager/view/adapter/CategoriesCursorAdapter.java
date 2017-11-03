@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.adapter;
+package com.iamkatrechko.clipboardmanager.view.adapter;
 
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.iamkatrechko.clipboardmanager.ItemDivider;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.CategoryCursor;
 

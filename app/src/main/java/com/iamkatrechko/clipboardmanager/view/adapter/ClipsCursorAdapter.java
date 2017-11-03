@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.adapter;
+package com.iamkatrechko.clipboardmanager.view.adapter;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.bignerdranch.android.multiselector.MultiSelector;
 import com.bignerdranch.android.multiselector.SwappingHolder;
-import com.iamkatrechko.clipboardmanager.ItemDivider;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.ClipCursor;
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;

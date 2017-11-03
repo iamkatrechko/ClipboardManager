@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.fragment;
+package com.iamkatrechko.clipboardmanager.view.fragment;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -27,7 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.iamkatrechko.clipboardmanager.DialogManager;
+import com.iamkatrechko.clipboardmanager.view.DialogManager;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
 import com.iamkatrechko.clipboardmanager.util.ClipUtils;

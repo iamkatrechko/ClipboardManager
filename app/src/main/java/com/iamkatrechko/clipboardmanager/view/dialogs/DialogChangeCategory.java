@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.dialogs;
+package com.iamkatrechko.clipboardmanager.view.dialogs;
 
 import android.app.Activity;
 import android.app.AlertDialog;

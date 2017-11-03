@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.fragment;
+package com.iamkatrechko.clipboardmanager.view.fragment;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -16,8 +16,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.activity.ClipEditActivity;
-import com.iamkatrechko.clipboardmanager.adapter.ClipsCursorAdapter;
+import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity;
+import com.iamkatrechko.clipboardmanager.view.adapter.ClipsCursorAdapter;
 
 import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip;
 
