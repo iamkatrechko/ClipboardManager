@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if (fragmentManager.getFragments() == null) {
+        if (fragmentManager.getFragments().isEmpty()) {
             fragmentManager.beginTransaction()
                     .replace(R.id.container, ClipsListFragment.newInstance())
                     .commit();
