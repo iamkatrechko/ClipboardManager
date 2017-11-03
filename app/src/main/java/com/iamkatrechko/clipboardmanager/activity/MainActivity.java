@@ -56,8 +56,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainmain);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (fragmentManager.getFragments() == null) {
@@ -76,9 +75,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         initNavigationView();
 
-        if (UtilPreferences.getEnableService(this)) {
-            ClipboardService.startMyService(this);
-        }
 
         getSupportLoaderManager().initLoader(CATEGORIES_LOADER, null, this);
     }

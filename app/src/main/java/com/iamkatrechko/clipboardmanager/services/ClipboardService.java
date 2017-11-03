@@ -1,25 +1,19 @@
 package com.iamkatrechko.clipboardmanager.services;
 
-import android.app.Notification;
 import android.app.Service;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.NotificationManager;
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.RemoteViewCreator;
-import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip;
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository;
 import com.iamkatrechko.clipboardmanager.util.ClipUtils;
 import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
-
-import static com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.ClipCursor;
 
 /**
  * Сервис для прослушки буфера обмена
@@ -40,6 +34,37 @@ public class ClipboardService extends Service {
     private ClipboardManager clipBoard;
     /** Репозиторий с записями в базе данных */
     private ClipboardRepository repository;
+    /** Слушатель новых записей в буфере обмена */
+    private ClipboardManager.OnPrimaryClipChangedListener clipListener = new ClipboardManager.OnPrimaryClipChangedListener() {
+        @Override
+        public void onPrimaryClipChanged() {
+            Log.d(TAG, "Отловлена новая запись в буфере обмена");
+            String clipText = ClipUtils.getClipboardText(ClipboardService.this);
+            String clipDescription = ClipUtils.getClipboardLabel(ClipboardService.this);
+
+            Context context = getApplicationContext();
+            if (clipDescription.equals(ClipUtils.CLIP_LABEL) || clipDescription.equals(ClipUtils.CLIP_LABEL_ACCESSIBILITY)) {
+                Log.d(TAG, "Отмена: копирование из приложения");
+                Toast.makeText(context, "Отмена: копирование из приложения", Toast.LENGTH_SHORT).show();
+            } else {
+                if (clipText.length() == 0) {
+                    Toast.makeText(context, R.string.empty_record, Toast.LENGTH_SHORT).show();
+                    // Обновляем уведомление
+                    ClipboardService.startMyService(context);
+                    return;
+                }
+                if (repository.alreadyExists(context, clipText)) {
+                    Toast.makeText(context, R.string.record_already_exists, Toast.LENGTH_SHORT).show();
+                    // Обновляем уведомление
+                    ClipboardService.startMyService(context);
+                    return;
+                }
+                addNewClip(clipText);
+            }
+            // Обновляем уведомление
+            ClipboardService.startMyService(context);
+        }
+    };
 
     /**
      * Запускает сервис
@@ -54,36 +79,8 @@ public class ClipboardService extends Service {
         Log.d(TAG, "onCreate");
         repository = ClipboardRepository.Companion.getInstance();
         clipBoard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        clipBoard.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
-            @Override
-            public void onPrimaryClipChanged() {
-                Log.d(TAG, "Отловлена новая запись в буфере обмена");
-                String clipText = ClipUtils.getClipboardText(ClipboardService.this);
-                String clipDescription = ClipUtils.getClipboardLabel(ClipboardService.this);
-
-                Context context = getApplicationContext();
-                if (clipDescription.equals(ClipUtils.CLIP_LABEL) || clipDescription.equals(ClipUtils.CLIP_LABEL_ACCESSIBILITY)) {
-                    Log.d(TAG, "Отмена: копирование из приложения");
-                    Toast.makeText(context, "Отмена: копирование из приложения", Toast.LENGTH_SHORT).show();
-                } else {
-                    if (clipText.length() == 0) {
-                        Toast.makeText(context, R.string.empty_record, Toast.LENGTH_SHORT).show();
-                        // Обновляем уведомление
-                        ClipboardService.startMyService(context);
-                        return;
-                    }
-                    if (repository.alreadyExists(context, clipText)) {
-                        Toast.makeText(context, R.string.record_already_exists, Toast.LENGTH_SHORT).show();
-                        // Обновляем уведомление
-                        ClipboardService.startMyService(context);
-                        return;
-                    }
-                    addNewClip(clipText);
-                }
-                // Обновляем уведомление
-                ClipboardService.startMyService(context);
-            }
-        });
+        clipBoard.addPrimaryClipChangedListener(clipListener);
+        // TODO Отображать уведомление при запуске
     }
 
     @Override
@@ -99,10 +96,9 @@ public class ClipboardService extends Service {
             }
             if (action.equals(ACTION_COPY_TO_CLIPBOARD)) {
                 long id = intent.getLongExtra("id", -1);
-                Uri uri = Clip.buildClipUri(id);
-                ClipCursor cursor = new ClipCursor(getContentResolver().query(uri, null, null, null, null));
-                if (cursor.moveToFirst()) {
-                    ClipUtils.copyToClipboard(this, cursor.getContent());
+                String text = repository.getClip(this, id);
+                if (text != null) {
+                    ClipUtils.copyToClipboard(this, text);
                 }
                 //TODO Сделать настройку "Если уже существует: ничего не делать || изменить дату на новую
                 startMyService(this);
@@ -127,7 +123,7 @@ public class ClipboardService extends Service {
      * @param text текст записи
      */
     private void addNewClip(String text) {
-        Uri newClipUri = repository.addNewClip(this, text);
+        Uri newClipUri = repository.addClip(this, text);
         if (newClipUri != null) {
             startService(CancelViewService.newIntent(this, newClipUri.getLastPathSegment()));
         }
@@ -142,7 +138,7 @@ public class ClipboardService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.i(TAG, "onDestroy");
-        clipBoard.removePrimaryClipChangedListener(null);
+        clipBoard.removePrimaryClipChangedListener(clipListener);
     }
 
     @Override

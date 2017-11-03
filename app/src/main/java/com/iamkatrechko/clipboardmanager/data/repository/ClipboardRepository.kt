@@ -2,6 +2,7 @@ package com.iamkatrechko.clipboardmanager.data.repository
 
 import android.content.Context
 import android.net.Uri
+import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
 
 /**
@@ -34,7 +35,7 @@ class ClipboardRepository {
      * @param [text]    текст записи
      * @return uri новой записи, если она успешно добавлена
      */
-    fun addNewClip(context: Context, text: String): Uri? {
+    fun addClip(context: Context, text: String): Uri? {
         var titleLength = 25
 
         val contentValues = DatabaseDescription.Clip.getDefaultContentValues()
@@ -44,9 +45,7 @@ class ClipboardRepository {
         contentValues.put(DatabaseDescription.Clip.COLUMN_TITLE, text.substring(0, titleLength))
         contentValues.put(DatabaseDescription.Clip.COLUMN_CONTENT, text)
 
-        val newClipUri = context.contentResolver.insert(DatabaseDescription.Clip.CONTENT_URI, contentValues)
-
-        return newClipUri
+        return context.contentResolver.insert(DatabaseDescription.Clip.CONTENT_URI, contentValues)
     }
 
     /**
@@ -62,5 +61,26 @@ class ClipboardRepository {
                 arrayOf(text),
                 null)
         return cursor != null && cursor.count != 0
+    }
+
+    /**
+     * Возвращает запись из базы данных
+     * @param [context] контекст
+     * @param [id]      идентификатор записи
+     * @return запись из базы данных
+     */
+    fun getClip(context: Context, id: Long): String? {
+        val uri = DatabaseDescription.Clip.buildClipUri(id)
+        val cursor = ClipboardDatabaseHelper.ClipCursor(
+                context.contentResolver.query(uri,
+                        null,
+                        null,
+                        null,
+                        null)
+        )
+        if (cursor.moveToFirst()) {
+            return cursor.content
+        }
+        return null
     }
 }

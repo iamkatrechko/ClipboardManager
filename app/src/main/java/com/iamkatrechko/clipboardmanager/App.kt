@@ -2,6 +2,8 @@ package com.iamkatrechko.clipboardmanager
 
 import android.app.Application
 import android.util.Log
+import com.iamkatrechko.clipboardmanager.services.ClipboardService
+import com.iamkatrechko.clipboardmanager.util.UtilPreferences
 
 /**
  * Класс Application
@@ -13,5 +15,9 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         Log.d("App", "CreateAppInstance")
+
+        if (UtilPreferences.isEnabledService(this)) {
+            ClipboardService.startMyService(this)
+        }
     }
 }
