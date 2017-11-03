@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:id="@+id/linearCancel">
+            android:id="@+id/linear_cancel">
 
             <TextView
                 android:text="Отмена"

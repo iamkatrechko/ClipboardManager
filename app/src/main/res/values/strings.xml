@@ -10,6 +10,7 @@
 
     <string name="empty_record">Пустая запись</string>
     <string name="record_already_exists">Запись уже существует в базе</string>
+    <string name="deleted">Удалено: </string>
 
     <string name="select_records">Выберите записи...</string>
     <string name="copy_in_app">Добавлено в менеджер буфера</string>
