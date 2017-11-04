@@ -1,7 +1,6 @@
 package com.iamkatrechko.clipboardmanager.view.activity
 
 import android.content.Intent
-import android.database.Cursor
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
@@ -10,7 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.widget.ExpandableListView
 import com.iamkatrechko.clipboardmanager.R
-import com.iamkatrechko.clipboardmanager.data.database.wrapper.CategoryCursor
+import com.iamkatrechko.clipboardmanager.data.model.Category
 import com.iamkatrechko.clipboardmanager.view.adapter.NavigationMenuAdapter
 import com.iamkatrechko.clipboardmanager.view.adapter.navigation.NavGroups
 import com.iamkatrechko.clipboardmanager.view.fragment.ClipsListFragment
@@ -30,8 +29,8 @@ class MainActivity : AppCompatActivity() {
 
     /** Адаптер бокового меню  */
     private var adapter = NavigationMenuAdapter()
-    /** Курсор со списком категорий  */
-    private var cursor: CategoryCursor? = null
+    /** Список категорий  */
+    private val categories = ArrayList<Category>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,13 +54,10 @@ class MainActivity : AppCompatActivity() {
         initNavigationView()
 
         supportLoaderManager.initLoader(CATEGORIES_LOADER, null, CategoriesLoader(this, object : CategoriesLoader.OnDataPreparedListener {
-            override fun onPrepared(data: Cursor) {
-                cursor = CategoryCursor(data)
-                for (i in 0 until data.count) {
-                    cursor!!.moveToPosition(i)
-                }
-                adapter.setOfChildren(cursor!!)
-                adapter.notifyDataSetChanged()
+            override fun onPrepared(data: List<Category>) {
+                categories.clear()
+                categories.addAll(data)
+                adapter.setOfChildren(data)
             }
         }))
     }
@@ -103,13 +99,12 @@ class MainActivity : AppCompatActivity() {
             expandableListView.setItemChecked(index, true)
             when (group) {
                 NavGroups.CATEGORIES -> {
-                    if (childPos > cursor!!.count - 1) {
+                    if (childPos > categories.size - 1) {
                         // Если нажата кнопка настроек групп
                         startActivity(Intent(applicationContext, EditCategoriesActivity::class.java))
                         return@OnChildClickListener true
                     }
-                    cursor!!.moveToPosition(childPos)
-                    showByCategory(cursor!!.id)
+                    showByCategory(categories[childPos].id)
                     return@OnChildClickListener true
                 }
             }

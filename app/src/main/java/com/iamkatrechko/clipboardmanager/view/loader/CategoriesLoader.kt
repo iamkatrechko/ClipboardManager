@@ -8,6 +8,9 @@ import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
 import android.util.Log
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
+import com.iamkatrechko.clipboardmanager.data.database.wrapper.CategoryCursor
+import com.iamkatrechko.clipboardmanager.data.mapper.CursorToCategoryMapper
+import com.iamkatrechko.clipboardmanager.data.model.Category
 import com.iamkatrechko.clipboardmanager.view.activity.MainActivity
 
 /**
@@ -44,7 +47,7 @@ class CategoriesLoader(
     }
 
     override fun onLoadFinished(loader: Loader<Cursor>?, data: Cursor) {
-        listener.onPrepared(data)
+        listener.onPrepared(CursorToCategoryMapper().toCategories(CategoryCursor(data)))
     }
 
     override fun onLoaderReset(loader: Loader<Cursor>?) {
@@ -57,6 +60,6 @@ class CategoriesLoader(
          * Данные готовы к использованию
          * @param [data] список категорий
          */
-        fun onPrepared(data: Cursor)
+        fun onPrepared(data: List<Category>)
     }
 }

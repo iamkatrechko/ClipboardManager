@@ -7,7 +7,7 @@ import android.widget.BaseExpandableListAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.iamkatrechko.clipboardmanager.R
-import com.iamkatrechko.clipboardmanager.data.database.wrapper.CategoryCursor
+import com.iamkatrechko.clipboardmanager.data.model.Category
 import com.iamkatrechko.clipboardmanager.view.adapter.navigation.NavGroups
 
 /**
@@ -18,7 +18,7 @@ import com.iamkatrechko.clipboardmanager.view.adapter.navigation.NavGroups
 class NavigationMenuAdapter : BaseExpandableListAdapter() {
 
     /** Список категорий */
-    private var categories: CategoryCursor? = null
+    private var categories = ArrayList<Category>()
 
     override fun getGroupCount(): Int {
         return NavGroups.values().size
@@ -26,7 +26,7 @@ class NavigationMenuAdapter : BaseExpandableListAdapter() {
 
     override fun getChildrenCount(groupPos: Int): Int {
         return if (getGroup(groupPos) == NavGroups.CATEGORIES) {
-            (categories?.count ?: 0) + 1
+            categories.size + 1
         } else {
             0
         }
@@ -81,7 +81,7 @@ class NavigationMenuAdapter : BaseExpandableListAdapter() {
         return view
     }
 
-    override fun getChildView(groupPosition: Int, childPosition: Int, isLastChild: Boolean, convertView: View?, parent: ViewGroup): View {
+    override fun getChildView(groupPosition: Int, childPos: Int, isLastChild: Boolean, convertView: View?, parent: ViewGroup): View {
         val context = parent.context
         var view = convertView
         if (view == null) {
@@ -97,11 +97,9 @@ class NavigationMenuAdapter : BaseExpandableListAdapter() {
             return view
         }
 
-        categories?.let {
-            it.moveToPosition(childPosition)
-            imageView.setImageResource(R.drawable.ic_label)
-            textChild.text = it.title
-        }
+        val category = categories[childPos]
+        imageView.setImageResource(R.drawable.ic_label)
+        textChild.text = category.title
 
         return view
     }
@@ -110,7 +108,13 @@ class NavigationMenuAdapter : BaseExpandableListAdapter() {
         return true
     }
 
-    fun setOfChildren(categoryCursor: CategoryCursor) {
-        categories = categoryCursor
+    /**
+     * Устанавливает список категорий
+     * @param [list] список категорий
+     */
+    fun setOfChildren(list: List<Category>) {
+        categories.clear()
+        categories.addAll(list)
+        notifyDataSetChanged()
     }
 }
