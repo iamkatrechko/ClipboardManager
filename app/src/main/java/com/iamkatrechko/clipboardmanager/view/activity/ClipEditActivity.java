@@ -46,7 +46,7 @@ public class ClipEditActivity extends AppCompatActivity {
 
         Uri uri = getIntent().getParcelableExtra(KEY_URI);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if (fragmentManager.getFragments() == null) {
+        if (fragmentManager.getFragments().isEmpty()) {
             fragmentManager.beginTransaction()
                     .replace(R.id.container, ClipEditFragment.newInstance(uri))
                     .commit();
