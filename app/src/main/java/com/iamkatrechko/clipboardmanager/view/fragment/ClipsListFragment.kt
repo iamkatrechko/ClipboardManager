@@ -50,8 +50,8 @@ class ClipsListFragment : Fragment() {
 
         override fun onSelectedChange(isSelectedMode: Boolean, selectedCount: Int) {
             isContextMenu = isSelectedMode
-            activity.invalidateOptionsMenu()
             this@ClipsListFragment.selectedCount = selectedCount
+            activity.invalidateOptionsMenu()
         }
     }
     /** Адаптер списка заметок  */
@@ -153,7 +153,7 @@ class ClipsListFragment : Fragment() {
         if (selectedCount == 0) {
             activity.setTitle(R.string.app_name)
         } else {
-            activity.title = "" + selectedCount
+            activity.title = getString(R.string.selected_count, selectedCount.toString())
             menu!!.findItem(R.id.action_split).isVisible = selectedCount > 1
         }
 
@@ -162,9 +162,8 @@ class ClipsListFragment : Fragment() {
         changeToolbarItemIcon(itemStar, showOnlyFavorite)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        val id = item!!.itemId
-        when (id) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
         // Окно поиска
             R.id.action_search -> activity.startActivity(Intent(activity, SearchActivity::class.java))
         // Настройка сортировки
@@ -199,10 +198,10 @@ class ClipsListFragment : Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (data == null) {
+        if (resultCode != Activity.RESULT_OK || data == null) {
             return
         }
-        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_SPLIT_CLIPS) {
+        if (requestCode == DialogManager.DIALOG_SPLIT_CLIPS) {
             val splitChar = data.getStringExtra("splitChar")
             if (clipsAdapter.getSelectedIds().isNotEmpty()) {
                 val deleteOldClips = data.getBooleanExtra("deleteOldClips", false)
@@ -213,18 +212,18 @@ class ClipsListFragment : Fragment() {
                 Toast.makeText(context, R.string.select_cancel, Toast.LENGTH_SHORT).show()
             }
         }
-        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_CHANGE_CATEGORY) {
+        if (requestCode == DialogManager.DIALOG_CHANGE_CATEGORY) {
             val categoryId = data.getLongExtra("categoryId", 0)
             ClipsHelper.changeCategory(context, clipsAdapter.getSelectedIds(), categoryId)
         }
-        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_DELETE_CONFIRM) {
+        if (requestCode == DialogManager.DIALOG_DELETE_CONFIRM) {
             val delete = data.getBooleanExtra("delete", false)
             if (delete) {
                 repository.deleteClips(context, clipsAdapter.getSelectedIds())
                 clipsAdapter.resetSelectMode()
             }
         }
-        if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_SET_ORDER_TYPE) {
+        if (requestCode == DialogManager.DIALOG_SET_ORDER_TYPE) {
             val pos = data.getIntExtra("orderType", 0)
             UtilPreferences.setOrderType(activity, OrderType.values()[pos])
             showClipsByCategoryId(currentCategoryId)
