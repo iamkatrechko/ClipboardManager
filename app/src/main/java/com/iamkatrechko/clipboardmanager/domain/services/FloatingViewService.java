@@ -28,7 +28,7 @@ import android.widget.Toast;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor;
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils;
-import com.iamkatrechko.clipboardmanager.view.adapter.ClipsCursorAdapter;
+import com.iamkatrechko.clipboardmanager.view.adapter.ClipsAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ public class FloatingViewService extends Service {
     private Spinner spinner;
 
     /** Адаптер списка записей */
-    private ClipsCursorAdapter cursorAdapter;
+    private ClipsAdapter cursorAdapter;
 
     /** Адаптер выпадающего списка */
     private ArrayAdapter<CharSequence> spinnerAdapter;
@@ -91,7 +91,7 @@ public class FloatingViewService extends Service {
         recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
         // Улучшает быстродействие, если размер макета RecyclerView не изменяется
         recyclerView.setHasFixedSize(true);
-        cursorAdapter = new ClipsCursorAdapter(new ClipsCursorAdapter.ClipClickListener() {
+        cursorAdapter = new ClipsAdapter(new ClipsAdapter.ClipClickListener() {
             @Override
             public void onClick(long clipId) {
                 ClipCursor c = new ClipCursor(cr.query(Clip.buildClipUri(clipId), null, null, null, null));

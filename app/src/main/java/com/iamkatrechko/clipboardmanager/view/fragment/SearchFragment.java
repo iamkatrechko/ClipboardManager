@@ -17,7 +17,7 @@ import android.widget.ImageButton;
 
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity;
-import com.iamkatrechko.clipboardmanager.view.adapter.ClipsCursorAdapter;
+import com.iamkatrechko.clipboardmanager.view.adapter.ClipsAdapter;
 
 import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip;
 
@@ -32,7 +32,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
     private static final int SEARCH_CLIPS_LOADER = 1;
 
     /** Адаптер списка заметок */
-    private ClipsCursorAdapter clipsCursorAdapter;
+    private ClipsAdapter clipsAdapter;
     /** Виджет списка заметок */
     private RecyclerView recyclerView;
 
@@ -60,7 +60,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
         recyclerView.setHasFixedSize(true);
 
-        clipsCursorAdapter = new ClipsCursorAdapter(new ClipsCursorAdapter.ClipClickListener() {
+        clipsAdapter = new ClipsAdapter(new ClipsAdapter.ClipClickListener() {
 
             @Override
             public void onClick(long clipId) {
@@ -73,8 +73,8 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
             public void onSelectedChange(boolean isSelectedMode, int selectedCount) {
             }
         });
-        clipsCursorAdapter.setEmptyView(v.findViewById(R.id.linearEmpty));
-        recyclerView.setAdapter(clipsCursorAdapter);
+        clipsAdapter.setEmptyView(v.findViewById(R.id.linearEmpty));
+        recyclerView.setAdapter(clipsAdapter);
 
         ibSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,7 +116,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        clipsCursorAdapter.setCursor(data);
+        clipsAdapter.setCursor(data);
     }
 
     @Override

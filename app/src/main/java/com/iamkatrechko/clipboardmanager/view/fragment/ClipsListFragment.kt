@@ -20,7 +20,7 @@ import com.iamkatrechko.clipboardmanager.view.DialogManager
 import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity
 import com.iamkatrechko.clipboardmanager.view.activity.DeveloperActivity
 import com.iamkatrechko.clipboardmanager.view.activity.SearchActivity
-import com.iamkatrechko.clipboardmanager.view.adapter.ClipsCursorAdapter
+import com.iamkatrechko.clipboardmanager.view.adapter.ClipsAdapter
 import com.iamkatrechko.clipboardmanager.view.loader.ClipsLoader
 
 /**
@@ -42,7 +42,7 @@ class ClipsListFragment : Fragment() {
     /** Репозиторий для работы с базой записей  */
     private var repository = ClipboardRepository()
     /** Слушатель для адаптера списка */
-    private var listener = object : ClipsCursorAdapter.ClipClickListener {
+    private var listener = object : ClipsAdapter.ClipClickListener {
 
         override fun onClick(clipId: Long) {
             startActivity(ClipEditActivity.newIntent(activity, Clip.buildClipUri(clipId)))
@@ -55,7 +55,7 @@ class ClipsListFragment : Fragment() {
         }
     }
     /** Адаптер списка заметок  */
-    private var clipsCursorAdapter: ClipsCursorAdapter = ClipsCursorAdapter(listener)
+    private var clipsAdapter: ClipsAdapter = ClipsAdapter(listener)
 
     companion object {
 
@@ -89,11 +89,11 @@ class ClipsListFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
         recyclerView = view.findViewById(R.id.recyclerView) as RecyclerView
-        clipsCursorAdapter.setEmptyView(view.findViewById(R.id.linearEmpty))
+        clipsAdapter.setEmptyView(view.findViewById(R.id.linearEmpty))
 
         recyclerView.layoutManager = LinearLayoutManager(activity.baseContext)
         recyclerView.setHasFixedSize(true)
-        recyclerView.adapter = clipsCursorAdapter
+        recyclerView.adapter = clipsAdapter
 
         showClipsByCategoryId(currentCategoryId)
         return view
@@ -106,13 +106,13 @@ class ClipsListFragment : Fragment() {
     fun showClipsByCategoryId(categoryId: Long) {
         currentCategoryId = categoryId
         val bundle = Bundle()
-        clipsCursorAdapter.resetSelectMode()
+        clipsAdapter.resetSelectMode()
         bundle.putLong(ClipsLoader.KEY_LOADER_CATEGORY_ID, categoryId)
         bundle.putBoolean(ClipsLoader.KEY_LOADER_ONLY_FAVORITE, UtilPreferences.isShowOnlyFavorite(context))
         bundle.putInt(ClipsLoader.KEY_LOADER_ORDER_TYPE, UtilPreferences.getOrderType(context).ordinal)
         loaderManager.restartLoader(CLIPS_BY_CATEGORY_LOADER, bundle, ClipsLoader(context, object : ClipsLoader.OnDataPreparedListener {
             override fun onPrepared(data: Cursor?) {
-                clipsCursorAdapter.setCursor(data)
+                clipsAdapter.setCursor(data)
             }
         }))
     }
@@ -141,7 +141,7 @@ class ClipsListFragment : Fragment() {
     /** Нажатие кнопки "назад"  */
     fun onBackPressed() {
         if (isContextMenu) {
-            clipsCursorAdapter.resetSelectMode()
+            clipsAdapter.resetSelectMode()
         } else {
             activity.finish()
         }
@@ -188,7 +188,7 @@ class ClipsListFragment : Fragment() {
         // Поделиться выделенными записями
             R.id.action_share -> {
                 val shareText = ClipsHelper.joinToString(context,
-                        clipsCursorAdapter.getSelectedIds(),
+                        clipsAdapter.getSelectedIds(),
                         UtilPreferences.getSeparator(context))
                 Util.shareText(context, shareText)
             }
@@ -204,10 +204,10 @@ class ClipsListFragment : Fragment() {
         }
         if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_SPLIT_CLIPS) {
             val splitChar = data.getStringExtra("splitChar")
-            if (clipsCursorAdapter.getSelectedIds().isNotEmpty()) {
+            if (clipsAdapter.getSelectedIds().isNotEmpty()) {
                 val deleteOldClips = data.getBooleanExtra("deleteOldClips", false)
-                ClipsHelper.joinAndDelete(context, clipsCursorAdapter.getSelectedIds(), splitChar, deleteOldClips)
-                clipsCursorAdapter.resetSelectMode()
+                ClipsHelper.joinAndDelete(context, clipsAdapter.getSelectedIds(), splitChar, deleteOldClips)
+                clipsAdapter.resetSelectMode()
                 Toast.makeText(context, R.string.splited, Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(context, R.string.select_cancel, Toast.LENGTH_SHORT).show()
@@ -215,13 +215,13 @@ class ClipsListFragment : Fragment() {
         }
         if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_CHANGE_CATEGORY) {
             val categoryId = data.getLongExtra("categoryId", 0)
-            ClipsHelper.changeCategory(context, clipsCursorAdapter.getSelectedIds(), categoryId)
+            ClipsHelper.changeCategory(context, clipsAdapter.getSelectedIds(), categoryId)
         }
         if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_DELETE_CONFIRM) {
             val delete = data.getBooleanExtra("delete", false)
             if (delete) {
-                repository.deleteClips(context, clipsCursorAdapter.getSelectedIds())
-                clipsCursorAdapter.resetSelectMode()
+                repository.deleteClips(context, clipsAdapter.getSelectedIds())
+                clipsAdapter.resetSelectMode()
             }
         }
         if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_SET_ORDER_TYPE) {

@@ -5,7 +5,7 @@ package com.iamkatrechko.clipboardmanager.data.model
  * @author iamkatrechko
  *         Date: 04.11.2017
  */
-class SimpleClip(
+data class SimpleClip(
         /** Текст записи */
         val text: String,
         /** Метка записи */

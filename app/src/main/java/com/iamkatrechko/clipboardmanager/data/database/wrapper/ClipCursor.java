@@ -65,7 +65,7 @@ public class ClipCursor extends CursorWrapper {
      * Возвращает идентификатор категории заметки
      * @return идентификатор категории заметки
      */
-    public int getCategoryId() {
+    public long getCategoryId() {
         return getWrappedCursor().getInt(getColumnIndex(DatabaseDescription.Clip.COLUMN_CATEGORY_ID));
     }
 

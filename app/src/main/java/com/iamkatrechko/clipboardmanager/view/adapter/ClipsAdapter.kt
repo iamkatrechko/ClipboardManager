@@ -13,6 +13,8 @@ import com.bignerdranch.android.multiselector.MultiSelector
 import com.bignerdranch.android.multiselector.SwappingHolder
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
+import com.iamkatrechko.clipboardmanager.data.mapper.CursorToClipMapper
+import com.iamkatrechko.clipboardmanager.data.model.Clip
 import com.iamkatrechko.clipboardmanager.domain.ClipsHelper
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.Util
@@ -24,23 +26,24 @@ import com.iamkatrechko.clipboardmanager.view.extensions.setGone
  * @author iamkatrechko
  *         Date: 01.11.2016
  */
-internal class ClipsCursorAdapter constructor(
+internal class ClipsAdapter constructor(
         /** Слушатель нажатий */
         private val clickListener: ClipClickListener?
-) : RecyclerView.Adapter<ClipsCursorAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<ClipsAdapter.ViewHolder>() {
 
-    /** Список заметок  */
-    private var clipCursor: ClipCursor? = null
+    /** Помощник множественного выделения  */
+    private val selector: MultiSelector = MultiSelector()
+    /** Список записей */
+    private val clips = ArrayList<Clip>()
+
     /** Виджет списка  */
     private var attachedRecyclerView: RecyclerView? = null
-    /** Помощник множественного выделения  */
-    private val multiSelector: MultiSelector = MultiSelector()
     /** Виджет пустого списка  */
     private var emptyView: View? = null
 
     init {
         //TODO Добавить вывод view при пустом адаптере
-        /*showEmpty(mQuery.size() == 0);*/
+        showEmptyView(true)
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView?) {
@@ -58,15 +61,13 @@ internal class ClipsCursorAdapter constructor(
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.rv_list_item_clip, parent, false))
     }
 
-    override fun onBindViewHolder(vHolder: ClipsCursorAdapter.ViewHolder, position: Int) {
-        clipCursor!!.moveToPosition(position)
-        vHolder.bindView(clipCursor!!)
+    override fun onBindViewHolder(vHolder: ClipsAdapter.ViewHolder, position: Int) {
+        vHolder.bindView(clips[position])
     }
 
     override fun getItemCount(): Int {
-        val count = clipCursor?.wrappedCursor?.count ?: 0
-        showEmptyView(count == 0)
-        return count
+        showEmptyView(clips.size == 0)
+        return clips.size
     }
 
     /**
@@ -91,8 +92,20 @@ internal class ClipsCursorAdapter constructor(
      * @param cursor новые данные
      */
     fun setCursor(cursor: Cursor?) {
+        if (cursor == null) {
+            return
+        }
+        setClips(CursorToClipMapper().toClips(ClipCursor(cursor)))
+    }
+
+    /**
+     * Устанавливает список записей в адаптер
+     * @param [clipsList] список записей
+     */
+    fun setClips(clipsList: List<Clip>) {
         resetSelectMode()
-        clipCursor = ClipCursor(cursor)
+        clips.clear()
+        clips.addAll(clipsList)
         notifyDataSetChanged()
         // Вызов для обновление emptyView
         itemCount
@@ -100,8 +113,8 @@ internal class ClipsCursorAdapter constructor(
 
     /** Выключает режим множественного выделения и сбрасывает выделения элементов  */
     fun resetSelectMode() {
-        multiSelector.isSelectable = false
-        multiSelector.clearSelections()
+        selector.isSelectable = false
+        selector.clearSelections()
         clickListener?.onSelectedChange(false, 0)
     }
 
@@ -110,14 +123,9 @@ internal class ClipsCursorAdapter constructor(
      * @return список выделенных записей
      */
     fun getSelectedIds(): List<Long> {
-        val result = ArrayList<Long>()
-        multiSelector.selectedPositions.forEach { pos ->
-            clipCursor?.let {
-                it.moveToPosition(pos)
-                result.add(it.id)
-            }
+        return selector.selectedPositions.mapTo(ArrayList()) { pos ->
+            clips[pos].id
         }
-        return result
     }
 
     /** Интерфейс слушателя нажатий  */
@@ -141,7 +149,7 @@ internal class ClipsCursorAdapter constructor(
     internal inner class ViewHolder(
             /** Виджет элемента списка */
             view: View
-    ) : SwappingHolder(view, multiSelector) {
+    ) : SwappingHolder(view, selector) {
 
         /** Идентификатор заметки */
         private var clipId: Long = 0
@@ -172,12 +180,12 @@ internal class ClipsCursorAdapter constructor(
             tvIsDeleted.setGone(!showMeta)
 
             view.setOnClickListener {
-                if (multiSelector.tapSelection(this@ViewHolder)) {
+                if (selector.tapSelection(this@ViewHolder)) {
                     // Если множественное выделение активно
                     if (getSelectedIds().isEmpty()) {
                         resetSelectMode()
                     } else {
-                        clickListener?.onSelectedChange(true, multiSelector.selectedPositions.size)
+                        clickListener?.onSelectedChange(true, selector.selectedPositions.size)
                     }
                 } else {
                     // Если множественное выделение неактивно, жмем
@@ -186,9 +194,9 @@ internal class ClipsCursorAdapter constructor(
             }
 
             view.setOnLongClickListener(View.OnLongClickListener {
-                if (!multiSelector.isSelectable) {
-                    multiSelector.isSelectable = true
-                    multiSelector.setSelected(this@ViewHolder, true)
+                if (!selector.isSelectable) {
+                    selector.isSelectable = true
+                    selector.setSelected(this@ViewHolder, true)
                     clickListener?.onSelectedChange(true, 1)
                     return@OnLongClickListener true
                 }
@@ -201,29 +209,28 @@ internal class ClipsCursorAdapter constructor(
             }
 
             ivFavorite.setOnClickListener {
-                clipCursor!!.moveToPosition(adapterPosition)
-                ClipsHelper.setFavorite(context, clipId, !clipCursor!!.isFavorite)
+                val clip = clips[adapterPosition]
+                ClipsHelper.setFavorite(context, clipId, !clip.isFavorite)
             }
         }
 
         /**
-         * Привязывает данные к виджету списка
-         * @param cursor данные
+         * Привязывает запись к виджету элемента списка
+         * @param [clip] запись
          */
-        internal fun bindView(cursor: ClipCursor) {
-            clipId = cursor.id
-            tvId.text = cursor.id.toString()
-            tvTitle.text = cursor.title
-            tvContent.text = cursor.content
-            tvDate.text = Util.getTimeInString(cursor.date)
-            tvCategoryId.text = cursor.categoryId.toString()
-            tvIsDeleted.text = cursor.isDeleted.toString()
+        internal fun bindView(clip: Clip) {
+            clipId = clip.id
+            tvId.text = clip.id.toString()
+            tvTitle.text = clip.title
+            tvContent.text = clip.text
+            tvDate.text = Util.getTimeInString(clip.dateTime.toString())
+            tvCategoryId.text = clip.categoryId.toString()
+            tvIsDeleted.text = clip.isDeleted.toString()
 
-            ivFavorite.setImageResource(if (cursor.isFavorite) R.drawable.ic_star else R.drawable.ic_star_border)
+            ivFavorite.setImageResource(if (clip.isFavorite) R.drawable.ic_star else R.drawable.ic_star_border)
 
-            val clipInClipboard = cursor.content == ClipUtils.getClipboardText(tvCategoryId.context)
+            val clipInClipboard = clip.text == ClipUtils.getClipboardText(tvCategoryId.context)
             tvContent.setTypeface(null, if (clipInClipboard) Typeface.BOLD else Typeface.NORMAL)
         }
     }
 }
-
