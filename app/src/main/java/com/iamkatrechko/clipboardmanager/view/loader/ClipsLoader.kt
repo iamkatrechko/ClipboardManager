@@ -17,7 +17,7 @@ import com.iamkatrechko.clipboardmanager.view.fragment.ClipsListFragment
  * @author iamkatrechko
  *         Date: 04.11.2017
  */
-class ClipsListLoader(
+class ClipsLoader(
         /** Контекст */
         private val context: Context,
         /** Слушатель готовности данных к использованию */
@@ -27,7 +27,7 @@ class ClipsListLoader(
     companion object {
 
         /** Тег для логирования */
-        private val TAG = ClipsListLoader::class.java.simpleName
+        private val TAG = ClipsLoader::class.java.simpleName
 
         /** Ключ параметра загрузчика. Идентификатор категории */
         const val KEY_LOADER_CATEGORY_ID: String = "KEY_LOADER_CATEGORY_ID"

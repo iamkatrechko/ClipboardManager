@@ -4,37 +4,33 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
 
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.CategoryCursor;
-import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
 import com.iamkatrechko.clipboardmanager.view.adapter.NavigationMenuAdapter;
 import com.iamkatrechko.clipboardmanager.view.adapter.navigation.NavGroups;
 import com.iamkatrechko.clipboardmanager.view.fragment.ClipsListFragment;
+import com.iamkatrechko.clipboardmanager.view.loader.CategoriesLoader;
 
 /**
  * Основаня активность экрана со списком заметок
  * @author iamkatrechko
  *         Date: 01.11.2016
  */
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends AppCompatActivity {
 
     /** Тег для логирования */
     private static final String TAG = MainActivity.class.getSimpleName();
 
     /** Идентификатор загрузчика категорий */
-    private static final int CLIPS_LOADER = 1;
+    public static final int CATEGORIES_LOADER = 1;
 
     /** Виджет бокового меню */
     private DrawerLayout drawerLayout;
@@ -68,7 +64,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
         initNavigationView();
 
-        getSupportLoaderManager().initLoader(CLIPS_LOADER, null, this);
+        getSupportLoaderManager().initLoader(CATEGORIES_LOADER, null, new CategoriesLoader(this, new CategoriesLoader.OnDataPreparedListener() {
+            @Override
+            public void onPrepared(Cursor data) {
+                cursor = new CategoryCursor(data);
+                for (int i = 0; i < data.getCount(); i++) {
+                    cursor.moveToPosition(i);
+                }
+                adapter.setOfChildren(cursor);
+                adapter.notifyDataSetChanged();
+            }
+        }));
     }
 
     @Override
@@ -146,37 +152,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         ClipsListFragment clipsFragment = (ClipsListFragment) getSupportFragmentManager().findFragmentById(R.id.container);
         clipsFragment.showClipsByCategoryId(categoryId);
         drawerLayout.closeDrawer(GravityCompat.START);
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case CLIPS_LOADER:
-                Log.d(TAG, "onCreateLoader");
-                return new CursorLoader(this,
-                        DatabaseDescription.Category.CONTENT_URI, // Uri таблицы contacts
-                        null, // все столбцы
-                        null, // все записи
-                        null, // без аргументов
-                        null); // сортировка
-            default:
-                return null;
-        }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d(TAG, "onLoadFinished");
-        cursor = new CategoryCursor(data);
-        for (int i = 0; i < data.getCount(); i++) {
-            cursor.moveToPosition(i);
-        }
-        adapter.setOfChildren(cursor);
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
     }
 
     @Override
