@@ -2,7 +2,6 @@ package com.iamkatrechko.clipboardmanager.view.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.database.Cursor
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -10,7 +9,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.Toast
 import com.iamkatrechko.clipboardmanager.R
-import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip
+import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
+import com.iamkatrechko.clipboardmanager.data.model.Clip
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 import com.iamkatrechko.clipboardmanager.domain.ClipsHelper
 import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType
@@ -45,7 +45,7 @@ class ClipsListFragment : Fragment() {
     private var listener = object : ClipsAdapter.ClipClickListener {
 
         override fun onClick(clipId: Long) {
-            startActivity(ClipEditActivity.newIntent(activity, Clip.buildClipUri(clipId)))
+            startActivity(ClipEditActivity.newIntent(activity, DatabaseDescription.Clip.buildClipUri(clipId)))
         }
 
         override fun onSelectedChange(isSelectedMode: Boolean, selectedCount: Int) {
@@ -111,8 +111,8 @@ class ClipsListFragment : Fragment() {
         bundle.putBoolean(ClipsLoader.KEY_LOADER_ONLY_FAVORITE, UtilPreferences.isShowOnlyFavorite(context))
         bundle.putInt(ClipsLoader.KEY_LOADER_ORDER_TYPE, UtilPreferences.getOrderType(context).ordinal)
         loaderManager.restartLoader(CLIPS_BY_CATEGORY_LOADER, bundle, ClipsLoader(context, object : ClipsLoader.OnDataPreparedListener {
-            override fun onPrepared(data: Cursor?) {
-                clipsAdapter.setCursor(data)
+            override fun onPrepared(clipsList: List<Clip>) {
+                clipsAdapter.setClips(clipsList)
             }
         }))
     }

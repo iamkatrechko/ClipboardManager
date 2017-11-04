@@ -8,6 +8,9 @@ import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
 import android.util.Log
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
+import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
+import com.iamkatrechko.clipboardmanager.data.mapper.CursorToClipMapper
+import com.iamkatrechko.clipboardmanager.data.model.Clip
 import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType
 import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType.*
 import com.iamkatrechko.clipboardmanager.view.fragment.ClipsListFragment
@@ -61,12 +64,11 @@ class ClipsLoader(
 
     override fun onLoadFinished(loader: Loader<Cursor>?, data: Cursor?) {
         Log.d(TAG, "onLoadFinished")
-        listener.onPrepared(data)
+        listener.onPrepared(CursorToClipMapper().toClips(ClipCursor(data)))
     }
 
     override fun onLoaderReset(loader: Loader<Cursor>?) {
         Log.d(TAG, "onLoaderReset")
-        listener.onPrepared(null)
     }
 
     /** Возвращает параметр запроса сортировки по типу сортировки */
@@ -80,8 +82,8 @@ class ClipsLoader(
 
         /**
          * Данные готовы к использованию
-         * @param [data] список записей
+         * @param [clipsList] список записей
          */
-        fun onPrepared(data: Cursor?)
+        fun onPrepared(clipsList: List<Clip>)
     }
 }
