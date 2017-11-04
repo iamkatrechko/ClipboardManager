@@ -3,6 +3,7 @@ package com.iamkatrechko.clipboardmanager.domain.util;
 import android.content.Context;
 import android.preference.PreferenceManager;
 
+import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType;
 import com.iamkatrechko.clipboardmanager.view.activity.SettingsActivity;
 
 /**
@@ -94,21 +95,20 @@ public class UtilPreferences {
      * Возвращает тип сортировки записей
      * @return 1 - пользовательский, 2 - по дате (сначала новые), 3 - по дате (сначала старые)
      */
-    public static String getOrderType(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(PREF_ORDER_TYPE, "1");
+    public static OrderType getOrderType(Context context) {
+        int pos = PreferenceManager
+                .getDefaultSharedPreferences(context)
+                .getInt(PREF_ORDER_TYPE, 0);
+        return OrderType.values()[pos];
     }
 
     /**
      * Сохраняет тип сортировки записей
-     * 1 - пользовательский
-     * 2 - по дате (сначала новые)
-     * 3 - по дате (сначала старые)
      */
-    public static void setOrderType(Context context, String orderType) {
+    public static void setOrderType(Context context, OrderType orderType) {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
-                .putString(PREF_ORDER_TYPE, orderType)
+                .putInt(PREF_ORDER_TYPE, orderType.ordinal())
                 .apply();
     }
 

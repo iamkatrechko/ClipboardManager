@@ -13,6 +13,7 @@ import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 import com.iamkatrechko.clipboardmanager.domain.ClipsHelper
+import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType
 import com.iamkatrechko.clipboardmanager.domain.util.Util
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 import com.iamkatrechko.clipboardmanager.view.DialogManager
@@ -106,10 +107,10 @@ class ClipsListFragment : Fragment() {
         clipsCursorAdapter.resetSelectMode()
         val bundle = Bundle()
         bundle.putLong(ClipsListLoader.KEY_LOADER_CATEGORY_ID, categoryId)
-        val isOnlyFavoriteShow = UtilPreferences.isShowOnlyFavorite(activity)
+        val isOnlyFavoriteShow = UtilPreferences.isShowOnlyFavorite(context)
         bundle.putBoolean(ClipsListLoader.KEY_LOADER_ONLY_FAVORITE, isOnlyFavoriteShow)
-        val orderType = UtilPreferences.getOrderType(activity)
-        bundle.putString(ClipsListLoader.KEY_LOADER_ORDER_TYPE, orderType)
+        val orderType = UtilPreferences.getOrderType(context)
+        bundle.putInt(ClipsListLoader.KEY_LOADER_ORDER_TYPE, orderType.ordinal)
         currentCategoryId = categoryId
         loaderManager.restartLoader(CLIPS_BY_CATEGORY_LOADER, bundle, ClipsListLoader(context, object : ClipsListLoader.OnDataPreparedListener {
             override fun onPrepared(data: Cursor?) {
@@ -120,7 +121,7 @@ class ClipsListFragment : Fragment() {
 
     /** Открывает экран создания новой заметки  */
     fun addNewClip() {
-        val i = ClipEditActivity.newIntent(activity, null)
+        val i = ClipEditActivity.newIntent(context, null)
         startActivity(i)
     }
 
@@ -200,8 +201,11 @@ class ClipsListFragment : Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (data == null) {
+            return
+        }
         if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_SPLIT_CLIPS) {
-            val splitChar = data!!.getStringExtra("splitChar")
+            val splitChar = data.getStringExtra("splitChar")
             if (clipsCursorAdapter.getSelectedIds().isNotEmpty()) {
                 val deleteOldClips = data.getBooleanExtra("deleteOldClips", false)
                 ClipsHelper.joinAndDelete(context, clipsCursorAdapter.getSelectedIds(), splitChar, deleteOldClips)
@@ -212,19 +216,19 @@ class ClipsListFragment : Fragment() {
             }
         }
         if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_CHANGE_CATEGORY) {
-            val categoryId = data!!.getLongExtra("categoryId", 0)
+            val categoryId = data.getLongExtra("categoryId", 0)
             ClipsHelper.changeCategory(context, clipsCursorAdapter.getSelectedIds(), categoryId)
         }
         if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_DELETE_CONFIRM) {
-            val delete = data!!.getBooleanExtra("delete", false)
+            val delete = data.getBooleanExtra("delete", false)
             if (delete) {
                 repository.deleteClips(context, clipsCursorAdapter.getSelectedIds())
                 clipsCursorAdapter.resetSelectMode()
             }
         }
         if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_SET_ORDER_TYPE) {
-            val orderType = data!!.getStringExtra("orderType")
-            UtilPreferences.setOrderType(activity, orderType)
+            val pos = data.getIntExtra("orderType", 0)
+            UtilPreferences.setOrderType(activity, OrderType.values()[pos])
             showClipsByCategoryId(currentCategoryId)
         }
     }

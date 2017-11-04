@@ -83,7 +83,7 @@ public class DialogManager {
 
     public static void showDialogSetOrderType(Fragment fragment) {
         FragmentManager fragmentManager = fragment.getActivity().getSupportFragmentManager();
-        DialogSetOrderType fragmentDialog = DialogSetOrderType.newInstance();
+        DialogSetOrderType fragmentDialog = DialogSetOrderType.Companion.newInstance();
         fragmentDialog.setTargetFragment(fragment, DIALOG_SET_ORDER_TYPE);
         fragmentDialog.show(fragmentManager, "DIALOG_SET_ORDER_TYPE");
     }

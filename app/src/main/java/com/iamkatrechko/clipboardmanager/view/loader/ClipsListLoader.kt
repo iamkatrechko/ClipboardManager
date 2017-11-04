@@ -8,6 +8,8 @@ import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
 import android.util.Log
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
+import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType
+import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType.*
 import com.iamkatrechko.clipboardmanager.view.fragment.ClipsListFragment
 
 /**
@@ -39,7 +41,7 @@ class ClipsListLoader(
         Log.d(TAG, "onCreateLoader")
         val categoryId = args.getLong(KEY_LOADER_CATEGORY_ID)
         val isOnlyFavoriteShow = args.getBoolean(KEY_LOADER_ONLY_FAVORITE)
-        val orderType = args.getString(KEY_LOADER_ORDER_TYPE)
+        val orderType = values()[args.getInt(KEY_LOADER_ORDER_TYPE)]
 
         when (id) {
             ClipsListFragment.CLIPS_BY_CATEGORY_LOADER -> {
@@ -68,11 +70,9 @@ class ClipsListLoader(
     }
 
     /** Возвращает параметр запроса сортировки по типу сортировки */
-    private fun getOrderQuery(orderType: String) = when (orderType) {
-        "3" -> DatabaseDescription.Clip.COLUMN_DATE
-        "2" -> DatabaseDescription.Clip.COLUMN_DATE + " DESC"
-        "1" -> DatabaseDescription.Clip._ID
-        else -> ""
+    private fun getOrderQuery(orderType: OrderType) = when (orderType) {
+        BY_DATE_ASC -> DatabaseDescription.Clip.COLUMN_DATE
+        BY_DATE_DESC -> DatabaseDescription.Clip.COLUMN_DATE + " DESC"
     }
 
     /** Слушатель готовности данных к использованию */
