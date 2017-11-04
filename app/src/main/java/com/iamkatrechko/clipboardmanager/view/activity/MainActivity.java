@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (fragmentManager.getFragments().isEmpty()) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, ClipsListFragment.newInstance())
+                    .replace(R.id.container, ClipsListFragment.Companion.newInstance(1L))
                     .commit();
         }
 
@@ -66,9 +66,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 clipsFragment.addNewClip();
             }
         });
-
         initNavigationView();
-
 
         getSupportLoaderManager().initLoader(CATEGORIES_LOADER, null, this);
     }
@@ -105,6 +103,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int groupPos, long groupId) {
                 NavGroups group = NavGroups.values()[groupPos];
                 switch (group) {
+                    case ALL_CLIPS:
+
+                        break;
                     case CATEGORIES:
                         /*getFragment(NAV_MENU_POS_TODAY);*/
                         break;
