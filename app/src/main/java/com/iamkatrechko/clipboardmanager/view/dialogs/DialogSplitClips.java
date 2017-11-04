@@ -13,7 +13,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
+import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences;
 
 /**
  * Диалог объединения заметок в одну

@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.services;
+package com.iamkatrechko.clipboardmanager.domain.services;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.ClipboardManager;
@@ -7,8 +7,8 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.iamkatrechko.clipboardmanager.util.ClipUtils;
-import com.iamkatrechko.clipboardmanager.util.Util;
+import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils;
+import com.iamkatrechko.clipboardmanager.domain.util.Util;
 
 import static android.view.accessibility.AccessibilityNodeInfo.ACTION_PASTE;
 

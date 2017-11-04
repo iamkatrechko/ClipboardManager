@@ -10,7 +10,7 @@ import android.widget.TextView
 
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.CategoryCursor
-import com.iamkatrechko.clipboardmanager.util.extensions.setGone
+import com.iamkatrechko.clipboardmanager.view.extensions.setGone
 
 /**
  * Адаптер списка категорий

@@ -15,11 +15,11 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
-import com.iamkatrechko.clipboardmanager.services.ClipboardService;
-import com.iamkatrechko.clipboardmanager.services.CancelViewService;
-import com.iamkatrechko.clipboardmanager.services.FloatingViewService;
-import com.iamkatrechko.clipboardmanager.services.HideNotificationService;
+import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences;
+import com.iamkatrechko.clipboardmanager.domain.services.ClipboardService;
+import com.iamkatrechko.clipboardmanager.domain.services.CancelViewService;
+import com.iamkatrechko.clipboardmanager.domain.services.FloatingViewService;
+import com.iamkatrechko.clipboardmanager.domain.services.HideNotificationService;
 
 /**
  * Активность меню разработчика

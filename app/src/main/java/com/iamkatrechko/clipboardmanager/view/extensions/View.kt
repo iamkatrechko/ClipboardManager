@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.util.extensions
+package com.iamkatrechko.clipboardmanager.view.extensions
 
 import android.view.View
 

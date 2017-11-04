@@ -2,8 +2,8 @@ package com.iamkatrechko.clipboardmanager
 
 import android.app.Application
 import android.util.Log
-import com.iamkatrechko.clipboardmanager.services.ClipboardService
-import com.iamkatrechko.clipboardmanager.util.UtilPreferences
+import com.iamkatrechko.clipboardmanager.domain.services.ClipboardService
+import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 
 /**
  * Класс Application

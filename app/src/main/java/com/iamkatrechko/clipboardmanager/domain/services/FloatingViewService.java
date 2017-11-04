@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.services;
+package com.iamkatrechko.clipboardmanager.domain.services;
 
 import android.app.Service;
 import android.content.ContentResolver;
@@ -26,7 +26,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.util.ClipUtils;
+import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils;
 import com.iamkatrechko.clipboardmanager.view.adapter.ClipsCursorAdapter;
 
 import java.util.ArrayList;

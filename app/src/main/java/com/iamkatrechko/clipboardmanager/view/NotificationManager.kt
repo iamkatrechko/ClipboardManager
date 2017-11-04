@@ -1,10 +1,11 @@
-package com.iamkatrechko.clipboardmanager
+package com.iamkatrechko.clipboardmanager.view
 
 import android.app.Notification
 import android.content.Context
 import android.support.v4.app.NotificationCompat
-import com.iamkatrechko.clipboardmanager.util.ClipUtils
-import com.iamkatrechko.clipboardmanager.util.UtilPreferences
+import com.iamkatrechko.clipboardmanager.R
+import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
+import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 
 /**
  * Менеджер уведомлений

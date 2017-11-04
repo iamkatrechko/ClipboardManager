@@ -24,7 +24,7 @@ import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity;
 import com.iamkatrechko.clipboardmanager.view.activity.DeveloperActivity;
 import com.iamkatrechko.clipboardmanager.view.activity.SearchActivity;
 import com.iamkatrechko.clipboardmanager.view.adapter.ClipsCursorAdapter;
-import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
+import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences;
 
 import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip;
 

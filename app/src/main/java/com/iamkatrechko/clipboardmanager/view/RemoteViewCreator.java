@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager;
+package com.iamkatrechko.clipboardmanager.view;
 
 import android.app.PendingIntent;
 import android.content.Context;
@@ -7,12 +7,13 @@ import android.graphics.Color;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity;
 import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper;
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
-import com.iamkatrechko.clipboardmanager.services.ClipboardService;
-import com.iamkatrechko.clipboardmanager.util.ClipUtils;
-import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
+import com.iamkatrechko.clipboardmanager.domain.services.ClipboardService;
+import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils;
+import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences;
 
 /**
  * @author ivanov_m

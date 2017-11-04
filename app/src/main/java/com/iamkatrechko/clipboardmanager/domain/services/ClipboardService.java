@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.services;
+package com.iamkatrechko.clipboardmanager.domain.services;
 
 import android.app.Service;
 import android.content.ClipboardManager;
@@ -9,11 +9,11 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.iamkatrechko.clipboardmanager.NotificationManager;
+import com.iamkatrechko.clipboardmanager.view.NotificationManager;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository;
-import com.iamkatrechko.clipboardmanager.util.ClipUtils;
-import com.iamkatrechko.clipboardmanager.util.UtilPreferences;
+import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils;
+import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences;
 
 /**
  * Сервис для прослушки буфера обмена
