@@ -21,7 +21,6 @@ import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.Util
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 import com.iamkatrechko.clipboardmanager.view.extensions.setGone
-import java.util.*
 
 /**
  * Адаптер списка заметок
@@ -109,7 +108,6 @@ internal class ClipsCursorAdapter(
     private fun setIsFavorite(context: Context, id: Long, isFavorite: Boolean) {
         val contentValues = ContentValues()
         contentValues.put(Clip.COLUMN_IS_FAVORITE, isFavorite)
-
         context.contentResolver.update(Clip.buildClipUri(id), contentValues, null, null)
     }
 
@@ -118,19 +116,30 @@ internal class ClipsCursorAdapter(
         multiSelector.isSelectable = false
         multiSelector.clearSelections()
 
-        clickListener!!.onSelectedChange(false, 0)
+        clickListener?.onSelectedChange(false, 0)
     }
 
     /** Удаляет из базы данных выбранные множественным выделением записи  */
     fun deleteSelectedItems(context: Context) {
-        selectedIds()
-                .map { DatabaseDescription.Clip.buildClipUri(it) }
-                .forEach { context.contentResolver.delete(it, null, null) }
+        deleteItems(context, getSelectedIds())
         resetSelectMode()
     }
 
-    /** Список выделенных записей */
-    private fun selectedIds(): List<Long> {
+    /**
+     * Удаляет записи из базы данных
+     * @param [context] контекст
+     * @param [ids]     идентификаторы записей на удаление
+     */
+    private fun deleteItems(context: Context, ids: List<Long>) {
+        ids.map { DatabaseDescription.Clip.buildClipUri(it) }
+                .forEach { context.contentResolver.delete(it, null, null) }
+    }
+
+    /**
+     * Возвращает список выделенных записей
+     * @return список выделенных записей
+     */
+    private fun getSelectedIds(): List<Long> {
         val result = ArrayList<Long>()
         for (pos in multiSelector.selectedPositions) {
             clipCursor!!.moveToPosition(pos)
@@ -146,25 +155,24 @@ internal class ClipsCursorAdapter(
      * @return Объединенная строка
      */
     private fun getSplitItemsText(context: Context, splitChar: String, deleteOld: Boolean): String {
-        var newClipText = ""
-
-        for (id in selectedIds()) {
-            val uri = DatabaseDescription.Clip.buildClipUri(id)
-
-            val cursor = ClipCursor(context.contentResolver.query(uri, null, null, null, null))
-            if (cursor.moveToFirst()) {
-                if (newClipText == "") {
-                    newClipText += cursor.content
-                } else {
-                    newClipText += splitChar + cursor.content
-                }
-            }
-            if (deleteOld) {
-                context.contentResolver.delete(uri, null, null)
-            }
+        val resultText = getSelectedClips(context).joinToString(splitChar)
+        if (deleteOld) {
+            deleteItems(context, getSelectedIds())
         }
+        return resultText
+    }
 
-        return newClipText
+    /**
+     * Возвращает список выделенных записей
+     * @param [context] контекст
+     * @return список выделенных записей
+     */
+    private fun getSelectedClips(context: Context): ArrayList<String> {
+        return getSelectedIds()
+                .map { DatabaseDescription.Clip.buildClipUri(it) }
+                .map { ClipCursor(context.contentResolver.query(it, null, null, null, null)) }
+                .filter { it.moveToFirst() }
+                .mapTo(ArrayList()) { it.content }
     }
 
     /**
@@ -199,7 +207,7 @@ internal class ClipsCursorAdapter(
      * @param categoryId идентификатор категории
      */
     fun changeCategory(context: Context, categoryId: Long) {
-        for (id in selectedIds()) {
+        for (id in getSelectedIds()) {
             val uri = DatabaseDescription.Clip.buildClipUri(id)
 
             val contentValues = ContentValues()
