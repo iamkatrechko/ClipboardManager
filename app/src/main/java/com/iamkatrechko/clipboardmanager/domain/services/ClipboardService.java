@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.iamkatrechko.clipboardmanager.data.model.SimpleClip;
 import com.iamkatrechko.clipboardmanager.view.NotificationManager;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository;
@@ -39,28 +40,27 @@ public class ClipboardService extends Service {
         @Override
         public void onPrimaryClipChanged() {
             Log.d(TAG, "Отловлена новая запись в буфере обмена");
-            String clipText = ClipUtils.getClipboardText(ClipboardService.this);
-            String clipDescription = ClipUtils.getClipboardLabel(ClipboardService.this);
+            SimpleClip clip = ClipUtils.getClip(ClipboardService.this);
 
             Context context = getApplicationContext();
-            if (clipDescription.equals(ClipUtils.CLIP_LABEL) || clipDescription.equals(ClipUtils.CLIP_LABEL_ACCESSIBILITY)) {
+            if (clip.getLabel().equals(ClipUtils.CLIP_LABEL) || clip.getLabel().equals(ClipUtils.CLIP_LABEL_ACCESSIBILITY)) {
                 Log.d(TAG, "Отмена: копирование из приложения");
                 Toast.makeText(context, "Отмена: копирование из приложения", Toast.LENGTH_SHORT).show();
             } else {
-                if (clipText.length() == 0) {
+                if (clip.getText().length() == 0) {
                     Toast.makeText(context, R.string.empty_record, Toast.LENGTH_SHORT).show();
                     // Обновляем уведомление
                     ClipboardService.startMyService(context);
                     return;
                 }
-                if (repository.alreadyExists(context, clipText)) {
+                if (repository.alreadyExists(context, clip.getText())) {
                     //TODO Сделать настройку "Если уже существует: ничего не делать || изменить дату на новую
                     Toast.makeText(context, R.string.record_already_exists, Toast.LENGTH_SHORT).show();
                     // Обновляем уведомление
                     ClipboardService.startMyService(context);
                     return;
                 }
-                addNewClip(clipText);
+                addNewClip(clip.getText());
             }
             // Обновляем уведомление
             ClipboardService.startMyService(context);

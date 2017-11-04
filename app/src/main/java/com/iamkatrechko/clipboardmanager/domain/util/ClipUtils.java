@@ -4,6 +4,8 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 
+import com.iamkatrechko.clipboardmanager.data.model.SimpleClip;
+
 import static android.content.Context.CLIPBOARD_SERVICE;
 
 /**
@@ -64,5 +66,16 @@ public class ClipUtils {
         ClipboardManager clipBoard = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
         CharSequence label = clipBoard.getPrimaryClipDescription().getLabel();
         return label != null ? label.toString() : "";
+    }
+
+    /**
+     * Возвращает запись буфера обмена
+     * @param context контекст
+     * @return запись буфера обмена
+     */
+    public static SimpleClip getClip(Context context) {
+        String text = getClipboardText(context);
+        String label = getClipboardLabel(context);
+        return new SimpleClip(text, label);
     }
 }
