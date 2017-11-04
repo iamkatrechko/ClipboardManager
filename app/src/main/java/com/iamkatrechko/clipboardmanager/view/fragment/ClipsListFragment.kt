@@ -50,8 +50,8 @@ class ClipsListFragment : Fragment() {
 
         override fun onSelectedChange(isSelectedMode: Boolean, selectedCount: Int) {
             isContextMenu = isSelectedMode
-            activity.invalidateOptionsMenu()
             this@ClipsListFragment.selectedCount = selectedCount
+            activity.invalidateOptionsMenu()
         }
     }
     /** Адаптер списка заметок  */
@@ -153,7 +153,7 @@ class ClipsListFragment : Fragment() {
         if (selectedCount == 0) {
             activity.setTitle(R.string.app_name)
         } else {
-            activity.title = "" + selectedCount
+            activity.title = getString(R.string.selected_count, selectedCount.toString())
             menu!!.findItem(R.id.action_split).isVisible = selectedCount > 1
         }
 
@@ -162,9 +162,8 @@ class ClipsListFragment : Fragment() {
         changeToolbarItemIcon(itemStar, showOnlyFavorite)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        val id = item!!.itemId
-        when (id) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
         // Окно поиска
             R.id.action_search -> activity.startActivity(Intent(activity, SearchActivity::class.java))
         // Настройка сортировки

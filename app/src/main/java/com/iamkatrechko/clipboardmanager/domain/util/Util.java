@@ -62,6 +62,16 @@ public class Util {
         return String.valueOf(calendar.getTimeInMillis());
     }
 
+
+    /**
+     * Возвращает дату в формате "dd MMMM - HH:mm"
+     * @param timeInMillis миллисекунды
+     * @return дата в формате "dd MMMM - HH:mm"
+     */
+    public static String getTimeInString(long timeInMillis) {
+        return getTimeInString(String.valueOf(timeInMillis));
+    }
+
     /**
      * Возвращает дату в формате "dd MMMM - HH:mm"
      * @param timeInMillis миллисекунды
@@ -74,9 +84,9 @@ public class Util {
             int currentYear = calendar.get(Calendar.YEAR);
             calendar.setTimeInMillis(Long.valueOf(timeInMillis));
             if (calendar.get(Calendar.YEAR) == currentYear) {
-                df = new SimpleDateFormat("dd MMMM - HH:mm");
+                df = new SimpleDateFormat("dd MMMM, HH:mm");
             } else {
-                df = new SimpleDateFormat("dd MMMM yyyy - HH:mm");
+                df = new SimpleDateFormat("dd MMMM yyyy, HH:mm");
             }
             return df.format(calendar.getTime());
         } catch (Exception e) {

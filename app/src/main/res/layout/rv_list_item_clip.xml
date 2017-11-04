@@ -1,114 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
     >
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="4dp"
-        android:gravity="bottom">
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        >
 
         <TextView
+            android:id="@+id/tvTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/tvTitle"
             android:layout_weight="1"
-            tools:text="Название"
-            android:textSize="17sp"
             android:maxLines="1"
-            android:textColor="#545454"/>
+            android:textColor="#545454"
+            android:textSize="16sp"
+            tools:text="Заголовок"
+            />
 
         <TextView
+            android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tvDate"
+            android:textColor="#808080"
             android:textSize="13sp"
-            android:textColor="@color/colorPrimary"
-            tools:text="Дата"/>
+            tools:text="4 ноября, 19:14"
+            />
 
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:orientation="vertical"
+            >
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/tvContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:layout_weight="1"
-                tools:text="Содержание"
-                android:textSize="14sp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
                 android:maxLines="3"
-                android:textColor="#747474"/>
+                android:textColor="#747474"
+                android:textSize="14sp"
+                tools:text="Содержание"
+                />
 
             <TextView
-                android:text="№ категории"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/tvCategoryId"
-                android:layout_weight="1"
-                android:textSize="12sp"
-                android:visibility="gone"/>
-
-            <TextView
-                android:text="IsDeleted"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="№ категории"
+                android:textSize="12sp"
+                android:visibility="gone"
+                />
+
+            <TextView
                 android:id="@+id/tvIsDeleted"
-                android:layout_weight="1"
-                android:textSize="12sp"
-                android:visibility="gone"/>
-
-            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/tvId"
                 android:layout_weight="1"
-                tools:text="ID"
+                android:text="IsDeleted"
                 android:textSize="12sp"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                />
+
+            <TextView
+                android:id="@+id/tvId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="12sp"
+                android:visibility="gone"
+                tools:text="ID"
+                />
+
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            >
 
             <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
                 android:id="@+id/ivFavorite"
-                android:src="@drawable/ic_star_border"
-                android:padding="12dp"
-                android:tint="@color/defaultTint"/>
-
-            <ImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_star_border"
+                android:tint="@color/defaultTint"
+                />
+
+            <ImageView
                 android:id="@+id/ivCopy"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
                 android:src="@drawable/ic_copy"
-                android:padding="14dp"
-                android:tint="@color/defaultTint"/>
+                android:tint="@color/defaultTint"
+                />
 
         </LinearLayout>
 

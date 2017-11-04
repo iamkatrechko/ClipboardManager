@@ -64,6 +64,8 @@
         <item>5</item>
     </string-array>
 
+    <string name="selected_count">Выделено: %s</string>
+
 
     <!-- Strings related to Settings -->
 

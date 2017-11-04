@@ -223,7 +223,7 @@ internal class ClipsAdapter constructor(
             tvId.text = clip.id.toString()
             tvTitle.text = clip.title
             tvContent.text = clip.text
-            tvDate.text = Util.getTimeInString(clip.dateTime.toString())
+            tvDate.text = Util.getTimeInString(clip.dateTime)
             tvCategoryId.text = clip.categoryId.toString()
             tvIsDeleted.text = clip.isDeleted.toString()
 
