@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:gravity="center_vertical"
+    android:minHeight="56dp"
+    android:orientation="horizontal"
+    >
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:minHeight="48dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-        <ImageView
-                android:id="@+id/iconGroup"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_launcher"
-                android:scaleType="fitCenter"
-                android:tint="#6d6d6d"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"/>
-        <TextView
-                android:id="@+id/textGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left|center_vertical"
-                android:text="Родитель"
-                android:textSize="16sp"
-                android:textColor="#ff3f3f3f"
-                android:layout_weight="1"
-                android:layout_marginLeft="16dp"/>
-        <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:id="@+id/imageViewIndicator"
-                android:layout_margin="16dp"
-                android:src="@drawable/ic_arrow_down"
-                android:tint="#6d6d6d" />
-    </LinearLayout>
+    <ImageView
+        android:id="@+id/image_view_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_launcher"
+        android:tint="#6d6d6d"/>
+
+    <TextView
+        android:id="@+id/text_view_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_weight="1"
+        android:textColor="#3f3f3f"
+        android:textSize="16sp"
+        tools:text="Группа"/>
+
+    <ImageView
+        android:id="@+id/image_view_indicator"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_arrow_down"
+        android:tint="#6d6d6d"/>
+
 </LinearLayout>
