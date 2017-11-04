@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import com.iamkatrechko.clipboardmanager.R;
+import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor;
 import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity;
 import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper;
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
@@ -39,12 +40,12 @@ public class RemoteViewCreator {
         PendingIntent pIntentFavorite = PendingIntent.getService(context, 171251, intentFavorite, 0);
         generalRemoteViews.setOnClickPendingIntent(R.id.ivStar, pIntentFavorite);
 
-        ClipboardDatabaseHelper.ClipCursor lastRecords;
+        ClipCursor lastRecords;
         if (showOnlyFavorite) {
             generalRemoteViews.setImageViewResource(R.id.ivStar, R.drawable.ic_star);
             generalRemoteViews.setInt(R.id.ivStar, "setColorFilter", Color.parseColor("#009688"));
 
-            lastRecords = new ClipboardDatabaseHelper.ClipCursor(context.getContentResolver().query(DatabaseDescription.Clip.CONTENT_URI,
+            lastRecords = new ClipCursor(context.getContentResolver().query(DatabaseDescription.Clip.CONTENT_URI,
                     null,
                     DatabaseDescription.Clip.COLUMN_CONTENT + " <> ? AND " + DatabaseDescription.Clip.COLUMN_IS_FAVORITE + " = ?",
                     new String[]{currentClipText, "1"},
@@ -53,7 +54,7 @@ public class RemoteViewCreator {
             generalRemoteViews.setImageViewResource(R.id.ivStar, R.drawable.ic_star_border);
             generalRemoteViews.setInt(R.id.ivStar, "setColorFilter", Color.parseColor("#808080"));
 
-            lastRecords = new ClipboardDatabaseHelper.ClipCursor(context.getContentResolver().query(DatabaseDescription.Clip.CONTENT_URI,
+            lastRecords = new ClipCursor(context.getContentResolver().query(DatabaseDescription.Clip.CONTENT_URI,
                     null,
                     DatabaseDescription.Clip.COLUMN_CONTENT + " <> ?",
                     new String[]{currentClipText},

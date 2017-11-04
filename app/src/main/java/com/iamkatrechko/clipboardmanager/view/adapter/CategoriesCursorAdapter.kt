@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 
 import com.iamkatrechko.clipboardmanager.R
-import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.CategoryCursor
+import com.iamkatrechko.clipboardmanager.data.database.wrapper.CategoryCursor
 import com.iamkatrechko.clipboardmanager.view.extensions.setGone
 
 /**

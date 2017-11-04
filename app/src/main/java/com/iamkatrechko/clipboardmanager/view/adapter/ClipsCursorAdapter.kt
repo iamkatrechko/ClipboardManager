@@ -12,8 +12,7 @@ import android.widget.TextView
 import com.bignerdranch.android.multiselector.MultiSelector
 import com.bignerdranch.android.multiselector.SwappingHolder
 import com.iamkatrechko.clipboardmanager.R
-import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.ClipCursor
-import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
+import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
 import com.iamkatrechko.clipboardmanager.domain.ClipsHelper
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.Util

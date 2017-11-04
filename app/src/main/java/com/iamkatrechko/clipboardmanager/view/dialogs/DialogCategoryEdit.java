@@ -15,6 +15,7 @@ import android.widget.EditText;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper;
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
+import com.iamkatrechko.clipboardmanager.data.database.wrapper.CategoryCursor;
 
 /**
  * Диалог редактирования категории
@@ -60,8 +61,8 @@ public class DialogCategoryEdit extends DialogFragment {
             etTitle.setText("Новая категория");
         }else{
             Uri categoryUri = DatabaseDescription.Category.buildClipUri(categoryId);
-            ClipboardDatabaseHelper.CategoryCursor cursor =
-                    new ClipboardDatabaseHelper.CategoryCursor(getActivity().getContentResolver().query(categoryUri,
+            CategoryCursor cursor =
+                    new CategoryCursor(getActivity().getContentResolver().query(categoryUri,
                             null,
                             null,
                             null,

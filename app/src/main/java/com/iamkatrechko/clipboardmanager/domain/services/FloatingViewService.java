@@ -26,13 +26,13 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.R;
+import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor;
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils;
 import com.iamkatrechko.clipboardmanager.view.adapter.ClipsCursorAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.ClipCursor;
 import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Category;
 import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip;
 

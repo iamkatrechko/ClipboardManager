@@ -27,6 +27,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.iamkatrechko.clipboardmanager.data.database.wrapper.CategoryCursor;
+import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor;
 import com.iamkatrechko.clipboardmanager.view.DialogManager;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
@@ -34,8 +36,6 @@ import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils;
 import com.iamkatrechko.clipboardmanager.domain.util.Util;
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences;
 
-import static com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.CategoryCursor;
-import static com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.ClipCursor;
 import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip;
 
 /**

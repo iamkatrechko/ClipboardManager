@@ -2,8 +2,6 @@ package com.iamkatrechko.clipboardmanager.data.database;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -82,103 +80,5 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
             String query = "INSERT INTO " + Category.TABLE_NAME + " (title) values('Категория " + i + "')";
             sqLiteDatabase.execSQL(query);
         }*/
-    }
-
-    /** Оболочка для курсора со списком записей */
-    public static class ClipCursor extends CursorWrapper {
-
-        /**
-         * Конструктор
-         * @param cursor курсор с данными
-         */
-        public ClipCursor(Cursor cursor) {
-            super(cursor);
-        }
-
-        /**
-         * Возвращает идентификатор заметки
-         * @return идентификатор заметки
-         */
-        public long getID() {
-            return getWrappedCursor().getLong(getColumnIndex(DatabaseDescription.Clip._ID));
-        }
-
-        /**
-         * Возвращает заголовок заметки
-         * @return заголовок заметки
-         */
-        public String getTitle() {
-            return getWrappedCursor().getString(getColumnIndex(DatabaseDescription.Clip.COLUMN_TITLE));
-        }
-
-        /**
-         * Возвращает содержимое заметки
-         * @return содержимое заметки
-         */
-        public String getContent() {
-            return getWrappedCursor().getString(getColumnIndex(DatabaseDescription.Clip.COLUMN_CONTENT));
-        }
-
-        /**
-         * Возвращает дату заметки
-         * @return дата заметки
-         */
-        public String getDate() {
-            return getWrappedCursor().getString(getColumnIndex(DatabaseDescription.Clip.COLUMN_DATE));
-        }
-
-        /**
-         * Является ли заметка избранной
-         * @return принадлежность к избранным
-         */
-        public boolean isFavorite() {
-            int buf = getWrappedCursor().getInt(getColumnIndex(DatabaseDescription.Clip.COLUMN_IS_FAVORITE));
-            return (buf == 1);
-        }
-
-        /**
-         * Возвращает идентификатор категории заметки
-         * @return идентификатор категории заметки
-         */
-        public int getCategoryId() {
-            return getWrappedCursor().getInt(getColumnIndex(DatabaseDescription.Clip.COLUMN_CATEGORY_ID));
-        }
-
-        /**
-         * Была ли заметка удалена
-         * @return была ли заметка удалена
-         */
-        public boolean isDeleted() {
-            int buf = getWrappedCursor().getInt(getColumnIndex(DatabaseDescription.Clip.COLUMN_IS_DELETED));
-            return (buf == 1);
-        }
-    }
-
-    /** Оболочка для курсора со списком категорий */
-    public static class CategoryCursor extends CursorWrapper {
-
-        /**
-         * Конструктор
-         * @param cursor курсор
-         */
-        public CategoryCursor(Cursor cursor) {
-            super(cursor);
-        }
-
-        /**
-         * Возвращает идентификатор категории
-         * @return идентификатор категории
-         */
-        public long getID() {
-            return getWrappedCursor().getLong(getColumnIndex(DatabaseDescription.Category._ID));
-        }
-
-        /**
-         * Возвращает заголовок категории
-         * @return заголовок категории
-         */
-        public String getTitle() {
-            return getWrappedCursor().getString(getColumnIndex(DatabaseDescription.Category.COLUMN_TITLE));
-        }
     }
 }

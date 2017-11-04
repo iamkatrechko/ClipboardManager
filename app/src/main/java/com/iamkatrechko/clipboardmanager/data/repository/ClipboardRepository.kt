@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
+import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
 
 /**
  * Репозиторий записей
@@ -71,7 +72,7 @@ class ClipboardRepository {
      */
     fun getClip(context: Context, id: Long): String? {
         val uri = DatabaseDescription.Clip.buildClipUri(id)
-        val cursor = ClipboardDatabaseHelper.ClipCursor(
+        val cursor = ClipCursor(
                 context.contentResolver.query(uri, null, null, null, null)
         )
         if (cursor.moveToFirst()) {

@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.widget.ExpandableListView
 import com.iamkatrechko.clipboardmanager.R
-import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.CategoryCursor
+import com.iamkatrechko.clipboardmanager.data.database.wrapper.CategoryCursor
 import com.iamkatrechko.clipboardmanager.view.adapter.NavigationMenuAdapter
 import com.iamkatrechko.clipboardmanager.view.adapter.navigation.NavGroups
 import com.iamkatrechko.clipboardmanager.view.fragment.ClipsListFragment
