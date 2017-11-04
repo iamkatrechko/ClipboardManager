@@ -25,8 +25,8 @@ import com.iamkatrechko.clipboardmanager.view.extensions.setGone
  * @author iamkatrechko
  *         Date: 01.11.2016
  */
-internal class ClipsCursorAdapter(
-        /** Слушатель нажатий  */
+internal class ClipsCursorAdapter constructor(
+        /** Слушатель нажатий */
         private val clickListener: ClipClickListener?
 ) : RecyclerView.Adapter<ClipsCursorAdapter.ViewHolder>() {
 
@@ -38,8 +38,6 @@ internal class ClipsCursorAdapter(
     private val multiSelector: MultiSelector = MultiSelector()
     /** Виджет пустого списка  */
     private var emptyView: View? = null
-    /** Репозиторий для работы с базой записей */
-    private val repository = ClipboardRepository()
 
     init {
         //TODO Добавить вывод view при пустом адаптере
@@ -218,7 +216,6 @@ internal class ClipsCursorAdapter(
             tvId.text = cursor.id.toString()
             tvTitle.text = cursor.title
             tvContent.text = cursor.content
-            //tvDate.setText(cursor.getDate());
             tvDate.text = Util.getTimeInString(cursor.date)
             tvCategoryId.text = cursor.categoryId.toString()
             tvIsDeleted.text = cursor.isDeleted.toString()

@@ -42,42 +42,56 @@ import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescriptio
  *         Date: 01.11.2016
  */
 public class FloatingViewService extends Service {
-    static String TAG = "FloatingViewService";
+
+    /** Тег для логирования */
+    private static final String TAG = FloatingViewService.class.getSimpleName();
+
+    /** Менеджер экрана */
     private WindowManager windowManager;
 
+    /** Главный виджет */
     private View mainView;
+    /** Виджет списка с записями */
     private RecyclerView recyclerView;
+    /** Кнопка закрытия окна */
     private ImageView ivClose;
+    /** Кнопка перемещения окна */
     private ImageView ivMove;
-    private Spinner mSpinner;
+    /** Выпадающий список с категориями записей */
+    private Spinner spinner;
 
-    private ClipsCursorAdapter mCursorAdapter;
+    /** Адаптер списка записей */
+    private ClipsCursorAdapter cursorAdapter;
 
-    ArrayAdapter<CharSequence> adapter;
-    private CursorLoader mCursorLoader;
+    /** Адаптер выпадающего списка */
+    private ArrayAdapter<CharSequence> spinnerAdapter;
+    /** Загручик списка записей */
+    private CursorLoader cursorLoader;
 
-    Loader.OnLoadCompleteListener<Cursor> loader = new Loader.OnLoadCompleteListener<Cursor>() {
+    private Loader.OnLoadCompleteListener<Cursor> loaderListener = new Loader.OnLoadCompleteListener<Cursor>() {
         public void onLoadComplete(Loader<Cursor> loader, Cursor data) {
-            mCursorAdapter.setCursor(data);
+            cursorAdapter.setCursor(data);
         }
     };
 
     @Override
     public void onCreate() {
-        Log.i(TAG, "Service: onCreate");
-        mainView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.float_view, null);
+        Log.i(TAG, "onCreate");
+        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        mainView = LayoutInflater.from(this).inflate(R.layout.float_view, null);
+        cursorLoader = new CursorLoader(getApplicationContext(), Clip.CONTENT_URI, null, null, null, Clip._ID + " DESC");
 
         recyclerView = (RecyclerView) mainView.findViewById(R.id.recyclerView);
         ivClose = (ImageView) mainView.findViewById(R.id.ivClose);
         ivMove = (ImageView) mainView.findViewById(R.id.ivMove);
-        mSpinner = (Spinner) mainView.findViewById(R.id.spinner);
+        spinner = (Spinner) mainView.findViewById(R.id.spinner);
 
         final ContentResolver cr = getContentResolver();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
         // Улучшает быстродействие, если размер макета RecyclerView не изменяется
         recyclerView.setHasFixedSize(true);
-        mCursorAdapter = new ClipsCursorAdapter(new ClipsCursorAdapter.ClipClickListener() {
+        cursorAdapter = new ClipsCursorAdapter(new ClipsCursorAdapter.ClipClickListener() {
             @Override
             public void onClick(long clipId) {
                 ClipCursor c = new ClipCursor(cr.query(Clip.buildClipUri(clipId), null, null, null, null));
@@ -93,11 +107,10 @@ public class FloatingViewService extends Service {
             }
         });
         // TODO Добавить пустой view
-        recyclerView.setAdapter(mCursorAdapter);
+        recyclerView.setAdapter(cursorAdapter);
 
-        mCursorLoader = new CursorLoader(getApplicationContext(), Clip.CONTENT_URI, null, null, null, Clip._ID + " DESC");
-        mCursorLoader.registerListener(125125, loader);
-        mCursorLoader.startLoading();
+        cursorLoader.registerListener(125125, loaderListener);
+        cursorLoader.startLoading();
 
         //Cursor clips = cr.query(Clip.CONTENT_URI, null, null, null, Clip._ID + " DESC");
         //////////////////
@@ -111,12 +124,10 @@ public class FloatingViewService extends Service {
         String[] s = new String[list.size()];
         s = list.toArray(s);
         c.close();
-        adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, s);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinner.setAdapter(adapter);
+        spinnerAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, s);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
         //////////////////
-
-        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
@@ -223,7 +234,7 @@ public class FloatingViewService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "Запуск сервиса");
+        Log.d(TAG, "onStartCommand");
         return Service.START_NOT_STICKY;
     }
 
@@ -236,17 +247,16 @@ public class FloatingViewService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i(TAG, "Service: onDestroy");
-        // Stop the cursor loader
-        if (mCursorLoader != null) {
-            mCursorLoader.unregisterListener(loader);
-            mCursorLoader.cancelLoad();
-            mCursorLoader.stopLoading();
+        Log.i(TAG, "onDestroy");
+        if (cursorLoader != null) {
+            cursorLoader.unregisterListener(loaderListener);
+            cursorLoader.cancelLoad();
+            cursorLoader.stopLoading();
         }
     }
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        Log.i(TAG, "Service: onTaskRemoved");
+        Log.i(TAG, "onTaskRemoved");
     }
 }
