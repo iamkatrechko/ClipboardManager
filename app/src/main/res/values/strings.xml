@@ -65,7 +65,7 @@
     </string-array>
 
     <string name="selected_count">Выделено: %s</string>
-
+    <string name="add_clip">Добавить</string>
 
     <!-- Strings related to Settings -->
 
