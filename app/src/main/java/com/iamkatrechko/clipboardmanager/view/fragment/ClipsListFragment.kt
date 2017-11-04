@@ -5,12 +5,8 @@ import android.content.Intent
 import android.database.Cursor
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.app.LoaderManager
-import android.support.v4.content.CursorLoader
-import android.support.v4.content.Loader
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import com.iamkatrechko.clipboardmanager.R
@@ -24,13 +20,14 @@ import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity
 import com.iamkatrechko.clipboardmanager.view.activity.DeveloperActivity
 import com.iamkatrechko.clipboardmanager.view.activity.SearchActivity
 import com.iamkatrechko.clipboardmanager.view.adapter.ClipsCursorAdapter
+import com.iamkatrechko.clipboardmanager.view.loader.ClipsListLoader
 
 /**
  * Основной фрагмент экрана со списком заметок
  * @author iamkatrechko
  *         Date: 01.11.2016
  */
-class ClipsListFragment : Fragment(), LoaderManager.LoaderCallbacks<Cursor> {
+class ClipsListFragment : Fragment() {
 
     /** Виджет списка заметок  */
     private lateinit var recyclerView: RecyclerView
@@ -64,7 +61,7 @@ class ClipsListFragment : Fragment(), LoaderManager.LoaderCallbacks<Cursor> {
         /** Ключ аргумента. Идентификатор текущей категории */
         private const val KEY_ARGUMENT_CATEGORY_ID = "CATEGORY_ID"
         /** Идентификатор загрузчика заметок по категории  */
-        private const val CLIPS_BY_CATEGORY_LOADER = 1
+        const val CLIPS_BY_CATEGORY_LOADER = 1
 
         /**
          * Возвращает новый экземпляр фрагмента
@@ -108,9 +105,17 @@ class ClipsListFragment : Fragment(), LoaderManager.LoaderCallbacks<Cursor> {
     fun showClipsByCategoryId(categoryId: Long) {
         clipsCursorAdapter.resetSelectMode()
         val bundle = Bundle()
-        bundle.putLong("categoryId", categoryId)
+        bundle.putLong(ClipsListLoader.KEY_LOADER_CATEGORY_ID, categoryId)
+        val isOnlyFavoriteShow = UtilPreferences.isShowOnlyFavorite(activity)
+        bundle.putBoolean(ClipsListLoader.KEY_LOADER_ONLY_FAVORITE, isOnlyFavoriteShow)
+        val orderType = UtilPreferences.getOrderType(activity)
+        bundle.putString(ClipsListLoader.KEY_LOADER_ORDER_TYPE, orderType)
         currentCategoryId = categoryId
-        loaderManager.restartLoader(CLIPS_BY_CATEGORY_LOADER, bundle, this)
+        loaderManager.restartLoader(CLIPS_BY_CATEGORY_LOADER, bundle, ClipsListLoader(context, object : ClipsListLoader.OnDataPreparedListener {
+            override fun onPrepared(data: Cursor?) {
+                clipsCursorAdapter.setCursor(data)
+            }
+        }))
     }
 
     /** Открывает экран создания новой заметки  */
@@ -141,52 +146,6 @@ class ClipsListFragment : Fragment(), LoaderManager.LoaderCallbacks<Cursor> {
         } else {
             activity.finish()
         }
-    }
-
-    override fun onCreateLoader(id: Int, args: Bundle): Loader<Cursor>? {
-        Log.d("Fragment", "onCreateLoader")
-
-        when (id) {
-        /*case CLIPS_LOADER:
-                Log.d("Fragment", "onCreateLoader2");
-                return new CursorLoader(getActivity(),
-                        Clip.CONTENT_URI, // Uri таблицы contacts
-                        null, // все столбцы
-                        null, // все записи
-                        null, // без аргументов
-                        Clip._ID + " DESC"); // сортировка*/
-            CLIPS_BY_CATEGORY_LOADER -> {
-                val orderType = UtilPreferences.getOrderType(activity)
-                var orderQuery: String? = null
-                if (orderType == "3") {
-                    orderQuery = Clip.COLUMN_DATE
-                }
-                if (orderType == "2") {
-                    orderQuery = Clip.COLUMN_DATE + " DESC"
-                }
-                if (orderType == "1") {
-                    orderQuery = Clip._ID
-                }
-                val categoryId = args.getLong("categoryId")
-                val isOnlyFavoriteShow = UtilPreferences.isShowOnlyFavorite(activity)
-                val onlyFavorite = if (isOnlyFavoriteShow) " and " + Clip.COLUMN_IS_FAVORITE + " = 1" else ""
-                return CursorLoader(context,
-                        Clip.CONTENT_URI, null, // все столбцы
-                        Clip.COLUMN_CATEGORY_ID + "=?" + onlyFavorite, // все записи
-                        arrayOf(categoryId.toString()), // без аргументов
-                        orderQuery)// Uri таблицы contacts
-                // сортировка
-            }
-            else -> return null
-        }
-    }
-
-    override fun onLoadFinished(loader: Loader<Cursor>, data: Cursor) {
-        clipsCursorAdapter.setCursor(data)
-    }
-
-    override fun onLoaderReset(loader: Loader<Cursor>) {
-        clipsCursorAdapter.setCursor(null)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

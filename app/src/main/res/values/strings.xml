@@ -37,6 +37,8 @@
     <string name="no_matches_found">Совпадений не найдено</string>
     <string name="title_activity_settings">Settings</string>
 
+    <string name="order_type_date_asc">По дате (сначала новые)</string>
+    <string name="order_type_date_desc">По дате (сначала старые)</string>
     <string-array name="orders_title">
         <item>Пользовательская</item>
         <item>По дате (сначала новые)</item>
