@@ -75,6 +75,8 @@ class ClipsLoader(
     private fun getOrderQuery(orderType: OrderType) = when (orderType) {
         BY_DATE_ASC -> DatabaseDescription.Clip.COLUMN_DATE
         BY_DATE_DESC -> DatabaseDescription.Clip.COLUMN_DATE + " DESC"
+        BY_TITLE_ASC -> DatabaseDescription.Clip.COLUMN_TITLE
+        BY_TITLE_DESC -> DatabaseDescription.Clip.COLUMN_TITLE + " DESC"
     }
 
     /** Слушатель готовности данных к использованию */

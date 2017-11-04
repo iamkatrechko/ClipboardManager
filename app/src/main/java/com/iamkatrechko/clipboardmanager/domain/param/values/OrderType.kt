@@ -13,5 +13,7 @@ enum class OrderType(
         @StringRes val nameResId: Int
 ) {
     BY_DATE_ASC(R.string.order_type_date_asc),
-    BY_DATE_DESC(R.string.order_type_date_desc)
+    BY_DATE_DESC(R.string.order_type_date_desc),
+    BY_TITLE_ASC(R.string.order_type_title_asc),
+    BY_TITLE_DESC(R.string.order_type_title_desc)
 }

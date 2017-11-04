@@ -58,10 +58,10 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
      * @param sqLiteDatabase база данных
      */
     private void generateTestData(SQLiteDatabase sqLiteDatabase) {
-        for (int i = 1; i < 10; i++) {
+        for (int i = 1; i < 10000; i++) {
             String query = "INSERT INTO " + DatabaseDescription.Clip.TABLE_NAME + " (title, content, date, is_favorite, category_id, is_deleted) values(" +
-                    "'Название " + i + "', " +
-                    "'Содержимое " + i + "', " +
+                    "'Заголовок записи " + i + "', " +
+                    "'Содержимое записи " + i + "', " +
                     "'" + i * 86400000 + "', " +
                     "" + i % 2 + ", " +
                     "2, " +

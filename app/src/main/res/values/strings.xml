@@ -39,6 +39,8 @@
 
     <string name="order_type_date_asc">По дате (сначала новые)</string>
     <string name="order_type_date_desc">По дате (сначала старые)</string>
+    <string name="order_type_title_asc">По заголовку (А-Я)</string>
+    <string name="order_type_title_desc">По заголовку (Я-А)</string>
     <string-array name="orders_title">
         <item>Пользовательская</item>
         <item>По дате (сначала новые)</item>

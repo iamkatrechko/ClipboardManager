@@ -48,7 +48,7 @@ public class RemoteViewCreator {
                     null,
                     DatabaseDescription.Clip.COLUMN_CONTENT + " <> ? AND " + DatabaseDescription.Clip.COLUMN_IS_FAVORITE + " = ?",
                     new String[]{currentClipText, "1"},
-                    DatabaseDescription.Clip.COLUMN_DATE + " DESC LIMIT 4"));
+                    DatabaseDescription.Clip.COLUMN_DATE + " LIMIT 4"));
         } else {
             generalRemoteViews.setImageViewResource(R.id.image_view_star, R.drawable.ic_star_border);
             generalRemoteViews.setInt(R.id.image_view_star, "setColorFilter", Color.parseColor("#808080"));
@@ -57,7 +57,7 @@ public class RemoteViewCreator {
                     null,
                     DatabaseDescription.Clip.COLUMN_CONTENT + " <> ?",
                     new String[]{currentClipText},
-                    DatabaseDescription.Clip.COLUMN_DATE + " DESC LIMIT 4"));
+                    DatabaseDescription.Clip.COLUMN_DATE + " LIMIT 4"));
         }
 
         generalRemoteViews.removeAllViews(R.id.linear_clips);
