@@ -2,7 +2,6 @@ package com.iamkatrechko.clipboardmanager.domain
 
 import android.content.ContentValues
 import android.content.Context
-import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 
@@ -14,19 +13,6 @@ import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 object ClipsHelper {
 
     /**
-     * Возвращает список записей по их идентификаторам
-     * @param [context] контекст
-     * @param [ids]     список идентификаторов записей
-     * @return список записей по их идентификаторам
-     */
-    fun getClipList(context: Context, ids: List<Long>): ArrayList<String> {
-        return ids.map { DatabaseDescription.Clip.buildClipUri(it) }
-                .map { ClipboardDatabaseHelper.ClipCursor(context.contentResolver.query(it, null, null, null, null)) }
-                .filter { it.moveToFirst() }
-                .mapTo(ArrayList()) { it.content }
-    }
-
-    /**
      * Объединяет содержимое выделенных записей в одну строку
      * @param [context]   контекст
      * @param [clipIds]   идентификаторы записей
@@ -34,25 +20,22 @@ object ClipsHelper {
      * @return объединенная строка
      */
     fun joinToString(context: Context, clipIds: List<Long>, separator: String): String {
-        return getClipList(context, clipIds).joinToString(separator)
+        return ClipboardRepository().getClips(context, clipIds).joinToString(separator)
     }
 
     /**
-     * Объединяет содержимое выделенных записей в одну строку и создает на ее основе новую запись
+     * Объединяет содержимое записей в одну строку и создает на ее основе новую запись
      * @param [context]   контекст
      * @param [clipIds]   идентификаторы записей
      * @param [separator] разделитель между записями
      * @param [deleteOld] требуется ли удалить исходные записи
      */
-    fun splitAndDelete(context: Context, clipIds: List<Long>, separator: String, deleteOld: Boolean) {
+    fun joinAndDelete(context: Context, clipIds: List<Long>, separator: String, deleteOld: Boolean) {
         val newClipText = ClipsHelper.joinToString(context, clipIds, separator)
         if (deleteOld) {
             ClipboardRepository().deleteClips(context, clipIds)
         }
-        val uriInsert = DatabaseDescription.Clip.CONTENT_URI
-        val contentValues = DatabaseDescription.Clip.getDefaultContentValues()
-        contentValues.put(DatabaseDescription.Clip.COLUMN_CONTENT, newClipText)
-        context.contentResolver.insert(uriInsert, contentValues)
+        ClipboardRepository().addClip(context, newClipText)
     }
 
     /**

@@ -261,7 +261,7 @@ public class ClipsListFragment extends Fragment implements LoaderManager.LoaderC
             String splitChar = data.getStringExtra("splitChar");
             if (clipsCursorAdapter.getSelectedIds().size() > 0) {
                 boolean deleteOldClips = data.getBooleanExtra("deleteOldClips", false);
-                ClipsHelper.INSTANCE.splitAndDelete(getContext(), clipsCursorAdapter.getSelectedIds(), splitChar, deleteOldClips);
+                ClipsHelper.INSTANCE.joinAndDelete(getContext(), clipsCursorAdapter.getSelectedIds(), splitChar, deleteOldClips);
                 clipsCursorAdapter.resetSelectMode();
                 Toast.makeText(getContext(), R.string.splited, Toast.LENGTH_SHORT).show();
             } else {

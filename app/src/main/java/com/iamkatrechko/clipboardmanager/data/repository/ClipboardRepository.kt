@@ -72,11 +72,7 @@ class ClipboardRepository {
     fun getClip(context: Context, id: Long): String? {
         val uri = DatabaseDescription.Clip.buildClipUri(id)
         val cursor = ClipboardDatabaseHelper.ClipCursor(
-                context.contentResolver.query(uri,
-                        null,
-                        null,
-                        null,
-                        null)
+                context.contentResolver.query(uri, null, null, null, null)
         )
         if (cursor.moveToFirst()) {
             return cursor.content
@@ -85,13 +81,23 @@ class ClipboardRepository {
     }
 
     /**
+     * Возвращает список записей по их идентификаторам
+     * @param [context] контекст
+     * @param [ids]     список идентификаторов записей
+     * @return список записей по их идентификаторам
+     */
+    fun getClips(context: Context, ids: List<Long>): List<String> {
+        return ids.mapTo(ArrayList()) { ClipboardRepository().getClip(context, it) }.filterNotNull()
+    }
+
+    /**
      * Удаляет запись из базы данных
      * @param [context] контект
      * @param [id]      идентификатор записи
      */
     fun deleteClip(context: Context, id: Long) {
-        val uriDelete = DatabaseDescription.Clip.buildClipUri(id)
-        context.contentResolver.delete(uriDelete, null, null)
+        context.contentResolver.delete(DatabaseDescription.Clip.buildClipUri(id),
+                null, null)
     }
 
     /**
@@ -100,7 +106,6 @@ class ClipboardRepository {
      * @param [ids]     идентификаторы записей на удаление
      */
     fun deleteClips(context: Context, ids: List<Long>) {
-        ids.map { DatabaseDescription.Clip.buildClipUri(it) }
-                .forEach { context.contentResolver.delete(it, null, null) }
+        ids.forEach { deleteClip(context, it) }
     }
 }
