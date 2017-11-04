@@ -59,8 +59,7 @@ class NavigationMenuAdapter : BaseExpandableListAdapter() {
         val context = parent.context
         var view = convertView
         if (view == null) {
-            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            view = inflater.inflate(R.layout.exp_list_group_view, null)
+            view = LayoutInflater.from(parent.context).inflate(R.layout.exp_list_group_view, null)
             val iconGroup = view.findViewById(R.id.image_view_icon) as ImageView
             val textGroup = view.findViewById(R.id.text_view_title) as TextView
 
@@ -86,8 +85,7 @@ class NavigationMenuAdapter : BaseExpandableListAdapter() {
         val context = parent.context
         var view = convertView
         if (view == null) {
-            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            view = inflater.inflate(R.layout.exp_list_child_view, null)
+            view = LayoutInflater.from(parent.context).inflate(R.layout.exp_list_child_view, null)
         }
 
         val textChild = view!!.findViewById(R.id.textChild) as TextView
