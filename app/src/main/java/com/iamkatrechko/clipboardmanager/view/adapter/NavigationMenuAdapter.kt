@@ -1,6 +1,5 @@
-package com.iamkatrechko.clipboardmanager.view.adapter.navigation
+package com.iamkatrechko.clipboardmanager.view.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.CategoryCursor
+import com.iamkatrechko.clipboardmanager.view.adapter.navigation.NavGroups
 
 /**
  * Адаптер списка бокового меню

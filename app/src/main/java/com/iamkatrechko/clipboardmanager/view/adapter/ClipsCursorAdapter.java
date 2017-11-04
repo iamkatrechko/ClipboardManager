@@ -33,14 +33,12 @@ import java.util.List;
  */
 public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.ViewHolder> {
 
-    /** Контекст */
-    private Context context;
     /** Список заметок */
     private ClipCursor clipCursor;
     /** Слушатель нажатий */
     private ClipClickListener clickListener;
     /** Виджет списка */
-    private RecyclerView recyclerView;
+    private RecyclerView attachedRecyclerView;
     /** Помощник множественного выделения */
     private MultiSelector multiSelector;
     /** Виджет пустого списка */
@@ -48,13 +46,11 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
 
     /**
      * Конструктор
-     * @param context  контекст
      * @param listener слушатель нажатий
      */
-    public ClipsCursorAdapter(Context context, ClipClickListener listener) {
+    public ClipsCursorAdapter(ClipClickListener listener) {
         multiSelector = new MultiSelector();
         clickListener = listener;
-        this.context = context;
         //TODO Добавить вывод view при пустом адаптере
         /*showEmpty(mQuery.size() == 0);*/
     }
@@ -62,14 +58,14 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-        this.recyclerView = recyclerView;
-        this.recyclerView.addItemDecoration(new ItemDivider(context));
+        attachedRecyclerView = recyclerView;
+        attachedRecyclerView.addItemDecoration(new ItemDivider(recyclerView.getContext()));
     }
 
     @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
-        this.recyclerView = null;
+        attachedRecyclerView = null;
     }
 
     @Override
@@ -102,10 +98,10 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
 
     /**
      * Устанавливает виджет пустого списка
-     * @param emptyView виджет пустого списка
+     * @param view виджет пустого списка
      */
-    public void setEmptyView(View emptyView) {
-        this.emptyView = emptyView;
+    public void setEmptyView(View view) {
+        emptyView = view;
     }
 
     /**
@@ -118,8 +114,8 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
         } else {
             return;
         }
-        if (recyclerView != null) {
-            recyclerView.setVisibility(isShow ? View.GONE : View.VISIBLE);
+        if (attachedRecyclerView != null) {
+            attachedRecyclerView.setVisibility(isShow ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -152,7 +148,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
      * @param id         идентификатор записи
      * @param isFavorite флаг избранности
      */
-    private void setIsFavorite(long id, boolean isFavorite) {
+    private void setIsFavorite(Context context, long id, boolean isFavorite) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(Clip.COLUMN_IS_FAVORITE, isFavorite);
 
@@ -168,7 +164,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
     }
 
     /** Удаляет из базы данных выбранные множественным выделением записи */
-    public void deleteSelectedItems() {
+    public void deleteSelectedItems(Context context) {
         for (long id : getSelectedIds()) {
             Uri uri = DatabaseDescription.Clip.buildClipUri(id);
             context.getContentResolver().delete(uri, null, null);
@@ -182,7 +178,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
      * @param deleteOld Требуется ли удалить объединенные записи
      * @return Объединенная строка
      */
-    private String getSplitItemsText(String splitChar, boolean deleteOld) {
+    private String getSplitItemsText(Context context, String splitChar, boolean deleteOld) {
         String newClipText = "";
 
         for (long id : getSelectedIds()) {
@@ -209,9 +205,9 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
      * @param splitChar Строка-разделитель между записями
      * @param deleteOld Требуется ли удалить объединенные записи
      */
-    public void splitItems(String splitChar, boolean deleteOld) {
+    public void splitItems(Context context, String splitChar, boolean deleteOld) {
         if (multiSelector.getSelectedPositions().size() > 1) {
-            String newClipText = getSplitItemsText(splitChar, deleteOld);
+            String newClipText = getSplitItemsText(context, splitChar, deleteOld);
 
             Uri uriInsert = Clip.CONTENT_URI;
             ContentValues contentValues = Clip.getDefaultContentValues();
@@ -226,8 +222,8 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
     }
 
     /** Объединяет содержимое выделенных записей и отравляет в письме */
-    public void shareItems() {
-        String shareText = getSplitItemsText(UtilPreferences.getSplitChar(context), false);
+    public void shareItems(Context context) {
+        String shareText = getSplitItemsText(context, UtilPreferences.getSplitChar(context), false);
         Util.shareText(context, shareText);
     }
 
@@ -235,7 +231,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
      * Изменяет категорию выделенных записей
      * @param categoryId идентификатор категории
      */
-    public void changeCategory(long categoryId) {
+    public void changeCategory(Context context, long categoryId) {
         for (long id : getSelectedIds()) {
             Uri uri = DatabaseDescription.Clip.buildClipUri(id);
 
@@ -263,7 +259,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
     }
 
     /** Холдер основного элемента списка */
-    public class ViewHolder extends SwappingHolder {
+    class ViewHolder extends SwappingHolder {
 
         /** Идентификатор заметки */
         long _id;
@@ -290,6 +286,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
          */
         ViewHolder(final View itemView) {
             super(itemView, multiSelector);
+            final Context context = itemView.getContext();
             setSelectionModeBackgroundDrawable(context.getResources().getDrawable(R.drawable.selection_drawable));
 
             tvId = (TextView) itemView.findViewById(R.id.tvId);
@@ -357,7 +354,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
                 @Override
                 public void onClick(View view) {
                     clipCursor.moveToPosition(getAdapterPosition());
-                    setIsFavorite(_id, !clipCursor.isFavorite());
+                    setIsFavorite(context, _id, !clipCursor.isFavorite());
                 }
             });
         }
@@ -366,7 +363,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
          * Привязывает данные к виджету списка
          * @param cursor данные
          */
-        public void bindView(ClipCursor cursor) {
+        private void bindView(ClipCursor cursor) {
             _id = cursor.getID();
             tvId.setText(String.valueOf(cursor.getID()));
             tvTitle.setText(cursor.getTitle());
@@ -379,7 +376,7 @@ public class ClipsCursorAdapter extends RecyclerView.Adapter<ClipsCursorAdapter.
             ivFavorite.setImageResource(cursor.isFavorite() ?
                     R.drawable.ic_star : R.drawable.ic_star_border);
 
-            boolean clipInClipboard = cursor.getContent().equals(ClipUtils.getClipboardText(context));
+            boolean clipInClipboard = cursor.getContent().equals(ClipUtils.getClipboardText(tvCategoryId.getContext()));
             tvContent.setTypeface(null, clipInClipboard ? Typeface.BOLD : Typeface.NORMAL);
         }
     }

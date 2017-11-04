@@ -73,7 +73,7 @@ public class ClipsListFragment extends Fragment implements LoaderManager.LoaderC
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
         recyclerView.setHasFixedSize(true);
 
-        clipsCursorAdapter = new ClipsCursorAdapter(getActivity(), new ClipsCursorAdapter.ClipClickListener() {
+        clipsCursorAdapter = new ClipsCursorAdapter(new ClipsCursorAdapter.ClipClickListener() {
 
             @Override
             public void onClick(long clipId) {
@@ -235,7 +235,7 @@ public class ClipsListFragment extends Fragment implements LoaderManager.LoaderC
                 break;
             // Поделиться выделенными записями
             case R.id.action_share:
-                clipsCursorAdapter.shareItems();
+                clipsCursorAdapter.shareItems(getContext());
                 break;
             // Сменить категорию выделенных записей
             case R.id.action_change_category:
@@ -251,17 +251,17 @@ public class ClipsListFragment extends Fragment implements LoaderManager.LoaderC
             String splitChar = data.getStringExtra("splitChar");
             boolean deleteOldClips = data.getBooleanExtra("deleteOldClips", false);
 
-            clipsCursorAdapter.splitItems(splitChar, deleteOldClips);
+            clipsCursorAdapter.splitItems(getContext(), splitChar, deleteOldClips);
         }
         if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_CHANGE_CATEGORY) {
             long categoryId = data.getLongExtra("categoryId", 0);
 
-            clipsCursorAdapter.changeCategory(categoryId);
+            clipsCursorAdapter.changeCategory(getContext(), categoryId);
         }
         if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_DELETE_CONFIRM) {
             boolean delete = data.getBooleanExtra("delete", false);
             if (delete)
-                clipsCursorAdapter.deleteSelectedItems();
+                clipsCursorAdapter.deleteSelectedItems(getContext());
         }
         if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_SET_ORDER_TYPE) {
             String orderType = data.getStringExtra("orderType");

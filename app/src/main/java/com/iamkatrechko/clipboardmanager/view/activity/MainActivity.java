@@ -20,7 +20,7 @@ import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.CategoryCursor;
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
 import com.iamkatrechko.clipboardmanager.view.adapter.navigation.NavGroups;
-import com.iamkatrechko.clipboardmanager.view.adapter.navigation.NavigationMenuAdapter;
+import com.iamkatrechko.clipboardmanager.view.adapter.NavigationMenuAdapter;
 import com.iamkatrechko.clipboardmanager.view.fragment.ClipsListFragment;
 
 /**

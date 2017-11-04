@@ -60,7 +60,7 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
         recyclerView.setHasFixedSize(true);
 
-        clipsCursorAdapter = new ClipsCursorAdapter(getActivity(), new ClipsCursorAdapter.ClipClickListener() {
+        clipsCursorAdapter = new ClipsCursorAdapter(new ClipsCursorAdapter.ClipClickListener() {
 
             @Override
             public void onClick(long clipId) {

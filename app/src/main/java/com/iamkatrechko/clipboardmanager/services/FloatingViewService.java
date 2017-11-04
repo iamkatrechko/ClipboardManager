@@ -25,22 +25,23 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.iamkatrechko.clipboardmanager.view.adapter.ClipsCursorAdapter;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.util.ClipUtils;
+import com.iamkatrechko.clipboardmanager.view.adapter.ClipsCursorAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.*;
-import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.*;
+import static com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.ClipCursor;
+import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Category;
+import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip;
 
 /**
  * Плавающий виджет со списком заметок
  * @author iamkatrechko
  *         Date: 01.11.2016
  */
-public class FloatingViewService extends Service{
+public class FloatingViewService extends Service {
     static String TAG = "FloatingViewService";
     private WindowManager windowManager;
 
@@ -55,7 +56,7 @@ public class FloatingViewService extends Service{
     ArrayAdapter<CharSequence> adapter;
     private CursorLoader mCursorLoader;
 
-    Loader.OnLoadCompleteListener<Cursor> loader = new Loader.OnLoadCompleteListener<Cursor>(){
+    Loader.OnLoadCompleteListener<Cursor> loader = new Loader.OnLoadCompleteListener<Cursor>() {
         public void onLoadComplete(Loader<Cursor> loader, Cursor data) {
             mCursorAdapter.setCursor(data);
         }
@@ -76,7 +77,7 @@ public class FloatingViewService extends Service{
         recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
         // Улучшает быстродействие, если размер макета RecyclerView не изменяется
         recyclerView.setHasFixedSize(true);
-        mCursorAdapter = new ClipsCursorAdapter(getApplicationContext(), new ClipsCursorAdapter.ClipClickListener() {
+        mCursorAdapter = new ClipsCursorAdapter(new ClipsCursorAdapter.ClipClickListener() {
             @Override
             public void onClick(long clipId) {
                 ClipCursor c = new ClipCursor(cr.query(Clip.buildClipUri(clipId), null, null, null, null));
@@ -88,7 +89,7 @@ public class FloatingViewService extends Service{
 
             @Override
             public void onSelectedChange(boolean isSelectedMode, int selectedCount) {
-                
+
             }
         });
         // TODO Добавить пустой view
@@ -103,7 +104,7 @@ public class FloatingViewService extends Service{
         List<String> list = new ArrayList<String>();
         Uri uri = Category.CONTENT_URI;
         Cursor c = cr.query(uri, null, null, null, null);
-        for (int i = 0; i < c.getCount(); i++){
+        for (int i = 0; i < c.getCount(); i++) {
             c.moveToPosition(i);
             list.add(c.getString(1));
         }
@@ -196,10 +197,10 @@ public class FloatingViewService extends Service{
                             float posTop = myParams.y;
                             float posBottom = posTop + mainView.getLayoutParams().width;
 
-                            if (posTop < 0){
+                            if (posTop < 0) {
                                 Log.d("ERROR", "YYYYYYYYYY");
                             }
-                            if (posLeft < 0){
+                            if (posLeft < 0) {
                                 Log.d("ERROR", "XXXXXXXXXX");
                             }
 
