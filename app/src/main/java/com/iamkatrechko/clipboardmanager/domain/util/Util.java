@@ -82,15 +82,20 @@ public class Util {
         SimpleDateFormat df;
         try {
             int currentYear = calendar.get(Calendar.YEAR);
+            int currentDay = calendar.get(Calendar.DAY_OF_YEAR);
             calendar.setTimeInMillis(Long.valueOf(timeInMillis));
             if (calendar.get(Calendar.YEAR) == currentYear) {
-                df = new SimpleDateFormat("dd MMMM, HH:mm");
+                if (calendar.get(Calendar.DAY_OF_YEAR) == currentDay) {
+                    df = new SimpleDateFormat("HH:mm");
+                } else {
+                    df = new SimpleDateFormat("dd MMMM, HH:mm");
+                }
             } else {
                 df = new SimpleDateFormat("dd MMMM yyyy, HH:mm");
             }
             return df.format(calendar.getTime());
         } catch (Exception e) {
-            return timeInMillis;
+            return "";
         }
     }
 
