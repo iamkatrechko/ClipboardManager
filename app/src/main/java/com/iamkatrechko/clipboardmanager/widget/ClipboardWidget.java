@@ -19,7 +19,7 @@ public class ClipboardWidget extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.clipboard_widget);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.remote_view_widget_list);
         views.setTextViewText(R.id.appwidget_text, widgetText);
         //RemoteViews Service needed to provide adapter for ListView
         Intent svcIntent = new Intent(context, WidgetService.class);
