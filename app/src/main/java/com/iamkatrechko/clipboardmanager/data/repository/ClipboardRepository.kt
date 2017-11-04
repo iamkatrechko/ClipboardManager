@@ -93,4 +93,14 @@ class ClipboardRepository {
         val uriDelete = DatabaseDescription.Clip.buildClipUri(id)
         context.contentResolver.delete(uriDelete, null, null)
     }
+
+    /**
+     * Удаляет записи из базы данных
+     * @param [context] контекст
+     * @param [ids]     идентификаторы записей на удаление
+     */
+    fun deleteClips(context: Context, ids: List<Long>) {
+        ids.map { DatabaseDescription.Clip.buildClipUri(it) }
+                .forEach { context.contentResolver.delete(it, null, null) }
+    }
 }

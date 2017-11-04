@@ -1,22 +1,20 @@
 package com.iamkatrechko.clipboardmanager.view.adapter
 
-import android.content.ContentValues
-import android.content.Context
 import android.database.Cursor
 import android.graphics.Typeface
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import com.bignerdranch.android.multiselector.MultiSelector
 import com.bignerdranch.android.multiselector.SwappingHolder
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.ClipCursor
-import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
-import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip
+import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
+import com.iamkatrechko.clipboardmanager.domain.ClipsHelper
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.Util
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
@@ -40,6 +38,8 @@ internal class ClipsCursorAdapter(
     private val multiSelector: MultiSelector = MultiSelector()
     /** Виджет пустого списка  */
     private var emptyView: View? = null
+    /** Репозиторий для работы с базой записей */
+    private val repository = ClipboardRepository()
 
     init {
         //TODO Добавить вывод view при пустом адаптере
@@ -97,123 +97,30 @@ internal class ClipsCursorAdapter(
         resetSelectMode()
         clipCursor = ClipCursor(cursor)
         notifyDataSetChanged()
+        // Вызов для обновление emptyView
         itemCount
-    }
-
-    /**
-     * Изменяет значение "isFavorite" записи в базе данных
-     * @param id         идентификатор записи
-     * @param isFavorite флаг избранности
-     */
-    private fun setIsFavorite(context: Context, id: Long, isFavorite: Boolean) {
-        val contentValues = ContentValues()
-        contentValues.put(Clip.COLUMN_IS_FAVORITE, isFavorite)
-        context.contentResolver.update(Clip.buildClipUri(id), contentValues, null, null)
     }
 
     /** Выключает режим множественного выделения и сбрасывает выделения элементов  */
     fun resetSelectMode() {
         multiSelector.isSelectable = false
         multiSelector.clearSelections()
-
         clickListener?.onSelectedChange(false, 0)
     }
 
-    /** Удаляет из базы данных выбранные множественным выделением записи  */
-    fun deleteSelectedItems(context: Context) {
-        deleteItems(context, getSelectedIds())
-        resetSelectMode()
-    }
-
-    /**
-     * Удаляет записи из базы данных
-     * @param [context] контекст
-     * @param [ids]     идентификаторы записей на удаление
-     */
-    private fun deleteItems(context: Context, ids: List<Long>) {
-        ids.map { DatabaseDescription.Clip.buildClipUri(it) }
-                .forEach { context.contentResolver.delete(it, null, null) }
-    }
-
     /**
      * Возвращает список выделенных записей
      * @return список выделенных записей
      */
-    private fun getSelectedIds(): List<Long> {
+    fun getSelectedIds(): List<Long> {
         val result = ArrayList<Long>()
-        for (pos in multiSelector.selectedPositions) {
-            clipCursor!!.moveToPosition(pos)
-            result.add(clipCursor!!.id)
+        multiSelector.selectedPositions.forEach { pos ->
+            clipCursor?.let {
+                it.moveToPosition(pos)
+                result.add(it.id)
+            }
         }
         return result
-    }
-
-    /**
-     * Объединяет содержимое выделенных записей в одну строку
-     * @param splitChar Строка-разделитель между записями
-     * @param deleteOld Требуется ли удалить объединенные записи
-     * @return Объединенная строка
-     */
-    private fun getSplitItemsText(context: Context, splitChar: String, deleteOld: Boolean): String {
-        val resultText = getSelectedClips(context).joinToString(splitChar)
-        if (deleteOld) {
-            deleteItems(context, getSelectedIds())
-        }
-        return resultText
-    }
-
-    /**
-     * Возвращает список выделенных записей
-     * @param [context] контекст
-     * @return список выделенных записей
-     */
-    private fun getSelectedClips(context: Context): ArrayList<String> {
-        return getSelectedIds()
-                .map { DatabaseDescription.Clip.buildClipUri(it) }
-                .map { ClipCursor(context.contentResolver.query(it, null, null, null, null)) }
-                .filter { it.moveToFirst() }
-                .mapTo(ArrayList()) { it.content }
-    }
-
-    /**
-     * Объединяет содержимое выделенных записей в одну строку и создает на ее основе новую запись
-     * @param splitChar Строка-разделитель между записями
-     * @param deleteOld Требуется ли удалить объединенные записи
-     */
-    fun splitItems(context: Context, splitChar: String, deleteOld: Boolean) {
-        if (multiSelector.selectedPositions.size > 1) {
-            val newClipText = getSplitItemsText(context, splitChar, deleteOld)
-
-            val uriInsert = Clip.CONTENT_URI
-            val contentValues = Clip.getDefaultContentValues()
-            contentValues.put(Clip.COLUMN_CONTENT, newClipText)
-            context.contentResolver.insert(uriInsert, contentValues)
-
-            resetSelectMode()
-            Toast.makeText(context, R.string.splited, Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, R.string.select_cancel, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    /** Объединяет содержимое выделенных записей и отравляет в письме  */
-    fun shareItems(context: Context) {
-        val shareText = getSplitItemsText(context, UtilPreferences.getSplitChar(context), false)
-        Util.shareText(context, shareText)
-    }
-
-    /**
-     * Изменяет категорию выделенных записей
-     * @param categoryId идентификатор категории
-     */
-    fun changeCategory(context: Context, categoryId: Long) {
-        for (id in getSelectedIds()) {
-            val uri = DatabaseDescription.Clip.buildClipUri(id)
-
-            val contentValues = ContentValues()
-            contentValues.put(Clip.COLUMN_CATEGORY_ID, categoryId)
-            context.contentResolver.update(uri, contentValues, null, null)
-        }
     }
 
     /** Интерфейс слушателя нажатий  */
@@ -236,65 +143,52 @@ internal class ClipsCursorAdapter(
     /** Холдер основного элемента списка  */
     internal inner class ViewHolder(
             /** Виджет элемента списка */
-            itemView: View
-    ) : SwappingHolder(itemView, multiSelector) {
+            view: View
+    ) : SwappingHolder(view, multiSelector) {
 
-        /** Идентификатор заметки  */
-        private var _id: Long = 0
-        /** Идентификатор заметки  */
-        private val tvId: TextView
-        /** Заголовок заметки  */
-        private val tvTitle: TextView
-        /** Содержимое заметки  */
-        private val tvContent: TextView
-        /** Дата заметки  */
-        private val tvDate: TextView
-        /** Категория заметки  */
-        private val tvCategoryId: TextView
-        /** Признак удаленной записи  */
-        private val tvIsDeleted: TextView
-        /** Иконка "скопировать"  */
-        private val ivCopy: ImageView
-        /** Иконка избранности  */
-        private val ivFavorite: ImageView
+        /** Идентификатор заметки */
+        private var clipId: Long = 0
+        /** Идентификатор заметки */
+        private val tvId = view.findViewById(R.id.tvId) as TextView
+        /** Заголовок заметки */
+        private val tvTitle = view.findViewById(R.id.tvTitle) as TextView
+        /** Содержимое заметки */
+        private val tvContent = view.findViewById(R.id.tvContent) as TextView
+        /** Дата заметки */
+        private val tvDate = view.findViewById(R.id.tvDate) as TextView
+        /** Категория заметки */
+        private val tvCategoryId = view.findViewById(R.id.tvCategoryId) as TextView
+        /** Признак удаленной записи */
+        private val tvIsDeleted = view.findViewById(R.id.tvIsDeleted) as TextView
+        /** Иконка "скопировать" */
+        private val ivCopy = view.findViewById(R.id.ivCopy) as ImageView
+        /** Иконка избранности */
+        private val ivFavorite = view.findViewById(R.id.ivFavorite) as ImageView
 
         init {
-            val context = itemView.context
-            selectionModeBackgroundDrawable = context.resources.getDrawable(R.drawable.selection_drawable)
+            val context = view.context
+            selectionModeBackgroundDrawable = ContextCompat.getDrawable(context, R.drawable.selection_drawable)
 
-            tvId = itemView.findViewById(R.id.tvId) as TextView
-            tvTitle = itemView.findViewById(R.id.tvTitle) as TextView
-            tvContent = itemView.findViewById(R.id.tvContent) as TextView
-            tvDate = itemView.findViewById(R.id.tvDate) as TextView
-            tvCategoryId = itemView.findViewById(R.id.tvCategoryId) as TextView
-            tvIsDeleted = itemView.findViewById(R.id.tvIsDeleted) as TextView
-            ivCopy = itemView.findViewById(R.id.ivCopy) as ImageView
-            ivFavorite = itemView.findViewById(R.id.ivFavorite) as ImageView
+            val showMeta = UtilPreferences.isShowMetaInAdapter(context)
+            tvId.setGone(!showMeta)
+            tvCategoryId.setGone(!showMeta)
+            tvIsDeleted.setGone(!showMeta)
 
-            if (UtilPreferences.isShowMetaInAdapter(context)) {
-                tvId.visibility = View.VISIBLE
-                tvCategoryId.visibility = View.VISIBLE
-                tvIsDeleted.visibility = View.VISIBLE
-            } else {
-                tvId.visibility = View.GONE
-                tvCategoryId.visibility = View.GONE
-                tvIsDeleted.visibility = View.GONE
-            }
-
-            itemView.setOnClickListener {
-                // Если множественное выделение неактивно
-                if (!multiSelector.tapSelection(this@ViewHolder)) {
-                    clickListener?.onClick(_id)
-                } else {
-                    if (multiSelector.selectedPositions.size == 0) {
+            view.setOnClickListener {
+                if (multiSelector.tapSelection(this@ViewHolder)) {
+                    // Если множественное выделение активно
+                    if (getSelectedIds().isEmpty()) {
                         resetSelectMode()
                     } else {
-                        clickListener!!.onSelectedChange(true, multiSelector.selectedPositions.size)
+                        clickListener?.onSelectedChange(true, multiSelector.selectedPositions.size)
                     }
+                } else {
+                    // Если множественное выделение неактивно, жмем
+                    clickListener?.onClick(clipId)
                 }
             }
 
-            itemView.setOnLongClickListener(View.OnLongClickListener {
+            view.setOnLongClickListener(View.OnLongClickListener {
                 if (!multiSelector.isSelectable) {
                     multiSelector.isSelectable = true
                     multiSelector.setSelected(this@ViewHolder, true)
@@ -311,7 +205,7 @@ internal class ClipsCursorAdapter(
 
             ivFavorite.setOnClickListener {
                 clipCursor!!.moveToPosition(adapterPosition)
-                setIsFavorite(context, _id, !clipCursor!!.isFavorite)
+                ClipsHelper.setFavorite(context, clipId, !clipCursor!!.isFavorite)
             }
         }
 
@@ -320,7 +214,7 @@ internal class ClipsCursorAdapter(
          * @param cursor данные
          */
         internal fun bindView(cursor: ClipCursor) {
-            _id = cursor.id
+            clipId = cursor.id
             tvId.text = cursor.id.toString()
             tvTitle.text = cursor.title
             tvContent.text = cursor.content

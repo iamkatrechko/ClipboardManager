@@ -57,7 +57,7 @@ public class DialogSplitClips extends DialogFragment {
         etSplitChar = (EditText) view.findViewById(R.id.etSplitChar);
         cbDelete = (CheckBox) view.findViewById(R.id.cbDelete);
 
-        etSplitChar.setText(UtilPreferences.getSplitChar(getActivity()));
+        etSplitChar.setText(UtilPreferences.getSeparator(getActivity()));
 
         return new AlertDialog.Builder(getActivity())
                 .setView(view)

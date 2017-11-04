@@ -17,14 +17,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import com.iamkatrechko.clipboardmanager.view.DialogManager;
 import com.iamkatrechko.clipboardmanager.R;
+import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository;
+import com.iamkatrechko.clipboardmanager.domain.ClipsHelper;
+import com.iamkatrechko.clipboardmanager.domain.util.Util;
+import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences;
+import com.iamkatrechko.clipboardmanager.view.DialogManager;
 import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity;
 import com.iamkatrechko.clipboardmanager.view.activity.DeveloperActivity;
 import com.iamkatrechko.clipboardmanager.view.activity.SearchActivity;
 import com.iamkatrechko.clipboardmanager.view.adapter.ClipsCursorAdapter;
-import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences;
 
 import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip;
 
@@ -49,6 +53,8 @@ public class ClipsListFragment extends Fragment implements LoaderManager.LoaderC
     private boolean isContextMenu;
     /** Количество выделенных элементов */
     private int selectedCount = 0;
+    /** Репозиторий для работы с базой записей */
+    private ClipboardRepository repository;
 
     /**
      * Возвращает новый экземпляр фрагмента
@@ -62,6 +68,7 @@ public class ClipsListFragment extends Fragment implements LoaderManager.LoaderC
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        repository = new ClipboardRepository();
     }
 
     @Override
@@ -235,7 +242,10 @@ public class ClipsListFragment extends Fragment implements LoaderManager.LoaderC
                 break;
             // Поделиться выделенными записями
             case R.id.action_share:
-                clipsCursorAdapter.shareItems(getContext());
+                String shareText = ClipsHelper.INSTANCE.joinToString(getContext(),
+                        clipsCursorAdapter.getSelectedIds(),
+                        UtilPreferences.getSeparator(getContext()));
+                Util.shareText(getContext(), shareText);
                 break;
             // Сменить категорию выделенных записей
             case R.id.action_change_category:
@@ -249,19 +259,25 @@ public class ClipsListFragment extends Fragment implements LoaderManager.LoaderC
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_SPLIT_CLIPS) {
             String splitChar = data.getStringExtra("splitChar");
-            boolean deleteOldClips = data.getBooleanExtra("deleteOldClips", false);
-
-            clipsCursorAdapter.splitItems(getContext(), splitChar, deleteOldClips);
+            if (clipsCursorAdapter.getSelectedIds().size() > 0) {
+                boolean deleteOldClips = data.getBooleanExtra("deleteOldClips", false);
+                ClipsHelper.INSTANCE.splitAndDelete(getContext(), clipsCursorAdapter.getSelectedIds(), splitChar, deleteOldClips);
+                clipsCursorAdapter.resetSelectMode();
+                Toast.makeText(getContext(), R.string.splited, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), R.string.select_cancel, Toast.LENGTH_SHORT).show();
+            }
         }
         if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_CHANGE_CATEGORY) {
             long categoryId = data.getLongExtra("categoryId", 0);
-
-            clipsCursorAdapter.changeCategory(getContext(), categoryId);
+            ClipsHelper.INSTANCE.changeCategory(getContext(), clipsCursorAdapter.getSelectedIds(), categoryId);
         }
         if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_DELETE_CONFIRM) {
             boolean delete = data.getBooleanExtra("delete", false);
-            if (delete)
-                clipsCursorAdapter.deleteSelectedItems(getContext());
+            if (delete) {
+                repository.deleteClips(getContext(), clipsCursorAdapter.getSelectedIds());
+                clipsCursorAdapter.resetSelectMode();
+            }
         }
         if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_SET_ORDER_TYPE) {
             String orderType = data.getStringExtra("orderType");

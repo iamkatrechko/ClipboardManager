@@ -57,7 +57,7 @@ public class UtilPreferences {
     /**
      * Возвращает строку-разделитель, использующуюся для соединения нескольких записей
      */
-    public static String getSplitChar(Context context) {
+    public static String getSeparator(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getString(PREF_SPLIT_CHAR, " | ");
     }
