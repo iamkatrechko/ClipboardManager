@@ -69,7 +69,7 @@ class ClipsListFragment : Fragment() {
          * @param [categoryId] идентификатор категории
          * @return новый экземпляр фрагмента
          */
-        fun newInstance(categoryId: Long?): ClipsListFragment {
+        fun newInstance(categoryId: Long? = null): ClipsListFragment {
             val fragment = ClipsListFragment()
 
             val bundle = Bundle()
@@ -104,14 +104,12 @@ class ClipsListFragment : Fragment() {
      * @param categoryId идентификатор категории
      */
     fun showClipsByCategoryId(categoryId: Long) {
-        clipsCursorAdapter.resetSelectMode()
-        val bundle = Bundle()
-        bundle.putLong(ClipsListLoader.KEY_LOADER_CATEGORY_ID, categoryId)
-        val isOnlyFavoriteShow = UtilPreferences.isShowOnlyFavorite(context)
-        bundle.putBoolean(ClipsListLoader.KEY_LOADER_ONLY_FAVORITE, isOnlyFavoriteShow)
-        val orderType = UtilPreferences.getOrderType(context)
-        bundle.putInt(ClipsListLoader.KEY_LOADER_ORDER_TYPE, orderType.ordinal)
         currentCategoryId = categoryId
+        val bundle = Bundle()
+        clipsCursorAdapter.resetSelectMode()
+        bundle.putLong(ClipsListLoader.KEY_LOADER_CATEGORY_ID, categoryId)
+        bundle.putBoolean(ClipsListLoader.KEY_LOADER_ONLY_FAVORITE, UtilPreferences.isShowOnlyFavorite(context))
+        bundle.putInt(ClipsListLoader.KEY_LOADER_ORDER_TYPE, UtilPreferences.getOrderType(context).ordinal)
         loaderManager.restartLoader(CLIPS_BY_CATEGORY_LOADER, bundle, ClipsListLoader(context, object : ClipsListLoader.OnDataPreparedListener {
             override fun onPrepared(data: Cursor?) {
                 clipsCursorAdapter.setCursor(data)

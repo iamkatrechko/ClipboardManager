@@ -19,8 +19,8 @@ import android.widget.ExpandableListView;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper.CategoryCursor;
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
-import com.iamkatrechko.clipboardmanager.view.adapter.navigation.NavGroups;
 import com.iamkatrechko.clipboardmanager.view.adapter.NavigationMenuAdapter;
+import com.iamkatrechko.clipboardmanager.view.adapter.navigation.NavGroups;
 import com.iamkatrechko.clipboardmanager.view.fragment.ClipsListFragment;
 
 /**
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final String TAG = MainActivity.class.getSimpleName();
 
     /** Идентификатор загрузчика категорий */
-    private static final int CATEGORIES_LOADER = 1;
+    private static final int CLIPS_LOADER = 1;
 
     /** Виджет бокового меню */
     private DrawerLayout drawerLayout;
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
         initNavigationView();
 
-        getSupportLoaderManager().initLoader(CATEGORIES_LOADER, null, this);
+        getSupportLoaderManager().initLoader(CLIPS_LOADER, null, this);
     }
 
     @Override
@@ -104,14 +104,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 NavGroups group = NavGroups.values()[groupPos];
                 switch (group) {
                     case ALL_CLIPS:
-
+                        showByCategory(-1L);
                         break;
                     case CATEGORIES:
-                        /*getFragment(NAV_MENU_POS_TODAY);*/
                         break;
-                    /*case NAV_MENU_POS_WEEK:
-                        getFragment(NAV_MENU_POS_WEEK);
-                        break;*/
                     case SETTINGS:
                         startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                         break;
@@ -133,10 +129,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             startActivity(new Intent(getApplicationContext(), EditCategoriesActivity.class));
                             return true;
                         }
-                        ClipsListFragment clipsFragment = (ClipsListFragment) getSupportFragmentManager().findFragmentById(R.id.container);
                         cursor.moveToPosition(childPos);
-                        clipsFragment.showClipsByCategoryId(cursor.getID());
-                        drawerLayout.closeDrawer(GravityCompat.START);
+                        showByCategory(cursor.getID());
                         return true;
                 }
                 return true;
@@ -144,10 +138,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
     }
 
+    /**
+     * Отобржает список записей по категории
+     * @param categoryId идентификатор категории
+     */
+    private void showByCategory(Long categoryId) {
+        ClipsListFragment clipsFragment = (ClipsListFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+        clipsFragment.showClipsByCategoryId(categoryId);
+        drawerLayout.closeDrawer(GravityCompat.START);
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
-            case CATEGORIES_LOADER:
+            case CLIPS_LOADER:
                 Log.d(TAG, "onCreateLoader");
                 return new CursorLoader(this,
                         DatabaseDescription.Category.CONTENT_URI, // Uri таблицы contacts
