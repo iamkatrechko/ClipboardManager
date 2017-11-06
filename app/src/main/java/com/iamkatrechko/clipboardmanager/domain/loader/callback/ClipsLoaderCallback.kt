@@ -58,7 +58,7 @@ class ClipsLoaderCallback(
                         DatabaseDescription.ClipsTable.CONTENT_URI, null,
                         whereQuery,
                         null,
-                        getOrderQuery(orderType))
+                        orderType.query)
             }
             else -> throw IllegalArgumentException("Неизвестный тип загрузчика записей")
         }
@@ -71,14 +71,6 @@ class ClipsLoaderCallback(
 
     override fun onLoaderReset(loader: Loader<Cursor>?) {
         Log.d(TAG, "onLoaderReset")
-    }
-
-    /** Возвращает параметр запроса сортировки по типу сортировки */
-    private fun getOrderQuery(orderType: OrderType) = when (orderType) {
-        BY_DATE_ASC -> DatabaseDescription.ClipsTable.COLUMN_DATE + " DESC"
-        BY_DATE_DESC -> DatabaseDescription.ClipsTable.COLUMN_DATE
-        BY_TITLE_ASC -> DatabaseDescription.ClipsTable.COLUMN_TITLE
-        BY_TITLE_DESC -> DatabaseDescription.ClipsTable.COLUMN_TITLE + " DESC"
     }
 
     /** Слушатель готовности данных к использованию */

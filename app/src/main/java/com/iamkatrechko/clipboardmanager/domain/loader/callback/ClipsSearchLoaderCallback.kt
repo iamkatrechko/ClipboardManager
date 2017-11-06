@@ -11,8 +11,6 @@ import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
 import com.iamkatrechko.clipboardmanager.data.mapper.CursorToClipMapper
 import com.iamkatrechko.clipboardmanager.data.model.Clip
 import com.iamkatrechko.clipboardmanager.domain.param.ClipParam
-import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType
-import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType.*
 
 /**
  * Загрузчик списка записей по поиску
@@ -32,7 +30,7 @@ class ClipsSearchLoaderCallback(
         when (id) {
             SEARCH_CLIPS_LOADER -> {
                 val queryText = param.queryText ?: ""
-                val queryOrder = getOrderQuery(param.order)
+                val queryOrder = param.order.query
                 return CursorLoader(context,
                         DatabaseDescription.ClipsTable.CONTENT_URI,
                         null,
@@ -52,20 +50,12 @@ class ClipsSearchLoaderCallback(
         preparedAction(CursorToClipMapper().toClips(ClipCursor(data)))
     }
 
-    /** Возвращает параметр запроса сортировки по типу сортировки */
-    private fun getOrderQuery(orderType: OrderType) = when (orderType) {
-        BY_DATE_ASC -> DatabaseDescription.ClipsTable.COLUMN_DATE + " DESC"
-        BY_DATE_DESC -> DatabaseDescription.ClipsTable.COLUMN_DATE
-        BY_TITLE_ASC -> DatabaseDescription.ClipsTable.COLUMN_TITLE
-        BY_TITLE_DESC -> DatabaseDescription.ClipsTable.COLUMN_TITLE + " DESC"
-    }
-
     companion object {
 
         /** Идентификатор загрузчика найденых заметок  */
         const val SEARCH_CLIPS_LOADER = 1
 
         /** Ключ параметра загрузчика. Параметры запроса */
-        const val KEY_LOADER_PARAMS: String = "KEY_LOADER_PARAMS"
+        const val KEY_LOADER_PARAMS = "KEY_LOADER_PARAMS"
     }
 }

@@ -11,6 +11,7 @@ import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
 import com.iamkatrechko.clipboardmanager.data.mapper.CursorToClipMapper
 import com.iamkatrechko.clipboardmanager.data.model.Clip
+import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType
 import com.iamkatrechko.clipboardmanager.domain.service.ClipboardService
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
@@ -75,7 +76,7 @@ object RemoteViewCreator {
                 null,
                 queries.joinToString(" AND "),
                 null,
-                DatabaseDescription.ClipsTable.COLUMN_DATE + " DESC LIMIT 4")
+                OrderType.BY_DATE_ASC.query + " LIMIT 4")
         )
 
         return CursorToClipMapper().toClips(ClipCursor(lastRecords))

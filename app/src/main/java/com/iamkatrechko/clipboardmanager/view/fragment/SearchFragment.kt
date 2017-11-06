@@ -67,8 +67,9 @@ class SearchFragment : Fragment() {
      * @param query текст запроса
      */
     private fun searchOnText(query: String) {
-        val bundle = Bundle()
-        bundle.putParcelable(ClipsSearchLoaderCallback.KEY_LOADER_PARAMS, ClipParam(queryText = query))
+        val bundle = Bundle().apply {
+            putParcelable(ClipsSearchLoaderCallback.KEY_LOADER_PARAMS, ClipParam(queryText = query))
+        }
         loaderManager.restartLoader<Cursor>(ClipsSearchLoaderCallback.SEARCH_CLIPS_LOADER, bundle,
                 ClipsSearchLoaderCallback(context, { clipsAdapter.setClips(it) }))
     }
