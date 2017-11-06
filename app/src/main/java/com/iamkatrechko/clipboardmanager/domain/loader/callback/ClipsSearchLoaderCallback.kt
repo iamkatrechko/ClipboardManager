@@ -10,6 +10,9 @@ import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
 import com.iamkatrechko.clipboardmanager.data.mapper.CursorToClipMapper
 import com.iamkatrechko.clipboardmanager.data.model.Clip
+import com.iamkatrechko.clipboardmanager.domain.param.ClipParam
+import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType
+import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType.*
 
 /**
  * Загрузчик списка записей по поиску
@@ -20,19 +23,23 @@ class ClipsSearchLoaderCallback(
         /** Контекст */
         private val context: Context,
         /** Слушатель готовности данных к использованию */
-        private val listener: OnDataPreparedListener
+        private val preparedAction: (list: List<Clip>) -> Unit
 ) : LoaderManager.LoaderCallbacks<Cursor> {
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor>? {
+        val param = args?.getParcelable<ClipParam>(KEY_LOADER_PARAMS) ?:
+                throw IllegalArgumentException("Не заданы параметры запроса")
         when (id) {
             SEARCH_CLIPS_LOADER -> {
-                //TODO Добавить реализацию пустого результата (View)
-                val query = args?.getString(KEY_LOADER_QUERY_TEXT)
+                val queryText = param.queryText ?: ""
+                val queryOrder = getOrderQuery(param.order)
                 return CursorLoader(context,
-                        DatabaseDescription.Clip.CONTENT_URI, null,
-                        DatabaseDescription.Clip.COLUMN_TITLE + " LIKE '%" + query + "%' OR " +
-                                DatabaseDescription.Clip.COLUMN_CONTENT + " LIKE '%" + query + "%'", null,
-                        DatabaseDescription.Clip._ID + " DESC")
+                        DatabaseDescription.Clip.CONTENT_URI,
+                        null,
+                        DatabaseDescription.Clip.COLUMN_TITLE + " LIKE '%" + queryText + "%' OR " +
+                                DatabaseDescription.Clip.COLUMN_CONTENT + " LIKE '%" + queryText + "%'",
+                        null,
+                        queryOrder)
             }
             else -> return null
         }
@@ -42,7 +49,15 @@ class ClipsSearchLoaderCallback(
     }
 
     override fun onLoadFinished(loader: Loader<Cursor>?, data: Cursor?) {
-        listener.onPrepared(CursorToClipMapper().toClips(ClipCursor(data)))
+        preparedAction(CursorToClipMapper().toClips(ClipCursor(data)))
+    }
+
+    /** Возвращает параметр запроса сортировки по типу сортировки */
+    private fun getOrderQuery(orderType: OrderType) = when (orderType) {
+        BY_DATE_ASC -> DatabaseDescription.Clip.COLUMN_DATE + " DESC"
+        BY_DATE_DESC -> DatabaseDescription.Clip.COLUMN_DATE
+        BY_TITLE_ASC -> DatabaseDescription.Clip.COLUMN_TITLE
+        BY_TITLE_DESC -> DatabaseDescription.Clip.COLUMN_TITLE + " DESC"
     }
 
     companion object {
@@ -50,17 +65,7 @@ class ClipsSearchLoaderCallback(
         /** Идентификатор загрузчика найденых заметок  */
         const val SEARCH_CLIPS_LOADER = 1
 
-        /** Ключ параметра загрузчика. Идентификатор категории */
-        const val KEY_LOADER_QUERY_TEXT: String = "KEY_LOADER_QUERY_TEXT"
-    }
-
-    /** Слушатель готовности данных к использованию */
-    interface OnDataPreparedListener {
-
-        /**
-         * Данные готовы к использованию
-         * @param [clipsList] список записей
-         */
-        fun onPrepared(clipsList: List<Clip>)
+        /** Ключ параметра загрузчика. Параметры запроса */
+        const val KEY_LOADER_PARAMS: String = "KEY_LOADER_PARAMS"
     }
 }

@@ -13,8 +13,8 @@ import android.widget.EditText
 import android.widget.ImageButton
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
-import com.iamkatrechko.clipboardmanager.data.model.Clip
 import com.iamkatrechko.clipboardmanager.domain.loader.callback.ClipsSearchLoaderCallback
+import com.iamkatrechko.clipboardmanager.domain.param.ClipParam
 import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity
 import com.iamkatrechko.clipboardmanager.view.adapter.ClipsAdapter
 import com.jakewharton.rxbinding2.widget.RxTextView
@@ -30,7 +30,7 @@ class SearchFragment : Fragment() {
     private var clipsAdapter: ClipsAdapter = ClipsAdapter(object : ClipsAdapter.ClipClickListener {
 
         override fun onClick(clipId: Long) {
-            val i = Intent(activity, ClipEditActivity::class.java)
+            val i = Intent(context, ClipEditActivity::class.java)
             i.putExtra("URI", DatabaseDescription.Clip.buildClipUri(clipId))
             startActivity(i)
         }
@@ -52,7 +52,7 @@ class SearchFragment : Fragment() {
         recyclerView = view.findViewById(R.id.recyclerView) as RecyclerView
 
         clipsAdapter.setEmptyView(view.findViewById(R.id.linearEmpty))
-        recyclerView.layoutManager = LinearLayoutManager(activity.baseContext)
+        recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = clipsAdapter
 
@@ -68,13 +68,9 @@ class SearchFragment : Fragment() {
      */
     private fun searchOnText(query: String) {
         val bundle = Bundle()
-        bundle.putString(ClipsSearchLoaderCallback.KEY_LOADER_QUERY_TEXT, query)
+        bundle.putParcelable(ClipsSearchLoaderCallback.KEY_LOADER_PARAMS, ClipParam(queryText = query))
         loaderManager.restartLoader<Cursor>(ClipsSearchLoaderCallback.SEARCH_CLIPS_LOADER, bundle,
-                ClipsSearchLoaderCallback(context, object : ClipsSearchLoaderCallback.OnDataPreparedListener {
-                    override fun onPrepared(clipsList: List<Clip>) {
-                        clipsAdapter.setClips(clipsList)
-                    }
-                }))
+                ClipsSearchLoaderCallback(context, { clipsAdapter.setClips(it) }))
     }
 
     companion object {

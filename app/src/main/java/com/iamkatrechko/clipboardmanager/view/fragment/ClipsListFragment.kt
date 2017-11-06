@@ -103,11 +103,12 @@ class ClipsListFragment : Fragment() {
      */
     fun showClipsByCategoryId(categoryId: Long) {
         currentCategoryId = categoryId
-        val bundle = Bundle()
         clipsAdapter.resetSelectMode()
-        bundle.putLong(ClipsLoaderCallback.KEY_LOADER_CATEGORY_ID, categoryId)
-        bundle.putBoolean(ClipsLoaderCallback.KEY_LOADER_ONLY_FAVORITE, UtilPreferences.isShowOnlyFavorite(context))
-        bundle.putInt(ClipsLoaderCallback.KEY_LOADER_ORDER_TYPE, UtilPreferences.getOrderType(context).ordinal)
+        val bundle = Bundle().apply {
+            putLong(ClipsLoaderCallback.KEY_LOADER_CATEGORY_ID, categoryId)
+            putBoolean(ClipsLoaderCallback.KEY_LOADER_ONLY_FAVORITE, UtilPreferences.isShowOnlyFavorite(context))
+            putInt(ClipsLoaderCallback.KEY_LOADER_ORDER_TYPE, UtilPreferences.getOrderType(context).ordinal)
+        }
         loaderManager.restartLoader(ClipsLoaderCallback.CLIPS_BY_CATEGORY_LOADER, bundle, ClipsLoaderCallback(context, object : ClipsLoaderCallback.OnDataPreparedListener {
             override fun onPrepared(clipsList: List<Clip>) {
                 clipsAdapter.setClips(clipsList)
