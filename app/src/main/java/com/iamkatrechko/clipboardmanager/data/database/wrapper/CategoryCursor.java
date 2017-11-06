@@ -25,7 +25,7 @@ public class CategoryCursor extends CursorWrapper {
      * @return идентификатор категории
      */
     public long getID() {
-        return getWrappedCursor().getLong(getColumnIndex(DatabaseDescription.Category._ID));
+        return getWrappedCursor().getLong(getColumnIndex(DatabaseDescription.CategoryTable._ID));
     }
 
     /**
@@ -33,6 +33,6 @@ public class CategoryCursor extends CursorWrapper {
      * @return заголовок категории
      */
     public String getTitle() {
-        return getWrappedCursor().getString(getColumnIndex(DatabaseDescription.Category.COLUMN_TITLE));
+        return getWrappedCursor().getString(getColumnIndex(DatabaseDescription.CategoryTable.COLUMN_TITLE));
     }
 }

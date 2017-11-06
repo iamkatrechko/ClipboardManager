@@ -17,12 +17,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
 import com.iamkatrechko.clipboardmanager.view.DialogManager;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.view.adapter.CategoriesCursorAdapter;
 
-import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Category;
-import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip;
+import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.CategoryTable;
+import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.ClipsTable;
 
 /**
  * Фрагмент экрана со списком категорий
@@ -84,35 +85,35 @@ public class CategoriesListFragment extends Fragment implements LoaderManager.Lo
             long categoryId = data.getLongExtra("categoryId", 1);
             String newName = data.getStringExtra("newName");
 
-            Uri uri = Category.buildClipUri(categoryId);
+            Uri uri = CategoryTable.buildClipUri(categoryId);
             ContentValues contentValues = new ContentValues();
-            contentValues.put(Category.COLUMN_TITLE, newName);
+            contentValues.put(CategoryTable.COLUMN_TITLE, newName);
             getActivity().getContentResolver().update(uri, contentValues, null, null);
         }
         if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_ADD) {
             String newName = data.getStringExtra("newName");
 
-            Uri uri = Category.CONTENT_URI;
+            Uri uri = CategoryTable.CONTENT_URI;
             ContentValues contentValues = new ContentValues();
-            contentValues.put(Category.COLUMN_TITLE, newName);
+            contentValues.put(CategoryTable.COLUMN_TITLE, newName);
             getActivity().getContentResolver().insert(uri, contentValues);
         }
         if (resultCode == Activity.RESULT_OK && requestCode == DialogManager.DIALOG_DELETE) {
             long deleteCategoryId = data.getLongExtra("deleteCategoryId", -1);
             long newCategoryId = data.getLongExtra("newCategoryId", 1);
 
-            Uri uriMove = Clip.CONTENT_URI;
+            Uri uriMove = DatabaseDescription.ClipsTable.CONTENT_URI;
             ContentValues contentValues = new ContentValues();
-            contentValues.put(Clip.COLUMN_CATEGORY_ID, newCategoryId);
+            contentValues.put(ClipsTable.COLUMN_CATEGORY_ID, newCategoryId);
 
             // Перемещение записей из удаляемой категории в новую
             getActivity().getContentResolver().update(uriMove,
                     contentValues,
-                    Clip.COLUMN_CATEGORY_ID + "=" + deleteCategoryId,
+                    DatabaseDescription.ClipsTable.COLUMN_CATEGORY_ID + "=" + deleteCategoryId,
                     null);
 
             // Удаление категории (теперь уже пустой)
-            Uri uriDelete = Category.buildClipUri(deleteCategoryId);
+            Uri uriDelete = CategoryTable.buildClipUri(deleteCategoryId);
             getActivity().getContentResolver().delete(uriDelete,
                     null,
                     null);
@@ -124,7 +125,7 @@ public class CategoriesListFragment extends Fragment implements LoaderManager.Lo
         switch (id) {
             case CATEGORIES_LOADER:
                 return new CursorLoader(getActivity(),
-                        Category.CONTENT_URI, // Uri таблицы contacts
+                        CategoryTable.CONTENT_URI, // Uri таблицы contacts
                         null, // все столбцы
                         null, // все записи
                         null, // без аргументов

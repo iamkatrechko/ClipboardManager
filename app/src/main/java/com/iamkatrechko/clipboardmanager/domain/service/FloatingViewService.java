@@ -26,6 +26,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.R;
+import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor;
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils;
 import com.iamkatrechko.clipboardmanager.view.adapter.ClipsAdapter;
@@ -33,8 +34,8 @@ import com.iamkatrechko.clipboardmanager.view.adapter.ClipsAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Category;
-import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip;
+import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.CategoryTable;
+import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.ClipsTable;
 
 /**
  * Плавающий виджет со списком заметок
@@ -79,7 +80,7 @@ public class FloatingViewService extends Service {
         Log.i(TAG, "onCreate");
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         mainView = LayoutInflater.from(this).inflate(R.layout.float_view, null);
-        cursorLoader = new CursorLoader(getApplicationContext(), Clip.CONTENT_URI, null, null, null, Clip._ID + " DESC");
+        cursorLoader = new CursorLoader(getApplicationContext(), ClipsTable.CONTENT_URI, null, null, null, DatabaseDescription.ClipsTable._ID + " DESC");
 
         recyclerView = (RecyclerView) mainView.findViewById(R.id.recyclerView);
         ivClose = (ImageView) mainView.findViewById(R.id.ivClose);
@@ -94,7 +95,7 @@ public class FloatingViewService extends Service {
         cursorAdapter = new ClipsAdapter(new ClipsAdapter.ClipClickListener() {
             @Override
             public void onClick(long clipId) {
-                ClipCursor c = new ClipCursor(cr.query(Clip.buildClipUri(clipId), null, null, null, null));
+                ClipCursor c = new ClipCursor(cr.query(DatabaseDescription.ClipsTable.buildClipUri(clipId), null, null, null, null));
                 c.moveToFirst();
 
                 ClipUtils.sendClipToMyAccessibilityService(getApplicationContext(), c.getContent());
@@ -112,10 +113,10 @@ public class FloatingViewService extends Service {
         cursorLoader.registerListener(125125, loaderListener);
         cursorLoader.startLoading();
 
-        //Cursor clips = cr.query(Clip.CONTENT_URI, null, null, null, Clip._ID + " DESC");
+        //Cursor clips = cr.query(ClipsTable.CONTENT_URI, null, null, null, ClipsTable._ID + " DESC");
         //////////////////
         List<String> list = new ArrayList<String>();
-        Uri uri = Category.CONTENT_URI;
+        Uri uri = CategoryTable.CONTENT_URI;
         Cursor c = cr.query(uri, null, null, null, null);
         for (int i = 0; i < c.getCount(); i++) {
             c.moveToPosition(i);

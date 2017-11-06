@@ -45,7 +45,7 @@ class ClipsListFragment : Fragment() {
     private var listener = object : ClipsAdapter.ClipClickListener {
 
         override fun onClick(clipId: Long) {
-            startActivity(ClipEditActivity.newIntent(activity, DatabaseDescription.Clip.buildClipUri(clipId)))
+            startActivity(ClipEditActivity.newIntent(activity, DatabaseDescription.ClipsTable.buildClipUri(clipId)))
         }
 
         override fun onSelectedChange(isSelectedMode: Boolean, selectedCount: Int) {

@@ -13,7 +13,6 @@ import com.iamkatrechko.clipboardmanager.data.mapper.CursorToClipMapper
 import com.iamkatrechko.clipboardmanager.data.model.Clip
 import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType
 import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType.*
-import com.iamkatrechko.clipboardmanager.view.fragment.ClipsListFragment
 
 /**
  * Загрузчик списка записей
@@ -51,12 +50,12 @@ class ClipsLoaderCallback(
 
         when (id) {
             CLIPS_BY_CATEGORY_LOADER -> {
-                val queryCatId = if (categoryId == -1L) null else DatabaseDescription.Clip.COLUMN_CATEGORY_ID + " = $categoryId "
-                val queryOnlyFav = if (!isOnlyFavoriteShow) null else DatabaseDescription.Clip.COLUMN_IS_FAVORITE + " = 1 "
+                val queryCatId = if (categoryId == -1L) null else DatabaseDescription.ClipsTable.COLUMN_CATEGORY_ID + " = $categoryId "
+                val queryOnlyFav = if (!isOnlyFavoriteShow) null else DatabaseDescription.ClipsTable.COLUMN_IS_FAVORITE + " = 1 "
 
                 val whereQuery = listOf(queryCatId, queryOnlyFav).filterNotNull().joinToString(" and ")
                 return CursorLoader(context,
-                        DatabaseDescription.Clip.CONTENT_URI, null,
+                        DatabaseDescription.ClipsTable.CONTENT_URI, null,
                         whereQuery,
                         null,
                         getOrderQuery(orderType))
@@ -76,10 +75,10 @@ class ClipsLoaderCallback(
 
     /** Возвращает параметр запроса сортировки по типу сортировки */
     private fun getOrderQuery(orderType: OrderType) = when (orderType) {
-        BY_DATE_ASC -> DatabaseDescription.Clip.COLUMN_DATE + " DESC"
-        BY_DATE_DESC -> DatabaseDescription.Clip.COLUMN_DATE
-        BY_TITLE_ASC -> DatabaseDescription.Clip.COLUMN_TITLE
-        BY_TITLE_DESC -> DatabaseDescription.Clip.COLUMN_TITLE + " DESC"
+        BY_DATE_ASC -> DatabaseDescription.ClipsTable.COLUMN_DATE + " DESC"
+        BY_DATE_DESC -> DatabaseDescription.ClipsTable.COLUMN_DATE
+        BY_TITLE_ASC -> DatabaseDescription.ClipsTable.COLUMN_TITLE
+        BY_TITLE_DESC -> DatabaseDescription.ClipsTable.COLUMN_TITLE + " DESC"
     }
 
     /** Слушатель готовности данных к использованию */

@@ -71,7 +71,7 @@ public class DialogCategoryDelete extends DialogFragment implements LoaderManage
 
         Cursor categoriesCursor = getActivity()
                 .getContentResolver()
-                .query(DatabaseDescription.Category.CONTENT_URI, null, null, null, null);
+                .query(DatabaseDescription.CategoryTable.CONTENT_URI, null, null, null, null);
 
         String[] categories = new String[categoriesCursor.getCount() - 1];
         categoriesCursor.moveToFirst();
@@ -115,7 +115,7 @@ public class DialogCategoryDelete extends DialogFragment implements LoaderManage
             case CATEGORIES_LOADER:
                 Log.d("MainActivity", "onCreateLoader");
                 return new CursorLoader(getActivity(),
-                        DatabaseDescription.Category.CONTENT_URI, // Uri таблицы contacts
+                        DatabaseDescription.CategoryTable.CONTENT_URI, // Uri таблицы contacts
                         null, // все столбцы
                         null, // все записи
                         null, // без аргументов

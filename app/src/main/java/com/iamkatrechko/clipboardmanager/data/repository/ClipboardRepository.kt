@@ -38,14 +38,14 @@ class ClipboardRepository {
     fun addClip(context: Context, text: String): Uri? {
         var titleLength = 25
 
-        val contentValues = DatabaseDescription.Clip.getDefaultContentValues()
+        val contentValues = DatabaseDescription.ClipsTable.getDefaultContentValues()
         if (text.length < titleLength) {
             titleLength = text.length
         }
-        contentValues.put(DatabaseDescription.Clip.COLUMN_TITLE, text.substring(0, titleLength))
-        contentValues.put(DatabaseDescription.Clip.COLUMN_CONTENT, text)
+        contentValues.put(DatabaseDescription.ClipsTable.COLUMN_TITLE, text.substring(0, titleLength))
+        contentValues.put(DatabaseDescription.ClipsTable.COLUMN_CONTENT, text)
 
-        return context.contentResolver.insert(DatabaseDescription.Clip.CONTENT_URI, contentValues)
+        return context.contentResolver.insert(DatabaseDescription.ClipsTable.CONTENT_URI, contentValues)
     }
 
     /**
@@ -55,9 +55,9 @@ class ClipboardRepository {
      * @return true - существует, false - не существует
      */
     fun alreadyExists(context: Context, text: String): Boolean {
-        val cursor = context.contentResolver.query(DatabaseDescription.Clip.CONTENT_URI,
+        val cursor = context.contentResolver.query(DatabaseDescription.ClipsTable.CONTENT_URI,
                 null,
-                DatabaseDescription.Clip.COLUMN_CONTENT + " = ?",
+                DatabaseDescription.ClipsTable.COLUMN_CONTENT + " = ?",
                 arrayOf(text),
                 null)
         return cursor != null && cursor.count != 0
@@ -70,7 +70,7 @@ class ClipboardRepository {
      * @return запись из базы данных
      */
     fun getClip(context: Context, id: Long): String? {
-        val uri = DatabaseDescription.Clip.buildClipUri(id)
+        val uri = DatabaseDescription.ClipsTable.buildClipUri(id)
         val cursor = ClipCursor(
                 context.contentResolver.query(uri, null, null, null, null)
         )
@@ -96,7 +96,7 @@ class ClipboardRepository {
      * @param [id]      идентификатор записи
      */
     fun deleteClip(context: Context, id: Long) {
-        context.contentResolver.delete(DatabaseDescription.Clip.buildClipUri(id),
+        context.contentResolver.delete(DatabaseDescription.ClipsTable.buildClipUri(id),
                 null, null)
     }
 

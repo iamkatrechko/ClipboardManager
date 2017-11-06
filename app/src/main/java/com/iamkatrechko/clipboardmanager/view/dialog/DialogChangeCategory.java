@@ -42,7 +42,7 @@ public class DialogChangeCategory extends DialogFragment {
 
     @NonNull
     public Dialog onCreateDialog(Bundle bundle) {
-        CategoryCursor categories = new CategoryCursor(getActivity().getContentResolver().query(DatabaseDescription.Category.CONTENT_URI,
+        CategoryCursor categories = new CategoryCursor(getActivity().getContentResolver().query(DatabaseDescription.CategoryTable.CONTENT_URI,
                 null,
                 null,
                 null,

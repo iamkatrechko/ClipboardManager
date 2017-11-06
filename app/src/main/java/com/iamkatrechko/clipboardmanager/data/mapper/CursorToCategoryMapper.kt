@@ -4,7 +4,7 @@ import com.iamkatrechko.clipboardmanager.data.database.wrapper.CategoryCursor
 import com.iamkatrechko.clipboardmanager.data.model.Category
 
 /**
- * Конвертер из CategoryCursor в Category
+ * Конвертер из CategoryCursor в CategoryTable
  * @author iamkatrechko
  *         Date: 04.11.2017
  */

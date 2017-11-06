@@ -64,18 +64,18 @@ object RemoteViewCreator {
 
     /** Возвращает список последних 4-х записей */
     private fun getLastClips(context: Context, currentClipText: String, onlyFavorite: Boolean): List<Clip> {
-        val queryWithoutCurrent = DatabaseDescription.Clip.COLUMN_CONTENT + " <> '$currentClipText'"
+        val queryWithoutCurrent = DatabaseDescription.ClipsTable.COLUMN_CONTENT + " <> '$currentClipText'"
         val queries = mutableListOf(queryWithoutCurrent)
         if (onlyFavorite) {
-            val queryOnlyFavorite = DatabaseDescription.Clip.COLUMN_IS_FAVORITE + " = 1"
+            val queryOnlyFavorite = DatabaseDescription.ClipsTable.COLUMN_IS_FAVORITE + " = 1"
             queries.add(queryOnlyFavorite)
         }
 
-        val lastRecords = ClipCursor(context.contentResolver.query(DatabaseDescription.Clip.CONTENT_URI,
+        val lastRecords = ClipCursor(context.contentResolver.query(DatabaseDescription.ClipsTable.CONTENT_URI,
                 null,
                 queries.joinToString(" AND "),
                 null,
-                DatabaseDescription.Clip.COLUMN_DATE + " DESC LIMIT 4")
+                DatabaseDescription.ClipsTable.COLUMN_DATE + " DESC LIMIT 4")
         )
 
         return CursorToClipMapper().toClips(ClipCursor(lastRecords))

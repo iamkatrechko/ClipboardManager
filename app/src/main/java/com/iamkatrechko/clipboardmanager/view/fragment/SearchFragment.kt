@@ -31,7 +31,7 @@ class SearchFragment : Fragment() {
 
         override fun onClick(clipId: Long) {
             val i = Intent(context, ClipEditActivity::class.java)
-            i.putExtra("URI", DatabaseDescription.Clip.buildClipUri(clipId))
+            i.putExtra("URI", DatabaseDescription.ClipsTable.buildClipUri(clipId))
             startActivity(i)
         }
 

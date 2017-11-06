@@ -46,10 +46,10 @@ object ClipsHelper {
      */
     fun changeCategory(context: Context, clipIds: List<Long>, categoryId: Long) {
         for (id in clipIds) {
-            val uri = DatabaseDescription.Clip.buildClipUri(id)
+            val uri = DatabaseDescription.ClipsTable.buildClipUri(id)
 
             val contentValues = ContentValues()
-            contentValues.put(DatabaseDescription.Clip.COLUMN_CATEGORY_ID, categoryId)
+            contentValues.put(DatabaseDescription.ClipsTable.COLUMN_CATEGORY_ID, categoryId)
             context.contentResolver.update(uri, contentValues, null, null)
         }
     }
@@ -62,7 +62,7 @@ object ClipsHelper {
      */
     fun setFavorite(context: Context, clipId: Long, isFavorite: Boolean) {
         val contentValues = ContentValues()
-        contentValues.put(DatabaseDescription.Clip.COLUMN_IS_FAVORITE, isFavorite)
-        context.contentResolver.update(DatabaseDescription.Clip.buildClipUri(clipId), contentValues, null, null)
+        contentValues.put(DatabaseDescription.ClipsTable.COLUMN_IS_FAVORITE, isFavorite)
+        context.contentResolver.update(DatabaseDescription.ClipsTable.buildClipUri(clipId), contentValues, null, null)
     }
 }

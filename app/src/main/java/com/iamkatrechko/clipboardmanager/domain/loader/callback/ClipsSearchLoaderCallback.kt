@@ -34,10 +34,10 @@ class ClipsSearchLoaderCallback(
                 val queryText = param.queryText ?: ""
                 val queryOrder = getOrderQuery(param.order)
                 return CursorLoader(context,
-                        DatabaseDescription.Clip.CONTENT_URI,
+                        DatabaseDescription.ClipsTable.CONTENT_URI,
                         null,
-                        DatabaseDescription.Clip.COLUMN_TITLE + " LIKE '%" + queryText + "%' OR " +
-                                DatabaseDescription.Clip.COLUMN_CONTENT + " LIKE '%" + queryText + "%'",
+                        DatabaseDescription.ClipsTable.COLUMN_TITLE + " LIKE '%" + queryText + "%' OR " +
+                                DatabaseDescription.ClipsTable.COLUMN_CONTENT + " LIKE '%" + queryText + "%'",
                         null,
                         queryOrder)
             }
@@ -54,10 +54,10 @@ class ClipsSearchLoaderCallback(
 
     /** Возвращает параметр запроса сортировки по типу сортировки */
     private fun getOrderQuery(orderType: OrderType) = when (orderType) {
-        BY_DATE_ASC -> DatabaseDescription.Clip.COLUMN_DATE + " DESC"
-        BY_DATE_DESC -> DatabaseDescription.Clip.COLUMN_DATE
-        BY_TITLE_ASC -> DatabaseDescription.Clip.COLUMN_TITLE
-        BY_TITLE_DESC -> DatabaseDescription.Clip.COLUMN_TITLE + " DESC"
+        BY_DATE_ASC -> DatabaseDescription.ClipsTable.COLUMN_DATE + " DESC"
+        BY_DATE_DESC -> DatabaseDescription.ClipsTable.COLUMN_DATE
+        BY_TITLE_ASC -> DatabaseDescription.ClipsTable.COLUMN_TITLE
+        BY_TITLE_DESC -> DatabaseDescription.ClipsTable.COLUMN_TITLE + " DESC"
     }
 
     companion object {

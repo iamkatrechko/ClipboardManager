@@ -59,7 +59,7 @@ public class DialogCategoryEdit extends DialogFragment {
             isAddNewCategory = true;
             etTitle.setText("Новая категория");
         }else{
-            Uri categoryUri = DatabaseDescription.Category.buildClipUri(categoryId);
+            Uri categoryUri = DatabaseDescription.CategoryTable.buildClipUri(categoryId);
             CategoryCursor cursor =
                     new CategoryCursor(getActivity().getContentResolver().query(categoryUri,
                             null,

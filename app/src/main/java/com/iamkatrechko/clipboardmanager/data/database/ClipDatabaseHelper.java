@@ -33,20 +33,20 @@ public class ClipDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         final String CREATE_CATEGORIES_TABLE =
-                "CREATE TABLE " + DatabaseDescription.Category.TABLE_NAME + "(" +
-                        DatabaseDescription.Category._ID + " INTEGER PRIMARY KEY, " +
-                        DatabaseDescription.Category.COLUMN_TITLE + " TEXT);";
+                "CREATE TABLE " + DatabaseDescription.CategoryTable.TABLE_NAME + "(" +
+                        DatabaseDescription.CategoryTable._ID + " INTEGER PRIMARY KEY, " +
+                        DatabaseDescription.CategoryTable.COLUMN_TITLE + " TEXT);";
         sqLiteDatabase.execSQL(CREATE_CATEGORIES_TABLE);
 
         final String CREATE_CLIPS_TABLE =
-                "CREATE TABLE " + DatabaseDescription.Clip.TABLE_NAME + "(" +
-                        DatabaseDescription.Clip._ID + " INTEGER PRIMARY KEY, " +
-                        DatabaseDescription.Clip.COLUMN_TITLE + " TEXT, " +
-                        DatabaseDescription.Clip.COLUMN_CONTENT + " TEXT, " +
-                        DatabaseDescription.Clip.COLUMN_DATE + " INTEGER, " +
-                        DatabaseDescription.Clip.COLUMN_IS_FAVORITE + " INTEGER, " +
-                        DatabaseDescription.Clip.COLUMN_CATEGORY_ID + " INTEGER, " +
-                        DatabaseDescription.Clip.COLUMN_IS_DELETED + " INTEGER);";
+                "CREATE TABLE " + DatabaseDescription.ClipsTable.TABLE_NAME + "(" +
+                        DatabaseDescription.ClipsTable._ID + " INTEGER PRIMARY KEY, " +
+                        DatabaseDescription.ClipsTable.COLUMN_TITLE + " TEXT, " +
+                        DatabaseDescription.ClipsTable.COLUMN_CONTENT + " TEXT, " +
+                        DatabaseDescription.ClipsTable.COLUMN_DATE + " INTEGER, " +
+                        DatabaseDescription.ClipsTable.COLUMN_IS_FAVORITE + " INTEGER, " +
+                        DatabaseDescription.ClipsTable.COLUMN_CATEGORY_ID + " INTEGER, " +
+                        DatabaseDescription.ClipsTable.COLUMN_IS_DELETED + " INTEGER);";
         sqLiteDatabase.execSQL(CREATE_CLIPS_TABLE);
 
         generateTestData(sqLiteDatabase);
@@ -63,7 +63,7 @@ public class ClipDatabaseHelper extends SQLiteOpenHelper {
      */
     private void generateTestData(SQLiteDatabase sqLiteDatabase) {
         for (int i = 1; i < 1000; i++) {
-            String query = "INSERT INTO " + DatabaseDescription.Clip.TABLE_NAME + " (title, content, date, is_favorite, category_id, is_deleted) values(" +
+            String query = "INSERT INTO " + DatabaseDescription.ClipsTable.TABLE_NAME + " (title, content, date, is_favorite, category_id, is_deleted) values(" +
                     "'Заголовок записи " + i + "', " +
                     "'Содержимое записи " + i + "', " +
                     "" + getDate() + ", " +
@@ -76,12 +76,12 @@ public class ClipDatabaseHelper extends SQLiteOpenHelper {
         String[] categories = new String[]{"Основная категория", "Категория №2", "Категория №3", "Категория №4"};
         for (String categoryName : categories) {
             ContentValues contentValues = new ContentValues();
-            contentValues.put(DatabaseDescription.Category.COLUMN_TITLE, categoryName);
-            sqLiteDatabase.insert(DatabaseDescription.Category.TABLE_NAME, null, contentValues);
+            contentValues.put(DatabaseDescription.CategoryTable.COLUMN_TITLE, categoryName);
+            sqLiteDatabase.insert(DatabaseDescription.CategoryTable.TABLE_NAME, null, contentValues);
         }
 
         /*for (int i = 1; i < 5; i++){
-            String query = "INSERT INTO " + Category.TABLE_NAME + " (title) values('Категория " + i + "')";
+            String query = "INSERT INTO " + CategoryTable.TABLE_NAME + " (title) values('Категория " + i + "')";
             sqLiteDatabase.execSQL(query);
         }*/
     }

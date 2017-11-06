@@ -25,7 +25,7 @@ public class ClipCursor extends CursorWrapper {
      * @return идентификатор заметки
      */
     public long getID() {
-        return getWrappedCursor().getLong(getColumnIndex(DatabaseDescription.Clip._ID));
+        return getWrappedCursor().getLong(getColumnIndex(DatabaseDescription.ClipsTable._ID));
     }
 
     /**
@@ -33,7 +33,7 @@ public class ClipCursor extends CursorWrapper {
      * @return заголовок заметки
      */
     public String getTitle() {
-        return getWrappedCursor().getString(getColumnIndex(DatabaseDescription.Clip.COLUMN_TITLE));
+        return getWrappedCursor().getString(getColumnIndex(DatabaseDescription.ClipsTable.COLUMN_TITLE));
     }
 
     /**
@@ -41,7 +41,7 @@ public class ClipCursor extends CursorWrapper {
      * @return содержимое заметки
      */
     public String getContent() {
-        return getWrappedCursor().getString(getColumnIndex(DatabaseDescription.Clip.COLUMN_CONTENT));
+        return getWrappedCursor().getString(getColumnIndex(DatabaseDescription.ClipsTable.COLUMN_CONTENT));
     }
 
     /**
@@ -49,7 +49,7 @@ public class ClipCursor extends CursorWrapper {
      * @return дата заметки
      */
     public long getDate() {
-        return getWrappedCursor().getLong(getColumnIndex(DatabaseDescription.Clip.COLUMN_DATE));
+        return getWrappedCursor().getLong(getColumnIndex(DatabaseDescription.ClipsTable.COLUMN_DATE));
     }
 
     /**
@@ -57,7 +57,7 @@ public class ClipCursor extends CursorWrapper {
      * @return принадлежность к избранным
      */
     public boolean isFavorite() {
-        int buf = getWrappedCursor().getInt(getColumnIndex(DatabaseDescription.Clip.COLUMN_IS_FAVORITE));
+        int buf = getWrappedCursor().getInt(getColumnIndex(DatabaseDescription.ClipsTable.COLUMN_IS_FAVORITE));
         return (buf == 1);
     }
 
@@ -66,7 +66,7 @@ public class ClipCursor extends CursorWrapper {
      * @return идентификатор категории заметки
      */
     public long getCategoryId() {
-        return getWrappedCursor().getInt(getColumnIndex(DatabaseDescription.Clip.COLUMN_CATEGORY_ID));
+        return getWrappedCursor().getInt(getColumnIndex(DatabaseDescription.ClipsTable.COLUMN_CATEGORY_ID));
     }
 
     /**
@@ -74,7 +74,7 @@ public class ClipCursor extends CursorWrapper {
      * @return была ли заметка удалена
      */
     public boolean isDeleted() {
-        int buf = getWrappedCursor().getInt(getColumnIndex(DatabaseDescription.Clip.COLUMN_IS_DELETED));
+        int buf = getWrappedCursor().getInt(getColumnIndex(DatabaseDescription.ClipsTable.COLUMN_IS_DELETED));
         return (buf == 1);
     }
 }

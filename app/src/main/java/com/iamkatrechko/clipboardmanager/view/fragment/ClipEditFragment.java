@@ -36,8 +36,6 @@ import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils;
 import com.iamkatrechko.clipboardmanager.domain.util.Util;
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences;
 
-import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clip;
-
 /**
  * Фрагмент экрана редактирования заметки
  * @author iamkatrechko
@@ -206,10 +204,10 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener, 
             return;
         }
         ContentValues contentValues = new ContentValues();
-        contentValues.put(Clip.COLUMN_TITLE, etTitle.getText().toString());
-        contentValues.put(Clip.COLUMN_CONTENT, etContent.getText().toString());
-        contentValues.put(Clip.COLUMN_IS_FAVORITE, isFavorite);
-        contentValues.put(Clip.COLUMN_CATEGORY_ID, currentCategoryId);
+        contentValues.put(DatabaseDescription.ClipsTable.COLUMN_TITLE, etTitle.getText().toString());
+        contentValues.put(DatabaseDescription.ClipsTable.COLUMN_CONTENT, etContent.getText().toString());
+        contentValues.put(DatabaseDescription.ClipsTable.COLUMN_IS_FAVORITE, isFavorite);
+        contentValues.put(DatabaseDescription.ClipsTable.COLUMN_CATEGORY_ID, currentCategoryId);
 
         if (addingNewClip) {
             //FIXME Добавить аттрибуты по умолчанию
@@ -218,12 +216,12 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener, 
                 if (etContent.getText().length() < titleLength) {
                     titleLength = etContent.getText().length();
                 }
-                contentValues.put(Clip.COLUMN_TITLE, etContent.getText().toString().substring(0, titleLength));
+                contentValues.put(DatabaseDescription.ClipsTable.COLUMN_TITLE, etContent.getText().toString().substring(0, titleLength));
             }
-            contentValues.put(Clip.COLUMN_DATE, Util.getCurrentTime());
-            contentValues.put(Clip.COLUMN_IS_DELETED, "0");
+            contentValues.put(DatabaseDescription.ClipsTable.COLUMN_DATE, Util.getCurrentTime());
+            contentValues.put(DatabaseDescription.ClipsTable.COLUMN_IS_DELETED, "0");
 
-            Uri newClipUri = getActivity().getContentResolver().insert(Clip.CONTENT_URI, contentValues);
+            Uri newClipUri = getActivity().getContentResolver().insert(DatabaseDescription.ClipsTable.CONTENT_URI, contentValues);
 
             if (newClipUri != null) {
                 /*listener.onAddEditCompleted(newClipUri);*/
@@ -276,7 +274,7 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener, 
             ivIsFavorite.setImageResource(R.drawable.ic_star_border);
         }
         /*ContentValues contentValues = new ContentValues();
-        contentValues.put(Clip.COLUMN_IS_FAVORITE, isFavorite);
+        contentValues.put(ClipsTable.COLUMN_IS_FAVORITE, isFavorite);
 
         getActivity().getContentResolver().update(clipUri, contentValues, null, null);*/
         //FIXME Сбрасывает все поля в режиме редактирования (что-то сделать с режимом)
@@ -319,7 +317,7 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener, 
                         null, // Без аргументов
                         null); // Порядок сортировки
             case ONE_CATEGORY_LOADER:
-                Uri categoryUri = DatabaseDescription.Category.buildClipUri(args.getLong("categoryId"));
+                Uri categoryUri = DatabaseDescription.CategoryTable.buildClipUri(args.getLong("categoryId"));
                 return new CursorLoader(getActivity(),
                         categoryUri, // Uri отображаемого контакта
                         null, // Все столбцы

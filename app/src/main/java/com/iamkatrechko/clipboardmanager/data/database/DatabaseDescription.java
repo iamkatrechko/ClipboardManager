@@ -20,7 +20,7 @@ public class DatabaseDescription {
     private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
     /** Описание таблицы clips */
-    public static final class Clip implements BaseColumns {
+    public static final class ClipsTable implements BaseColumns {
 
         /** Имя таблицы */
         public static final String TABLE_NAME = "clips";
@@ -64,7 +64,7 @@ public class DatabaseDescription {
     }
 
     /** Описание таблицы с категориями */
-    public static final class Category implements BaseColumns {
+    public static final class CategoryTable implements BaseColumns {
 
         /** Имя таблицы */
         public static final String TABLE_NAME = "categories";

@@ -36,7 +36,7 @@ class CategoriesLoaderCallback(
         when (id) {
             MainActivity.CATEGORIES_LOADER -> {
                 return CursorLoader(context,
-                        DatabaseDescription.Category.CONTENT_URI,
+                        DatabaseDescription.CategoryTable.CONTENT_URI,
                         null,
                         null,
                         null,

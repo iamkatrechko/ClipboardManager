@@ -4,7 +4,7 @@ import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
 import com.iamkatrechko.clipboardmanager.data.model.Clip
 
 /**
- * Конвертер из ClipCursor в Clip
+ * Конвертер из ClipCursor в ClipsTable
  * @author iamkatrechko
  *         Date: 04.11.2017
  */
