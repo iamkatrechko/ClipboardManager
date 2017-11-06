@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
-import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
+import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.ClipsTable
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
 import com.iamkatrechko.clipboardmanager.data.mapper.CursorToClipMapper
 import com.iamkatrechko.clipboardmanager.data.model.Clip
@@ -27,15 +27,16 @@ class ClipsSearchLoaderCallback(
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor>? {
         val param = args?.getParcelable<ClipParam>(KEY_LOADER_PARAMS) ?:
                 throw IllegalArgumentException("Не заданы параметры запроса")
+
+        val queryText = param.queryText ?: ""
+        val queryOrder = param.order.query
+
         when (id) {
             SEARCH_CLIPS_LOADER -> {
-                val queryText = param.queryText ?: ""
-                val queryOrder = param.order.query
                 return CursorLoader(context,
-                        DatabaseDescription.ClipsTable.CONTENT_URI,
+                        ClipsTable.CONTENT_URI,
                         null,
-                        DatabaseDescription.ClipsTable.COLUMN_TITLE + " LIKE '%" + queryText + "%' OR " +
-                                DatabaseDescription.ClipsTable.COLUMN_CONTENT + " LIKE '%" + queryText + "%'",
+                        "(${ClipsTable.COLUMN_TITLE} LIKE '%$queryText%' OR ${ClipsTable.COLUMN_CONTENT} LIKE '%$queryText%')",
                         null,
                         queryOrder)
             }
