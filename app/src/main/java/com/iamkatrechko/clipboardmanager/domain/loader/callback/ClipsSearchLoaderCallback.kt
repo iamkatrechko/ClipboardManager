@@ -28,17 +28,16 @@ class ClipsSearchLoaderCallback(
         val param = args?.getParcelable<ClipParam>(KEY_LOADER_PARAMS) ?:
                 throw IllegalArgumentException("Не заданы параметры запроса")
 
-        val queryText = param.queryText ?: ""
-        val queryOrder = param.order.query
+        val whereQuery = "(${ClipsTable.COLUMN_TITLE} LIKE '%${param.queryText}%' OR ${ClipsTable.COLUMN_CONTENT} LIKE '%${param.queryText}%')"
 
         when (id) {
             SEARCH_CLIPS_LOADER -> {
                 return CursorLoader(context,
                         ClipsTable.CONTENT_URI,
                         null,
-                        "(${ClipsTable.COLUMN_TITLE} LIKE '%$queryText%' OR ${ClipsTable.COLUMN_CONTENT} LIKE '%$queryText%')",
+                        whereQuery,
                         null,
-                        queryOrder)
+                        param.order.query)
             }
             else -> return null
         }

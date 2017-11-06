@@ -7,12 +7,11 @@ import android.support.v4.app.LoaderManager
 import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
 import android.util.Log
-import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
+import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.ClipsTable
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
 import com.iamkatrechko.clipboardmanager.data.mapper.CursorToClipMapper
 import com.iamkatrechko.clipboardmanager.data.model.Clip
-import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType
-import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType.*
+import com.iamkatrechko.clipboardmanager.domain.param.ClipParam
 
 /**
  * Загрузчик списка записей
@@ -23,7 +22,7 @@ class ClipsLoaderCallback(
         /** Контекст */
         private val context: Context,
         /** Слушатель готовности данных к использованию */
-        private val listener: OnDataPreparedListener
+        private val preparedAction: (list: List<Clip>) -> Unit
 ) : LoaderManager.LoaderCallbacks<Cursor> {
 
     companion object {
@@ -34,31 +33,29 @@ class ClipsLoaderCallback(
         /** Идентификатор загрузчика заметок по категории  */
         const val CLIPS_BY_CATEGORY_LOADER = 1
 
-        /** Ключ параметра загрузчика. Идентификатор категории */
-        const val KEY_LOADER_CATEGORY_ID: String = "KEY_LOADER_CATEGORY_ID"
-        /** Ключ параметра загрузчика. Отображение только избранных */
-        const val KEY_LOADER_ONLY_FAVORITE: String = "KEY_LOADER_ONLY_FAVORITE"
-        /** Ключ параметра загрузчика. Порядок сортировки */
-        const val KEY_LOADER_ORDER_TYPE: String = "KEY_LOADER_ORDER_TYPE"
+        /** Ключ параметра загрузчика. Параметры запроса */
+        const val KEY_LOADER_PARAMS = "KEY_LOADER_PARAMS"
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle): Loader<Cursor>? {
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor>? {
         Log.d(TAG, "onCreateLoader")
-        val categoryId = args.getLong(KEY_LOADER_CATEGORY_ID)
-        val isOnlyFavoriteShow = args.getBoolean(KEY_LOADER_ONLY_FAVORITE)
-        val orderType = values()[args.getInt(KEY_LOADER_ORDER_TYPE)]
+        val param = args?.getParcelable<ClipParam>(KEY_LOADER_PARAMS) ?:
+                throw IllegalArgumentException("Не заданы параметры запроса")
 
+        val whereQuery = listOf(
+                if (param.categoryId == null) null else "${ClipsTable.COLUMN_CATEGORY_ID} = ${param.categoryId}",
+                if (!param.onlyFav) null else "${ClipsTable.COLUMN_IS_FAVORITE} = 1"
+        )
+                .filterNotNull()
+                .joinToString(" AND ")
         when (id) {
             CLIPS_BY_CATEGORY_LOADER -> {
-                val queryCatId = if (categoryId == -1L) null else DatabaseDescription.ClipsTable.COLUMN_CATEGORY_ID + " = $categoryId "
-                val queryOnlyFav = if (!isOnlyFavoriteShow) null else DatabaseDescription.ClipsTable.COLUMN_IS_FAVORITE + " = 1 "
-
-                val whereQuery = listOf(queryCatId, queryOnlyFav).filterNotNull().joinToString(" and ")
                 return CursorLoader(context,
-                        DatabaseDescription.ClipsTable.CONTENT_URI, null,
+                        ClipsTable.CONTENT_URI,
+                        null,
                         whereQuery,
                         null,
-                        orderType.query)
+                        param.order.query)
             }
             else -> throw IllegalArgumentException("Неизвестный тип загрузчика записей")
         }
@@ -66,20 +63,10 @@ class ClipsLoaderCallback(
 
     override fun onLoadFinished(loader: Loader<Cursor>?, data: Cursor?) {
         Log.d(TAG, "onLoadFinished")
-        listener.onPrepared(CursorToClipMapper().toClips(ClipCursor(data)))
+        preparedAction(CursorToClipMapper().toClips(ClipCursor(data)))
     }
 
     override fun onLoaderReset(loader: Loader<Cursor>?) {
         Log.d(TAG, "onLoaderReset")
-    }
-
-    /** Слушатель готовности данных к использованию */
-    interface OnDataPreparedListener {
-
-        /**
-         * Данные готовы к использованию
-         * @param [clipsList] список записей
-         */
-        fun onPrepared(clipsList: List<Clip>)
     }
 }

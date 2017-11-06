@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
         listView.setOnGroupClickListener { expandableListView, view, groupPos, groupId ->
             val group = NavGroups.values()[groupPos]
             when (group) {
-                NavGroups.ALL_CLIPS -> showByCategory(-1L)
+                NavGroups.ALL_CLIPS -> showByCategory(null)
                 NavGroups.SETTINGS -> startActivity(Intent(applicationContext, SettingsActivity::class.java))
             }
             false
@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun showByCategory(categoryId: Long?) {
         val clipsFragment = supportFragmentManager.findFragmentById(R.id.container) as ClipsListFragment
-        clipsFragment.showClipsByCategoryId(categoryId!!)
+        clipsFragment.showClipsByCategoryId(categoryId)
         drawerLayout.closeDrawer(GravityCompat.START)
     }
 

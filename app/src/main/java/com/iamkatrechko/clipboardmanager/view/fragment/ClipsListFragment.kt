@@ -10,10 +10,10 @@ import android.view.*
 import android.widget.Toast
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
-import com.iamkatrechko.clipboardmanager.data.model.Clip
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 import com.iamkatrechko.clipboardmanager.domain.ClipsHelper
 import com.iamkatrechko.clipboardmanager.domain.loader.callback.ClipsLoaderCallback
+import com.iamkatrechko.clipboardmanager.domain.param.ClipParam
 import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType
 import com.iamkatrechko.clipboardmanager.domain.util.Util
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
@@ -34,7 +34,7 @@ class ClipsListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
 
     /** Текущая выбранная категория  */
-    private var currentCategoryId: Long = -1
+    private var currentCategoryId: Long? = -1
     /** Включен ли режим выделения  */
     private var isContextMenu: Boolean = false
     /** Количество выделенных элементов  */
@@ -70,9 +70,9 @@ class ClipsListFragment : Fragment() {
         fun newInstance(categoryId: Long? = null): ClipsListFragment {
             val fragment = ClipsListFragment()
 
-            val bundle = Bundle()
-            bundle.putLong(KEY_ARGUMENT_CATEGORY_ID, categoryId ?: -1)
-            fragment.arguments = bundle
+            fragment.arguments = Bundle().apply {
+                putLong(KEY_ARGUMENT_CATEGORY_ID, categoryId ?: -1)
+            }
 
             return fragment
         }
@@ -82,6 +82,7 @@ class ClipsListFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         currentCategoryId = arguments.getLong(KEY_ARGUMENT_CATEGORY_ID)
+        currentCategoryId = if (currentCategoryId == -1L) null else currentCategoryId
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -101,19 +102,16 @@ class ClipsListFragment : Fragment() {
      * Отображает список заметок по категории
      * @param categoryId идентификатор категории
      */
-    fun showClipsByCategoryId(categoryId: Long) {
+    fun showClipsByCategoryId(categoryId: Long?) {
         currentCategoryId = categoryId
+        val order = UtilPreferences.getOrderType(context)
+        val onlyFav = UtilPreferences.isShowOnlyFavorite(context)
         clipsAdapter.resetSelectMode()
         val bundle = Bundle().apply {
-            putLong(ClipsLoaderCallback.KEY_LOADER_CATEGORY_ID, categoryId)
-            putBoolean(ClipsLoaderCallback.KEY_LOADER_ONLY_FAVORITE, UtilPreferences.isShowOnlyFavorite(context))
-            putInt(ClipsLoaderCallback.KEY_LOADER_ORDER_TYPE, UtilPreferences.getOrderType(context).ordinal)
+            putParcelable(ClipsLoaderCallback.KEY_LOADER_PARAMS, ClipParam(categoryId = categoryId, order = order, onlyFav = onlyFav))
         }
-        loaderManager.restartLoader(ClipsLoaderCallback.CLIPS_BY_CATEGORY_LOADER, bundle, ClipsLoaderCallback(context, object : ClipsLoaderCallback.OnDataPreparedListener {
-            override fun onPrepared(clipsList: List<Clip>) {
-                clipsAdapter.setClips(clipsList)
-            }
-        }))
+        loaderManager.restartLoader(ClipsLoaderCallback.CLIPS_BY_CATEGORY_LOADER, bundle,
+                ClipsLoaderCallback(context, { clipsAdapter.setClips(it) }))
     }
 
     /** Открывает экран создания новой заметки  */
