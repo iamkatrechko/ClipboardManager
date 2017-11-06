@@ -19,7 +19,7 @@ import com.iamkatrechko.clipboardmanager.domain.ClipsHelper
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.Util
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
-import com.iamkatrechko.clipboardmanager.view.extensions.setGone
+import com.iamkatrechko.clipboardmanager.view.extension.setGone
 
 /**
  * Адаптер списка заметок

@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.domain.services;
+package com.iamkatrechko.clipboardmanager.domain.service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.ClipboardManager;

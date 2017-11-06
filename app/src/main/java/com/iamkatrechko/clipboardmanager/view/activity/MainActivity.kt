@@ -13,7 +13,7 @@ import com.iamkatrechko.clipboardmanager.data.model.Category
 import com.iamkatrechko.clipboardmanager.view.adapter.NavigationMenuAdapter
 import com.iamkatrechko.clipboardmanager.view.adapter.navigation.NavGroups
 import com.iamkatrechko.clipboardmanager.view.fragment.ClipsListFragment
-import com.iamkatrechko.clipboardmanager.view.loader.CategoriesLoader
+import com.iamkatrechko.clipboardmanager.domain.loader.callback.CategoriesLoaderCallback
 
 /**
  * Основаня активность экрана со списком заметок
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         }
         initNavigationView()
 
-        supportLoaderManager.initLoader(CATEGORIES_LOADER, null, CategoriesLoader(this, object : CategoriesLoader.OnDataPreparedListener {
+        supportLoaderManager.initLoader(CATEGORIES_LOADER, null, CategoriesLoaderCallback(this, object : CategoriesLoaderCallback.OnDataPreparedListener {
             override fun onPrepared(data: List<Category>) {
                 categories.clear()
                 categories.addAll(data)

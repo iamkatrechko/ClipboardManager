@@ -16,10 +16,10 @@ import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences;
-import com.iamkatrechko.clipboardmanager.domain.services.ClipboardService;
-import com.iamkatrechko.clipboardmanager.domain.services.CancelViewService;
-import com.iamkatrechko.clipboardmanager.domain.services.FloatingViewService;
-import com.iamkatrechko.clipboardmanager.domain.services.HideNotificationService;
+import com.iamkatrechko.clipboardmanager.domain.service.ClipboardService;
+import com.iamkatrechko.clipboardmanager.domain.service.CancelViewService;
+import com.iamkatrechko.clipboardmanager.domain.service.FloatingViewService;
+import com.iamkatrechko.clipboardmanager.domain.service.HideNotificationService;
 
 /**
  * Активность меню разработчика

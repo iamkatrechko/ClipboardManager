@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.view.dialogs;
+package com.iamkatrechko.clipboardmanager.view.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper;
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.CategoryCursor;
 

@@ -35,17 +35,17 @@
             >
         </activity>
 
-        <service android:name=".domain.services.ClipboardService">
+        <service android:name=".domain.service.ClipboardService">
         </service>
-        <service android:name=".domain.services.HideNotificationService">
+        <service android:name=".domain.service.HideNotificationService">
         </service>
-        <service android:name=".domain.services.FloatingViewService">
+        <service android:name=".domain.service.FloatingViewService">
         </service>
-        <service android:name=".domain.services.CancelViewService">
+        <service android:name=".domain.service.CancelViewService">
         </service>
 
         <provider
-            android:name=".data.database.ClipboardContentProvider"
+            android:name=".data.database.ClipContentProvider"
             android:authorities="com.iamkatrechko.clipboardmanager.data"
             />
 
@@ -70,7 +70,7 @@
         </activity>
 
         <service
-            android:name=".domain.services.MyAccessibilityService"
+            android:name=".domain.service.MyAccessibilityService"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
@@ -90,7 +90,7 @@
             android:permission="android.permission.BIND_REMOTEVIEWS"
             />
         <service
-            android:name=".domain.services.CancelViewService"
+            android:name=".domain.service.CancelViewService"
             />
 
         <receiver android:name=".widget.ClipboardWidget">

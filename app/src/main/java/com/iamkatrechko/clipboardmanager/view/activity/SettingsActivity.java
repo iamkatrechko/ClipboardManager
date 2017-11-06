@@ -20,7 +20,7 @@ import android.view.MenuItem;
 import com.iamkatrechko.clipboardmanager.view.DialogManager;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.domain.util.Util;
-import com.iamkatrechko.clipboardmanager.domain.services.ClipboardService;
+import com.iamkatrechko.clipboardmanager.domain.service.ClipboardService;
 
 import java.util.List;
 

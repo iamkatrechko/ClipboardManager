@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.domain.services;
+package com.iamkatrechko.clipboardmanager.domain.service;
 
 import android.app.Notification;
 import android.app.Service;

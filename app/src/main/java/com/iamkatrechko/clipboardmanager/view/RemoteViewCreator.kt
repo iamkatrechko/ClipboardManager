@@ -11,7 +11,7 @@ import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
 import com.iamkatrechko.clipboardmanager.data.mapper.CursorToClipMapper
 import com.iamkatrechko.clipboardmanager.data.model.Clip
-import com.iamkatrechko.clipboardmanager.domain.services.ClipboardService
+import com.iamkatrechko.clipboardmanager.domain.service.ClipboardService
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity

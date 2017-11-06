@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.view.extensions
+package com.iamkatrechko.clipboardmanager.view.extension
 
 import android.content.Context
 import android.widget.Toast

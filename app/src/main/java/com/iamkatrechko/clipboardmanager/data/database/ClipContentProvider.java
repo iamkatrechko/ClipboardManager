@@ -18,10 +18,10 @@ import com.iamkatrechko.clipboardmanager.R;
  * @author iamkatrechko
  *         Date: 01.11.2016
  */
-public class ClipboardContentProvider extends ContentProvider {
+public class ClipContentProvider extends ContentProvider {
 
     /** Тег для логирования */
-    private static final String TAG = ClipboardContentProvider.class.getSimpleName();
+    private static final String TAG = ClipContentProvider.class.getSimpleName();
     /** UriMatcher помогает ContentProvider определить выполняемую операцию */
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -42,11 +42,11 @@ public class ClipboardContentProvider extends ContentProvider {
     }
 
     /** Экземпляр базы данных записей */
-    private ClipboardDatabaseHelper dbHelper;
+    private ClipDatabaseHelper dbHelper;
 
     @Override
     public boolean onCreate() {
-        dbHelper = new ClipboardDatabaseHelper(getContext());
+        dbHelper = new ClipDatabaseHelper(getContext());
         Log.d(TAG, "Успешное создание");
         return true;                                                                                // Объект ContentProvider создан успешно
     }

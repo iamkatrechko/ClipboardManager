@@ -21,7 +21,7 @@ import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity
 import com.iamkatrechko.clipboardmanager.view.activity.DeveloperActivity
 import com.iamkatrechko.clipboardmanager.view.activity.SearchActivity
 import com.iamkatrechko.clipboardmanager.view.adapter.ClipsAdapter
-import com.iamkatrechko.clipboardmanager.view.loader.ClipsLoader
+import com.iamkatrechko.clipboardmanager.domain.loader.callback.ClipsLoaderCallback
 
 /**
  * Основной фрагмент экрана со списком заметок
@@ -107,10 +107,10 @@ class ClipsListFragment : Fragment() {
         currentCategoryId = categoryId
         val bundle = Bundle()
         clipsAdapter.resetSelectMode()
-        bundle.putLong(ClipsLoader.KEY_LOADER_CATEGORY_ID, categoryId)
-        bundle.putBoolean(ClipsLoader.KEY_LOADER_ONLY_FAVORITE, UtilPreferences.isShowOnlyFavorite(context))
-        bundle.putInt(ClipsLoader.KEY_LOADER_ORDER_TYPE, UtilPreferences.getOrderType(context).ordinal)
-        loaderManager.restartLoader(CLIPS_BY_CATEGORY_LOADER, bundle, ClipsLoader(context, object : ClipsLoader.OnDataPreparedListener {
+        bundle.putLong(ClipsLoaderCallback.KEY_LOADER_CATEGORY_ID, categoryId)
+        bundle.putBoolean(ClipsLoaderCallback.KEY_LOADER_ONLY_FAVORITE, UtilPreferences.isShowOnlyFavorite(context))
+        bundle.putInt(ClipsLoaderCallback.KEY_LOADER_ORDER_TYPE, UtilPreferences.getOrderType(context).ordinal)
+        loaderManager.restartLoader(CLIPS_BY_CATEGORY_LOADER, bundle, ClipsLoaderCallback(context, object : ClipsLoaderCallback.OnDataPreparedListener {
             override fun onPrepared(clipsList: List<Clip>) {
                 clipsAdapter.setClips(clipsList)
             }

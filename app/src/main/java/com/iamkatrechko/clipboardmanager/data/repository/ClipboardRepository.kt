@@ -2,7 +2,6 @@ package com.iamkatrechko.clipboardmanager.data.repository
 
 import android.content.Context
 import android.net.Uri
-import com.iamkatrechko.clipboardmanager.data.database.ClipboardDatabaseHelper
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
 

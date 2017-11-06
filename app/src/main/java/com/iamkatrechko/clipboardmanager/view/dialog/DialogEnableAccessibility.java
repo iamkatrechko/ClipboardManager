@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.view.dialogs;
+package com.iamkatrechko.clipboardmanager.view.dialog;
 
 import android.app.Dialog;
 import android.app.DialogFragment;

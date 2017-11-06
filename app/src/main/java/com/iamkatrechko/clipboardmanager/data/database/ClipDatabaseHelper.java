@@ -13,8 +13,10 @@ import java.util.Random;
  * @author iamkatrechko
  *         Date: 01.11.2016
  */
-public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
+public class ClipDatabaseHelper extends SQLiteOpenHelper {
 
+    /** Тег для логирования */
+    private static final String TAG = ClipDatabaseHelper.class.getSimpleName();
     /** Имя базы данных */
     private static final String DATABASE_NAME = "Clipboard.db";
     /** Версия базы данных */
@@ -24,7 +26,7 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
      * Конструктор
      * @param context контекст
      */
-    public ClipboardDatabaseHelper(Context context) {
+    public ClipDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -48,7 +50,7 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_CLIPS_TABLE);
 
         generateTestData(sqLiteDatabase);
-        Log.d("DataBase", "База создана");
+        Log.d(TAG, "База создана");
     }
 
     @Override
