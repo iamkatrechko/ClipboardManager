@@ -13,7 +13,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
-import com.iamkatrechko.clipboardmanager.domain.loader.callback.ClipsSearchLoaderCallback
+import com.iamkatrechko.clipboardmanager.domain.loader.callback.ClipsLoaderCallback
 import com.iamkatrechko.clipboardmanager.domain.param.ClipParam
 import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity
 import com.iamkatrechko.clipboardmanager.view.adapter.ClipsAdapter
@@ -68,10 +68,10 @@ class SearchFragment : Fragment() {
      */
     private fun searchOnText(query: String) {
         val bundle = Bundle().apply {
-            putParcelable(ClipsSearchLoaderCallback.KEY_LOADER_PARAMS, ClipParam(queryText = query))
+            putParcelable(ClipsLoaderCallback.KEY_LOADER_PARAMS, ClipParam(queryText = query))
         }
-        loaderManager.restartLoader<Cursor>(ClipsSearchLoaderCallback.SEARCH_CLIPS_LOADER, bundle,
-                ClipsSearchLoaderCallback(context, { clipsAdapter.setClips(it) }))
+        loaderManager.restartLoader<Cursor>(ClipsLoaderCallback.MAIN_CLIPS_LOADER, bundle,
+                ClipsLoaderCallback(context, { clipsAdapter.setClips(it) }))
     }
 
     companion object {

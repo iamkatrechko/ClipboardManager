@@ -17,6 +17,7 @@ import com.iamkatrechko.clipboardmanager.domain.param.ClipParam
  * @author iamkatrechko
  *         Date: 06.11.2017
  */
+@Deprecated("Более не используется. Объединен с [ClipsLoaderCallback]")
 class ClipsSearchLoaderCallback(
         /** Контекст */
         private val context: Context,

@@ -110,7 +110,7 @@ class ClipsListFragment : Fragment() {
         val bundle = Bundle().apply {
             putParcelable(ClipsLoaderCallback.KEY_LOADER_PARAMS, ClipParam(categoryId = categoryId, order = order, onlyFav = onlyFav))
         }
-        loaderManager.restartLoader(ClipsLoaderCallback.CLIPS_BY_CATEGORY_LOADER, bundle,
+        loaderManager.restartLoader(ClipsLoaderCallback.MAIN_CLIPS_LOADER, bundle,
                 ClipsLoaderCallback(context, { clipsAdapter.setClips(it) }))
     }
 

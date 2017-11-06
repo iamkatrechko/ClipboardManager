@@ -25,18 +25,6 @@ class ClipsLoaderCallback(
         private val preparedAction: (list: List<Clip>) -> Unit
 ) : LoaderManager.LoaderCallbacks<Cursor> {
 
-    companion object {
-
-        /** Тег для логирования */
-        private val TAG = ClipsLoaderCallback::class.java.simpleName
-
-        /** Идентификатор загрузчика заметок по категории  */
-        const val CLIPS_BY_CATEGORY_LOADER = 1
-
-        /** Ключ параметра загрузчика. Параметры запроса */
-        const val KEY_LOADER_PARAMS = "KEY_LOADER_PARAMS"
-    }
-
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor>? {
         Log.d(TAG, "onCreateLoader")
         val param = args?.getParcelable<ClipParam>(KEY_LOADER_PARAMS) ?:
@@ -44,12 +32,13 @@ class ClipsLoaderCallback(
 
         val whereQuery = listOf(
                 if (param.categoryId == null) null else "${ClipsTable.COLUMN_CATEGORY_ID} = ${param.categoryId}",
-                if (!param.onlyFav) null else "${ClipsTable.COLUMN_IS_FAVORITE} = 1"
+                if (!param.onlyFav) null else "${ClipsTable.COLUMN_IS_FAVORITE} = 1",
+                if (param.queryText.isBlank()) null else "(${ClipsTable.COLUMN_TITLE} LIKE '%${param.queryText}%' OR ${ClipsTable.COLUMN_CONTENT} LIKE '%${param.queryText}%')"
         )
                 .filterNotNull()
                 .joinToString(" AND ")
         when (id) {
-            CLIPS_BY_CATEGORY_LOADER -> {
+            MAIN_CLIPS_LOADER -> {
                 return CursorLoader(context,
                         ClipsTable.CONTENT_URI,
                         null,
@@ -68,5 +57,17 @@ class ClipsLoaderCallback(
 
     override fun onLoaderReset(loader: Loader<Cursor>?) {
         Log.d(TAG, "onLoaderReset")
+    }
+
+    companion object {
+
+        /** Тег для логирования */
+        private val TAG = ClipsLoaderCallback::class.java.simpleName
+
+        /** Идентификатор загрузчика заметок по категории  */
+        const val MAIN_CLIPS_LOADER = 1
+
+        /** Ключ параметра загрузчика. Параметры запроса */
+        const val KEY_LOADER_PARAMS = "KEY_LOADER_PARAMS"
     }
 }
