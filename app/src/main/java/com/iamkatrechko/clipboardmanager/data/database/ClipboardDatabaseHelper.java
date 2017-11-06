@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.Random;
+
 /**
  * Класс по работе с базой данных с заметками
  * @author iamkatrechko
@@ -39,7 +41,7 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
                         DatabaseDescription.Clip._ID + " INTEGER PRIMARY KEY, " +
                         DatabaseDescription.Clip.COLUMN_TITLE + " TEXT, " +
                         DatabaseDescription.Clip.COLUMN_CONTENT + " TEXT, " +
-                        DatabaseDescription.Clip.COLUMN_DATE + " TEXT, " +
+                        DatabaseDescription.Clip.COLUMN_DATE + " INTEGER, " +
                         DatabaseDescription.Clip.COLUMN_IS_FAVORITE + " INTEGER, " +
                         DatabaseDescription.Clip.COLUMN_CATEGORY_ID + " INTEGER, " +
                         DatabaseDescription.Clip.COLUMN_IS_DELETED + " INTEGER);";
@@ -58,11 +60,11 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
      * @param sqLiteDatabase база данных
      */
     private void generateTestData(SQLiteDatabase sqLiteDatabase) {
-        for (int i = 1; i < 10000; i++) {
+        for (int i = 1; i < 1000; i++) {
             String query = "INSERT INTO " + DatabaseDescription.Clip.TABLE_NAME + " (title, content, date, is_favorite, category_id, is_deleted) values(" +
                     "'Заголовок записи " + i + "', " +
                     "'Содержимое записи " + i + "', " +
-                    "'" + i * 86400000 + "', " +
+                    "" + getDate() + ", " +
                     "" + i % 2 + ", " +
                     "2, " +
                     "" + i % 2 + ")";
@@ -80,5 +82,21 @@ public class ClipboardDatabaseHelper extends SQLiteOpenHelper {
             String query = "INSERT INTO " + Category.TABLE_NAME + " (title) values('Категория " + i + "')";
             sqLiteDatabase.execSQL(query);
         }*/
+    }
+
+    private long getDate() {
+        long time = System.currentTimeMillis();
+        time -= nextLong(new Random(), 31536000000L);
+        return time;
+    }
+
+    long nextLong(Random rng, long n) {
+        // error checking and 2^x checking removed for simplicity.
+        long bits, val;
+        do {
+            bits = (rng.nextLong() << 1) >>> 1;
+            val = bits % n;
+        } while (bits - val + (n - 1) < 0L);
+        return val;
     }
 }

@@ -48,8 +48,8 @@ public class ClipCursor extends CursorWrapper {
      * Возвращает дату заметки
      * @return дата заметки
      */
-    public String getDate() {
-        return getWrappedCursor().getString(getColumnIndex(DatabaseDescription.Clip.COLUMN_DATE));
+    public long getDate() {
+        return getWrappedCursor().getLong(getColumnIndex(DatabaseDescription.Clip.COLUMN_DATE));
     }
 
     /**

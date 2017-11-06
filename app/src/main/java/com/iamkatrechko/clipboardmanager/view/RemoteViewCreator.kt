@@ -52,7 +52,7 @@ object RemoteViewCreator {
         generalRemoteViews.removeAllViews(R.id.linear_clips)
 
         val lastClips = getLastClips(context, currentClip, onlyFavorite)
-        lastClips.reversed().forEachIndexed { index, clip ->
+        lastClips.forEachIndexed { index, clip ->
             val clipRemoteViews = createClipListItem(context, clip.id, clip.title)
             if (index == 0) {
                 clipRemoteViews.setViewVisibility(R.id.flSeparator, View.GONE)
@@ -75,7 +75,8 @@ object RemoteViewCreator {
                 null,
                 queries.joinToString(" AND "),
                 null,
-                DatabaseDescription.Clip.COLUMN_DATE + " LIMIT 4"))
+                DatabaseDescription.Clip.COLUMN_DATE + " DESC LIMIT 4")
+        )
 
         return CursorToClipMapper().toClips(ClipCursor(lastRecords))
     }

@@ -20,7 +20,7 @@ class CursorToClipMapper {
                 clipCursor.title,
                 clipCursor.content,
                 clipCursor.isFavorite,
-                clipCursor.date.toLong(),
+                clipCursor.date,
                 clipCursor.categoryId,
                 clipCursor.isDeleted)
     }
