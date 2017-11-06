@@ -32,6 +32,9 @@ class ClipsLoaderCallback(
         /** Тег для логирования */
         private val TAG = ClipsLoaderCallback::class.java.simpleName
 
+        /** Идентификатор загрузчика заметок по категории  */
+        const val CLIPS_BY_CATEGORY_LOADER = 1
+
         /** Ключ параметра загрузчика. Идентификатор категории */
         const val KEY_LOADER_CATEGORY_ID: String = "KEY_LOADER_CATEGORY_ID"
         /** Ключ параметра загрузчика. Отображение только избранных */
@@ -47,7 +50,7 @@ class ClipsLoaderCallback(
         val orderType = values()[args.getInt(KEY_LOADER_ORDER_TYPE)]
 
         when (id) {
-            ClipsListFragment.CLIPS_BY_CATEGORY_LOADER -> {
+            CLIPS_BY_CATEGORY_LOADER -> {
                 val queryCatId = if (categoryId == -1L) null else DatabaseDescription.Clip.COLUMN_CATEGORY_ID + " = $categoryId "
                 val queryOnlyFav = if (!isOnlyFavoriteShow) null else DatabaseDescription.Clip.COLUMN_IS_FAVORITE + " = 1 "
 

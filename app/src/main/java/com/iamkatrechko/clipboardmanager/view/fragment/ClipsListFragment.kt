@@ -13,6 +13,7 @@ import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
 import com.iamkatrechko.clipboardmanager.data.model.Clip
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 import com.iamkatrechko.clipboardmanager.domain.ClipsHelper
+import com.iamkatrechko.clipboardmanager.domain.loader.callback.ClipsLoaderCallback
 import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType
 import com.iamkatrechko.clipboardmanager.domain.util.Util
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
@@ -21,7 +22,6 @@ import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity
 import com.iamkatrechko.clipboardmanager.view.activity.DeveloperActivity
 import com.iamkatrechko.clipboardmanager.view.activity.SearchActivity
 import com.iamkatrechko.clipboardmanager.view.adapter.ClipsAdapter
-import com.iamkatrechko.clipboardmanager.domain.loader.callback.ClipsLoaderCallback
 
 /**
  * Основной фрагмент экрана со списком заметок
@@ -61,8 +61,6 @@ class ClipsListFragment : Fragment() {
 
         /** Ключ аргумента. Идентификатор текущей категории */
         private const val KEY_ARGUMENT_CATEGORY_ID = "CATEGORY_ID"
-        /** Идентификатор загрузчика заметок по категории  */
-        const val CLIPS_BY_CATEGORY_LOADER = 1
 
         /**
          * Возвращает новый экземпляр фрагмента
@@ -110,7 +108,7 @@ class ClipsListFragment : Fragment() {
         bundle.putLong(ClipsLoaderCallback.KEY_LOADER_CATEGORY_ID, categoryId)
         bundle.putBoolean(ClipsLoaderCallback.KEY_LOADER_ONLY_FAVORITE, UtilPreferences.isShowOnlyFavorite(context))
         bundle.putInt(ClipsLoaderCallback.KEY_LOADER_ORDER_TYPE, UtilPreferences.getOrderType(context).ordinal)
-        loaderManager.restartLoader(CLIPS_BY_CATEGORY_LOADER, bundle, ClipsLoaderCallback(context, object : ClipsLoaderCallback.OnDataPreparedListener {
+        loaderManager.restartLoader(ClipsLoaderCallback.CLIPS_BY_CATEGORY_LOADER, bundle, ClipsLoaderCallback(context, object : ClipsLoaderCallback.OnDataPreparedListener {
             override fun onPrepared(clipsList: List<Clip>) {
                 clipsAdapter.setClips(clipsList)
             }

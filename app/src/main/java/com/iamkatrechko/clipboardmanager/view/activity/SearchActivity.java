@@ -22,11 +22,10 @@ public class SearchActivity extends AppCompatActivity {
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if (fragmentManager.getFragments() == null) {
+        if (fragmentManager.getFragments().isEmpty()) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, SearchFragment.newInstance())
+                    .replace(R.id.container, SearchFragment.Companion.newInstance())
                     .commit();
         }
     }
-
 }
