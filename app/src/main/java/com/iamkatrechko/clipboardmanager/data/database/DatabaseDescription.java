@@ -5,8 +5,6 @@ import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import com.iamkatrechko.clipboardmanager.domain.util.Util;
-
 /**
  * Описание таблиц с заметками
  * @author iamkatrechko
@@ -54,7 +52,7 @@ public class DatabaseDescription {
 
             contentValues.put(COLUMN_TITLE, "defaultTitle");
             contentValues.put(COLUMN_CONTENT, "defaultContent");
-            contentValues.put(COLUMN_DATE, Util.getCurrentTime());
+            contentValues.put(COLUMN_DATE, System.currentTimeMillis());
             contentValues.put(COLUMN_IS_FAVORITE, "0");
             contentValues.put(COLUMN_CATEGORY_ID, 1);
             contentValues.put(COLUMN_IS_DELETED, "0");

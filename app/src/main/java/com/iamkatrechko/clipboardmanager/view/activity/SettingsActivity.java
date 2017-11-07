@@ -17,9 +17,9 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.iamkatrechko.clipboardmanager.domain.util.ServiceUtils;
 import com.iamkatrechko.clipboardmanager.view.DialogManager;
 import com.iamkatrechko.clipboardmanager.R;
-import com.iamkatrechko.clipboardmanager.domain.util.Util;
 import com.iamkatrechko.clipboardmanager.domain.service.ClipboardService;
 
 import java.util.List;
@@ -184,7 +184,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     }
                 }
                 if (stringKey.equals(PREF_ACCESSIBILITY_SERVICE)) {
-                    if (!Util.isAccessibilityEnabled(getActivity())) {
+                    if (!ServiceUtils.INSTANCE.isAccessibilityEnabled(getActivity())) {
                         DialogManager.showDialogEnableAccessibility(getActivity());
                         return false;
                     }
@@ -196,7 +196,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            if (Util.isAccessibilityEnabled(getActivity())){
+            if (ServiceUtils.INSTANCE.isAccessibilityEnabled(getActivity())){
                 PreferenceManager.getDefaultSharedPreferences(getActivity())
                         .edit()
                         .putBoolean(PREF_ACCESSIBILITY_SERVICE, true)

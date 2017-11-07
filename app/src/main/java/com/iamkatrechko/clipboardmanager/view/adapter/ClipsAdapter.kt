@@ -17,7 +17,7 @@ import com.iamkatrechko.clipboardmanager.data.mapper.CursorToClipMapper
 import com.iamkatrechko.clipboardmanager.data.model.Clip
 import com.iamkatrechko.clipboardmanager.domain.ClipsHelper
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
-import com.iamkatrechko.clipboardmanager.domain.util.Util
+import com.iamkatrechko.clipboardmanager.domain.util.DateFormatUtils
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 import com.iamkatrechko.clipboardmanager.view.extension.setGone
 
@@ -223,7 +223,7 @@ internal class ClipsAdapter constructor(
             tvId.text = clip.id.toString()
             tvTitle.text = clip.title
             tvContent.text = clip.text
-            tvDate.text = Util.getTimeInString(clip.dateTime)
+            tvDate.text = DateFormatUtils.getTimeInString(clip.dateTime)
             tvCategoryId.text = clip.categoryId.toString()
             tvIsDeleted.text = clip.isDeleted.toString()
 

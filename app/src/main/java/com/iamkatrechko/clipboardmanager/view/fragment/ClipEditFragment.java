@@ -29,11 +29,12 @@ import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.CategoryCursor;
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor;
+import com.iamkatrechko.clipboardmanager.domain.util.DateFormatUtils;
+import com.iamkatrechko.clipboardmanager.domain.util.IntentUtils;
 import com.iamkatrechko.clipboardmanager.view.DialogManager;
 import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils;
-import com.iamkatrechko.clipboardmanager.domain.util.Util;
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences;
 
 /**
@@ -218,7 +219,7 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener, 
                 }
                 contentValues.put(DatabaseDescription.ClipsTable.COLUMN_TITLE, etContent.getText().toString().substring(0, titleLength));
             }
-            contentValues.put(DatabaseDescription.ClipsTable.COLUMN_DATE, Util.getCurrentTime());
+            contentValues.put(DatabaseDescription.ClipsTable.COLUMN_DATE, System.currentTimeMillis());
             contentValues.put(DatabaseDescription.ClipsTable.COLUMN_IS_DELETED, "0");
 
             Uri newClipUri = getActivity().getContentResolver().insert(DatabaseDescription.ClipsTable.CONTENT_URI, contentValues);
@@ -258,7 +259,7 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener, 
 
     /** Расшаривает текущую заметку */
     private void share() {
-        Util.shareText(getActivity(), etTitle.getText().toString());
+        IntentUtils.INSTANCE.sendMail(getActivity(), etTitle.getText().toString());
     }
 
     /**
@@ -338,7 +339,7 @@ public class ClipEditFragment extends Fragment implements View.OnClickListener, 
 
                     etTitle.setText(clipsData.getTitle());
                     etContent.setText(clipsData.getContent());
-                    tvDate.setText(Util.getTimeInString(clipsData.getDate()));
+                    tvDate.setText(DateFormatUtils.INSTANCE.getTimeInString(clipsData.getDate()));
                     if (currentCategoryId == -1) {
                         currentCategoryId = clipsData.getCategoryId();
                     }

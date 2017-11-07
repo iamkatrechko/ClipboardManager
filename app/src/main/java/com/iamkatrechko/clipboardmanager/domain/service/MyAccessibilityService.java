@@ -8,7 +8,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils;
-import com.iamkatrechko.clipboardmanager.domain.util.Util;
+import com.iamkatrechko.clipboardmanager.domain.util.ServiceUtils;
 
 import static android.view.accessibility.AccessibilityNodeInfo.ACTION_PASTE;
 
@@ -46,7 +46,7 @@ public class MyAccessibilityService extends AccessibilityService {
                 if (source.getClassName().equals("android.widget.EditText")) {
                     activeSource = source;
                     startService(new Intent(this, FloatingViewService.class));
-                    if (Util.checkSupportActionPaste(source)) {
+                    if (ServiceUtils.INSTANCE.checkSupportActionPaste(source)) {
                         source.performAction(ACTION_PASTE);
                     }
                 }
@@ -71,7 +71,7 @@ public class MyAccessibilityService extends AccessibilityService {
                 String label = ClipUtils.getClipboardLabel(MyAccessibilityService.this);
                 if (label.equals(ClipUtils.CLIP_LABEL_ACCESSIBILITY)) {
                     try {
-                        if (Util.checkSupportActionPaste(activeSource)) {
+                        if (ServiceUtils.INSTANCE.checkSupportActionPaste(activeSource)) {
                             activeSource.performAction(ACTION_PASTE);
                         }
                     } catch (Exception ignored) {
