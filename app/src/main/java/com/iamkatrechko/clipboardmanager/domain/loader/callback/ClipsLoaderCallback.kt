@@ -12,6 +12,7 @@ import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
 import com.iamkatrechko.clipboardmanager.data.mapper.CursorToClipMapper
 import com.iamkatrechko.clipboardmanager.data.model.Clip
 import com.iamkatrechko.clipboardmanager.domain.param.ClipParam
+import com.iamkatrechko.clipboardmanager.domain.param.extension.createQuery
 
 /**
  * Загрузчик списка записей
@@ -30,19 +31,12 @@ class ClipsLoaderCallback(
         val param = args?.getParcelable<ClipParam>(KEY_LOADER_PARAMS) ?:
                 throw IllegalArgumentException("Не заданы параметры запроса")
 
-        val whereQuery = listOf(
-                if (param.categoryId == null) null else "${ClipsTable.COLUMN_CATEGORY_ID} = ${param.categoryId}",
-                if (!param.onlyFav) null else "${ClipsTable.COLUMN_IS_FAVORITE} = 1",
-                if (param.queryText.isBlank()) null else "(${ClipsTable.COLUMN_TITLE} LIKE '%${param.queryText}%' OR ${ClipsTable.COLUMN_CONTENT} LIKE '%${param.queryText}%')"
-        )
-                .filterNotNull()
-                .joinToString(" AND ")
         when (id) {
             MAIN_CLIPS_LOADER -> {
                 return CursorLoader(context,
                         ClipsTable.CONTENT_URI,
                         null,
-                        whereQuery,
+                        param.createQuery(),
                         null,
                         param.order.query)
             }

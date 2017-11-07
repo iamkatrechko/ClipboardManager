@@ -54,7 +54,7 @@ object RemoteViewCreator {
 
         val lastClips = getLastClips(context, currentClip, onlyFavorite)
         lastClips.forEachIndexed { index, clip ->
-            val clipRemoteViews = createClipListItem(context, clip.id, clip.title)
+            val clipRemoteViews = createClipListItem(context, clip.id, clip.text)
             if (index == 0) {
                 clipRemoteViews.setViewVisibility(R.id.flSeparator, View.GONE)
             }
