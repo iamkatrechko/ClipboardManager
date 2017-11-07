@@ -110,7 +110,7 @@ public class ClipboardService extends Service {
         startForeground(NOTIFICATION_ID, new NotificationManager().getNotification(this));
 
         if (!displayNotification) {
-            startService(HideNotificationService.newIntent(this, NOTIFICATION_ID));
+            startService(HideNotificationService.Companion.newIntent(this, NOTIFICATION_ID));
         }/*else{
             startForeground(98431, notification);
         }*/
