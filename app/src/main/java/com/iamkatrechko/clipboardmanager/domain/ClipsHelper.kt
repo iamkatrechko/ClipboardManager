@@ -35,7 +35,7 @@ object ClipsHelper {
         if (deleteOld) {
             ClipboardRepository().deleteClips(context, clipIds)
         }
-        ClipboardRepository().addClip(context, newClipText)
+        ClipboardRepository().insertClip(context, newClipText)
     }
 
     /**

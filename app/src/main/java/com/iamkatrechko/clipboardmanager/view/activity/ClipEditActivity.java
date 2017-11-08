@@ -27,7 +27,7 @@ public class ClipEditActivity extends AppCompatActivity {
      * Возвращает интент активности
      * @param clipUri URI редактируемой записи
      */
-    public static Intent newIntent(Context context, @Nullable Uri clipUri) {
+    public static Intent newIntent(Context context, @Nullable Long clipUri) {
         Intent intent = new Intent(context, ClipEditActivity.class);
         intent.putExtra(KEY_URI, clipUri);
         return intent;
@@ -44,11 +44,11 @@ public class ClipEditActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        Uri uri = getIntent().getParcelableExtra(KEY_URI);
+        Long uri = getIntent().getLongExtra(KEY_URI, -1);
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (fragmentManager.getFragments().isEmpty()) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, ClipEditFragment.newInstance(uri))
+                    .replace(R.id.container, ClipEditFragment.Companion.newInstance(uri))
                     .commit();
         }
     }
@@ -61,6 +61,6 @@ public class ClipEditActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         ClipEditFragment clipsFragment = (ClipEditFragment) getSupportFragmentManager().findFragmentById(R.id.container);
-        clipsFragment.backButtonWasPressed();
+        clipsFragment.onBackPressed();
     }
 }

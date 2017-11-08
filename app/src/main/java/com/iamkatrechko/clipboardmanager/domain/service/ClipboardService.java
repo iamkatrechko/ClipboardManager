@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.iamkatrechko.clipboardmanager.data.model.Clip;
 import com.iamkatrechko.clipboardmanager.data.model.SimpleClip;
 import com.iamkatrechko.clipboardmanager.view.NotificationManager;
 import com.iamkatrechko.clipboardmanager.R;
@@ -97,9 +98,9 @@ public class ClipboardService extends Service {
             }
             if (action.equals(ACTION_COPY_TO_CLIPBOARD)) {
                 long id = intent.getLongExtra("id", -1);
-                String text = repository.getClip(this, id);
-                if (text != null) {
-                    ClipUtils.copyToClipboard(this, text);
+                Clip clip = repository.getClip(this, id);
+                if (clip != null) {
+                    ClipUtils.copyToClipboard(this, clip.getText());
                 }
                 startMyService(this);
             }
@@ -123,7 +124,7 @@ public class ClipboardService extends Service {
      * @param text текст записи
      */
     private void addNewClip(String text) {
-        Uri newClipUri = repository.addClip(this, text);
+        Uri newClipUri = repository.insertClip(this, text);
         if (newClipUri != null) {
             startService(CancelViewService.newIntent(this, newClipUri.getLastPathSegment()));
         }

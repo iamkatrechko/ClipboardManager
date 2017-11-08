@@ -1,9 +1,13 @@
 package com.iamkatrechko.clipboardmanager.data.repository
 
+import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
+import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.ClipsTable
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
+import com.iamkatrechko.clipboardmanager.data.mapper.CursorToClipMapper
+import com.iamkatrechko.clipboardmanager.data.model.Clip
 
 /**
  * Репозиторий записей
@@ -35,17 +39,27 @@ class ClipboardRepository {
      * @param [text]    текст записи
      * @return uri новой записи, если она успешно добавлена
      */
-    fun addClip(context: Context, text: String): Uri? {
+    fun insertClip(context: Context, text: String): Uri? {
         var titleLength = 25
 
-        val contentValues = DatabaseDescription.ClipsTable.getDefaultContentValues()
+        val contentValues = ClipsTable.getDefaultContentValues()
         if (text.length < titleLength) {
             titleLength = text.length
         }
-        contentValues.put(DatabaseDescription.ClipsTable.COLUMN_TITLE, text.substring(0, titleLength))
-        contentValues.put(DatabaseDescription.ClipsTable.COLUMN_CONTENT, text)
+        contentValues.put(ClipsTable.COLUMN_TITLE, text.substring(0, titleLength))
+        contentValues.put(ClipsTable.COLUMN_CONTENT, text)
 
-        return context.contentResolver.insert(DatabaseDescription.ClipsTable.CONTENT_URI, contentValues)
+        return insertClip(context, contentValues)
+    }
+
+    /**
+     * Добавление новой записи в базу данных
+     * @param [context]       контекст
+     * @param [contentValues] свойства записи
+     * @return uri новой записи, если она успешно добавлена
+     */
+    fun insertClip(context: Context, contentValues: ContentValues): Uri? {
+        return context.contentResolver.insert(ClipsTable.CONTENT_URI, contentValues)
     }
 
     /**
@@ -55,9 +69,9 @@ class ClipboardRepository {
      * @return true - существует, false - не существует
      */
     fun alreadyExists(context: Context, text: String): Boolean {
-        val cursor = context.contentResolver.query(DatabaseDescription.ClipsTable.CONTENT_URI,
+        val cursor = context.contentResolver.query(ClipsTable.CONTENT_URI,
                 null,
-                DatabaseDescription.ClipsTable.COLUMN_CONTENT + " = ?",
+                ClipsTable.COLUMN_CONTENT + " = ?",
                 arrayOf(text),
                 null)
         return cursor != null && cursor.count != 0
@@ -69,13 +83,13 @@ class ClipboardRepository {
      * @param [id]      идентификатор записи
      * @return запись из базы данных
      */
-    fun getClip(context: Context, id: Long): String? {
-        val uri = DatabaseDescription.ClipsTable.buildClipUri(id)
+    fun getClip(context: Context, id: Long): Clip? {
+        val uri = ClipsTable.buildClipUri(id)
         val cursor = ClipCursor(
                 context.contentResolver.query(uri, null, null, null, null)
         )
         if (cursor.moveToFirst()) {
-            return cursor.content
+            return CursorToClipMapper().toClip(ClipCursor(cursor))
         }
         return null
     }
@@ -87,7 +101,7 @@ class ClipboardRepository {
      * @return список записей по их идентификаторам
      */
     fun getClips(context: Context, ids: List<Long>): List<String> {
-        return ids.mapTo(ArrayList()) { ClipboardRepository().getClip(context, it) }.filterNotNull()
+        return ids.mapTo(ArrayList()) { ClipboardRepository().getClip(context, it) }.mapNotNull { it?.text }
     }
 
     /**
@@ -96,7 +110,7 @@ class ClipboardRepository {
      * @param [id]      идентификатор записи
      */
     fun deleteClip(context: Context, id: Long) {
-        context.contentResolver.delete(DatabaseDescription.ClipsTable.buildClipUri(id),
+        context.contentResolver.delete(ClipsTable.buildClipUri(id),
                 null, null)
     }
 
@@ -107,5 +121,17 @@ class ClipboardRepository {
      */
     fun deleteClips(context: Context, ids: List<Long>) {
         ids.forEach { deleteClip(context, it) }
+    }
+
+    /**
+     * Обновляет содержимое записи
+     * @param [context]       контекст
+     * @param [clipId]        идентификатор записи
+     * @param [contentValues] новые свойства записи
+     * @return количество обновленных записей
+     */
+    fun updateClip(context: Context, clipId: Long, contentValues: ContentValues): Int {
+        val clipUri = DatabaseDescription.ClipsTable.buildClipUri(clipId)
+        return context.contentResolver.update(clipUri, contentValues, null, null)
     }
 }

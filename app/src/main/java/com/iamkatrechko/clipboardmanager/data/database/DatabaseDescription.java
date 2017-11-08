@@ -50,12 +50,12 @@ public class DatabaseDescription {
         public static ContentValues getDefaultContentValues() {
             ContentValues contentValues = new ContentValues();
 
-            contentValues.put(COLUMN_TITLE, "defaultTitle");
-            contentValues.put(COLUMN_CONTENT, "defaultContent");
+            contentValues.put(COLUMN_TITLE, "");
+            contentValues.put(COLUMN_CONTENT, "");
             contentValues.put(COLUMN_DATE, System.currentTimeMillis());
-            contentValues.put(COLUMN_IS_FAVORITE, "0");
+            contentValues.put(COLUMN_IS_FAVORITE, 0);
             contentValues.put(COLUMN_CATEGORY_ID, 1);
-            contentValues.put(COLUMN_IS_DELETED, "0");
+            contentValues.put(COLUMN_IS_DELETED, 0);
 
             return contentValues;
         }

@@ -16,6 +16,9 @@ class CursorToClipMapper {
      * @return запись
      */
     fun toClip(clipCursor: ClipCursor): Clip {
+        if (clipCursor.position < 0) {
+            clipCursor.moveToFirst()
+        }
         return Clip(clipCursor.id,
                 clipCursor.title,
                 clipCursor.content,

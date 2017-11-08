@@ -26,6 +26,9 @@
 
     <string name="setting_categories">Настроить категории</string>
 
+    <string name="saved">Сохранено</string>
+    <string name="error.save">Ошибка сохранения</string>
+    <string name="enter_clip_text">Введите текст записи!</string>
     <string name="title_activity_edit_categories">EditCategoriesActivity</string>
     <string name="action_split">Объединить</string>
     <string name="action_share">Поделиться</string>
