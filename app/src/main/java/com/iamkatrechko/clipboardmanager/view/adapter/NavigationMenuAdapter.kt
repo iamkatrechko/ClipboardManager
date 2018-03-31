@@ -60,14 +60,14 @@ class NavigationMenuAdapter : BaseExpandableListAdapter() {
         var view = convertView
         if (view == null) {
             view = LayoutInflater.from(parent.context).inflate(R.layout.exp_list_group_view, null)
-            val iconGroup = view.findViewById(R.id.image_view_icon) as ImageView
-            val textGroup = view.findViewById(R.id.text_view_title) as TextView
+            val iconGroup = view.findViewById<ImageView>(R.id.image_view_icon) as ImageView
+            val textGroup = view.findViewById<TextView>(R.id.text_view_title) as TextView
 
             iconGroup.setImageResource(group.iconResId)
             textGroup.text = context.getString(group.nameResId)
         }
 
-        val imageViewIndicator = view!!.findViewById(R.id.image_view_indicator) as ImageView
+        val imageViewIndicator = view!!.findViewById<ImageView>(R.id.image_view_indicator) as ImageView
         if (getChildrenCount(groupPos) == 0) {
             imageViewIndicator.visibility = View.GONE
         } else {
@@ -88,8 +88,8 @@ class NavigationMenuAdapter : BaseExpandableListAdapter() {
             view = LayoutInflater.from(parent.context).inflate(R.layout.exp_list_child_view, null)
         }
 
-        val textChild = view!!.findViewById(R.id.textChild) as TextView
-        val imageView = view.findViewById(R.id.imageView) as ImageView
+        val textChild = view!!.findViewById<TextView>(R.id.textChild) as TextView
+        val imageView = view.findViewById<ImageView>(R.id.imageView) as ImageView
 
         if (isLastChild) {
             textChild.text = context.getString(R.string.setting_categories)

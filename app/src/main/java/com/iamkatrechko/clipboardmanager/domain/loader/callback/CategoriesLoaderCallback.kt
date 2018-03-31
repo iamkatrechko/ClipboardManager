@@ -31,7 +31,7 @@ class CategoriesLoaderCallback(
         private val TAG = CategoriesLoaderCallback::class.java.simpleName
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor>? {
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
         Log.d(TAG, "onCreateLoader")
         when (id) {
             MainActivity.CATEGORIES_LOADER -> {
@@ -42,15 +42,15 @@ class CategoriesLoaderCallback(
                         null,
                         null)
             }
-            else -> return null
+            else -> error("Неизвестный загрузчик")
         }
     }
 
-    override fun onLoadFinished(loader: Loader<Cursor>?, data: Cursor) {
+    override fun onLoadFinished(loader: Loader<Cursor>, data: Cursor) {
         listener.onPrepared(CursorToCategoryMapper().toCategories(CategoryCursor(data)))
     }
 
-    override fun onLoaderReset(loader: Loader<Cursor>?) {
+    override fun onLoaderReset(loader: Loader<Cursor>) {
     }
 
     /** Слушатель готовности данных к использованию */

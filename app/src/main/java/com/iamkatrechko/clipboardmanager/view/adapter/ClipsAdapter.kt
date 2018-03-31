@@ -46,13 +46,13 @@ internal class ClipsAdapter constructor(
         showEmptyView(true)
     }
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView?) {
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         attachedRecyclerView = recyclerView
         attachedRecyclerView!!.addItemDecoration(ItemDivider(recyclerView!!.context))
     }
 
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView?) {
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
         attachedRecyclerView = null
     }
@@ -154,21 +154,21 @@ internal class ClipsAdapter constructor(
         /** Идентификатор заметки */
         private var clipId: Long = 0
         /** Идентификатор заметки */
-        private val tvId = view.findViewById(R.id.tvId) as TextView
+        private val tvId = view.findViewById<TextView>(R.id.tvId)
         /** Заголовок заметки */
-        private val tvTitle = view.findViewById(R.id.tvTitle) as TextView
+        private val tvTitle = view.findViewById<TextView>(R.id.tvTitle) as TextView
         /** Содержимое заметки */
-        private val tvContent = view.findViewById(R.id.tvContent) as TextView
+        private val tvContent = view.findViewById<TextView>(R.id.tvContent) as TextView
         /** Дата заметки */
-        private val tvDate = view.findViewById(R.id.tvDate) as TextView
+        private val tvDate = view.findViewById<TextView>(R.id.tvDate) as TextView
         /** Категория заметки */
-        private val tvCategoryId = view.findViewById(R.id.tvCategoryId) as TextView
+        private val tvCategoryId = view.findViewById<TextView>(R.id.tvCategoryId) as TextView
         /** Признак удаленной записи */
-        private val tvIsDeleted = view.findViewById(R.id.tvIsDeleted) as TextView
+        private val tvIsDeleted = view.findViewById<TextView>(R.id.tvIsDeleted) as TextView
         /** Иконка "скопировать" */
-        private val ivCopy = view.findViewById(R.id.ivCopy) as ImageView
+        private val ivCopy = view.findViewById<ImageView>(R.id.ivCopy) as ImageView
         /** Иконка избранности */
-        private val ivFavorite = view.findViewById(R.id.ivFavorite) as ImageView
+        private val ivFavorite = view.findViewById<ImageView>(R.id.ivFavorite) as ImageView
 
         init {
             val context = view.context

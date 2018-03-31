@@ -62,11 +62,11 @@ class CategoriesCursorAdapter(
         /** Идентификатор категории  */
         private var _id: Long = 0
         /** Заголовок  */
-        private val tvTitle: TextView = itemView.findViewById(R.id.tvTitle) as TextView
+        private val tvTitle: TextView = itemView.findViewById(R.id.tvTitle)
         /** Кнопка "редактировать"  */
-        private val ivEdit: ImageView = itemView.findViewById(R.id.ivEdit) as ImageView
+        private val ivEdit: ImageView = itemView.findViewById(R.id.ivEdit)
         /** Кнопка "удалить"  */
-        private val ivDelete: ImageView = itemView.findViewById(R.id.ivDelete) as ImageView
+        private val ivDelete: ImageView = itemView.findViewById(R.id.ivDelete)
 
         init {
             ivEdit.setOnClickListener { mMyClickListener.onEditClick(_id) }

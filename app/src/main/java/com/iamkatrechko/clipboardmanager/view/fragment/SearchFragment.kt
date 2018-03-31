@@ -47,9 +47,9 @@ class SearchFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_search, container, false)
-        etSearch = view.findViewById(R.id.etSearch) as EditText
-        ibSearch = view.findViewById(R.id.ibSeacrh) as ImageButton
-        recyclerView = view.findViewById(R.id.recyclerView) as RecyclerView
+        etSearch = view.findViewById(R.id.etSearch)
+        ibSearch = view.findViewById(R.id.ibSeacrh)
+        recyclerView = view.findViewById(R.id.recyclerView)
 
         clipsAdapter.setEmptyView(view.findViewById(R.id.linearEmpty))
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -71,7 +71,7 @@ class SearchFragment : Fragment() {
             putParcelable(ClipsLoaderCallback.KEY_LOADER_PARAMS, ClipParam(queryText = query))
         }
         loaderManager.restartLoader<Cursor>(ClipsLoaderCallback.MAIN_CLIPS_LOADER, bundle,
-                ClipsLoaderCallback(context, { clipsAdapter.setClips(it) }))
+                ClipsLoaderCallback(context!!, { clipsAdapter.setClips(it) }))
     }
 
     companion object {

@@ -26,7 +26,7 @@ class DialogSetOrderType : DialogFragment() {
         }
         val intent = Intent()
         intent.putExtra("orderType", orderType)
-        targetFragment.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
+        targetFragment?.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
     }
 
     override fun onCreateDialog(bundle: Bundle?): Dialog {

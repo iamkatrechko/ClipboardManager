@@ -51,7 +51,7 @@ class ClipsListFragment : Fragment() {
         override fun onSelectedChange(isSelectedMode: Boolean, selectedCount: Int) {
             isContextMenu = isSelectedMode
             this@ClipsListFragment.selectedCount = selectedCount
-            activity.invalidateOptionsMenu()
+            activity!!.invalidateOptionsMenu()
         }
     }
     /** Адаптер списка заметок  */
@@ -81,16 +81,16 @@ class ClipsListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        currentCategoryId = arguments.getLong(KEY_ARGUMENT_CATEGORY_ID)
+        currentCategoryId = arguments!!.getLong(KEY_ARGUMENT_CATEGORY_ID)
         currentCategoryId = if (currentCategoryId == -1L) null else currentCategoryId
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
-        recyclerView = view.findViewById(R.id.recyclerView) as RecyclerView
+        recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView) as RecyclerView
         clipsAdapter.setEmptyView(view.findViewById(R.id.linearEmpty))
 
-        recyclerView.layoutManager = LinearLayoutManager(activity.baseContext)
+        recyclerView.layoutManager = LinearLayoutManager(activity?.baseContext)
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = clipsAdapter
 
@@ -111,7 +111,7 @@ class ClipsListFragment : Fragment() {
             putParcelable(ClipsLoaderCallback.KEY_LOADER_PARAMS, ClipParam(categoryId = categoryId, order = order, onlyFav = onlyFav))
         }
         loaderManager.restartLoader(ClipsLoaderCallback.MAIN_CLIPS_LOADER, bundle,
-                ClipsLoaderCallback(context, { clipsAdapter.setClips(it) }))
+                ClipsLoaderCallback(context!!, { clipsAdapter.setClips(it) }))
     }
 
     /** Открывает экран создания новой заметки  */
@@ -140,7 +140,7 @@ class ClipsListFragment : Fragment() {
         if (isContextMenu) {
             clipsAdapter.resetSelectMode()
         } else {
-            activity.finish()
+            activity!!.finish()
         }
     }
 
@@ -148,9 +148,9 @@ class ClipsListFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
         inflater!!.inflate(if (!isContextMenu) R.menu.menu_main else R.menu.menu_main_context, menu)
         if (selectedCount == 0) {
-            activity.setTitle(R.string.app_name)
+            activity!!.setTitle(R.string.app_name)
         } else {
-            activity.title = getString(R.string.selected_count, selectedCount.toString())
+            activity!!.title = getString(R.string.selected_count, selectedCount.toString())
             menu!!.findItem(R.id.action_split).isVisible = selectedCount > 1
         }
 
@@ -162,7 +162,7 @@ class ClipsListFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
         // Окно поиска
-            R.id.action_search -> activity.startActivity(Intent(activity, SearchActivity::class.java))
+            R.id.action_search -> activity!!.startActivity(Intent(activity, SearchActivity::class.java))
         // Настройка сортировки
             R.id.action_set_order -> DialogManager.showDialogSetOrderType(this)
         // Показывать только избранные
@@ -175,7 +175,7 @@ class ClipsListFragment : Fragment() {
         // Меню разработчика
             R.id.action_developer_menu -> {
                 val i = Intent(activity, DeveloperActivity::class.java)
-                activity.startActivity(i)
+                activity!!.startActivity(i)
             }
         // Удалить выделенные записи
             R.id.action_delete -> DialogManager.showDialogDeleteConfirm(this)
@@ -183,7 +183,7 @@ class ClipsListFragment : Fragment() {
             R.id.action_split -> DialogManager.showDialogSplitClips(this)
         // Поделиться выделенными записями
             R.id.action_share -> {
-                val shareText = ClipsHelper.joinToString(context,
+                val shareText = ClipsHelper.joinToString(context!!,
                         clipsAdapter.getSelectedIds(),
                         UtilPreferences.getSeparator(context))
                 IntentUtils.sendMail(context, shareText)
@@ -202,7 +202,7 @@ class ClipsListFragment : Fragment() {
             val splitChar = data.getStringExtra("splitChar")
             if (clipsAdapter.getSelectedIds().isNotEmpty()) {
                 val deleteOldClips = data.getBooleanExtra("deleteOldClips", false)
-                ClipsHelper.joinAndDelete(context, clipsAdapter.getSelectedIds(), splitChar, deleteOldClips)
+                ClipsHelper.joinAndDelete(context!!, clipsAdapter.getSelectedIds(), splitChar, deleteOldClips)
                 clipsAdapter.resetSelectMode()
                 Toast.makeText(context, R.string.splited, Toast.LENGTH_SHORT).show()
             } else {
@@ -211,12 +211,12 @@ class ClipsListFragment : Fragment() {
         }
         if (requestCode == DialogManager.DIALOG_CHANGE_CATEGORY) {
             val categoryId = data.getLongExtra("categoryId", 0)
-            ClipsHelper.changeCategory(context, clipsAdapter.getSelectedIds(), categoryId)
+            ClipsHelper.changeCategory(context!!, clipsAdapter.getSelectedIds(), categoryId)
         }
         if (requestCode == DialogManager.DIALOG_DELETE_CONFIRM) {
             val delete = data.getBooleanExtra("delete", false)
             if (delete) {
-                repository.deleteClips(context, clipsAdapter.getSelectedIds())
+                repository.deleteClips(context!!, clipsAdapter.getSelectedIds())
                 clipsAdapter.resetSelectMode()
             }
         }

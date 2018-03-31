@@ -7,6 +7,7 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.view.View
 import android.widget.ExpandableListView
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.model.Category
@@ -35,10 +36,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_layout)
-        setSupportActionBar(findViewById(R.id.toolbar) as Toolbar)
+        setSupportActionBar(findViewById(R.id.toolbar))
 
-        drawerLayout = findViewById(R.id.drawer_layout) as DrawerLayout
-        listView = findViewById(R.id.list_view_navigation) as ExpandableListView
+        drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
+        listView = findViewById<ExpandableListView>(R.id.list_view_navigation)
 
         val fragmentManager = supportFragmentManager
         if (fragmentManager.fragments.isEmpty()) {
@@ -47,7 +48,7 @@ class MainActivity : AppCompatActivity() {
                     .commit()
         }
 
-        findViewById(R.id.fab).setOnClickListener {
+        findViewById<View>(R.id.fab).setOnClickListener {
             val clipsFragment = supportFragmentManager.findFragmentById(R.id.container) as ClipsListFragment
             clipsFragment.addNewClip()
         }
@@ -74,7 +75,7 @@ class MainActivity : AppCompatActivity() {
     private fun initNavigationView() {
         val toogle = ActionBarDrawerToggle(this,
                 drawerLayout,
-                findViewById(R.id.toolbar) as Toolbar,
+                findViewById<Toolbar>(R.id.toolbar),
                 R.string.app_name,
                 R.string.app_name)
         drawerLayout.setDrawerListener(toogle)

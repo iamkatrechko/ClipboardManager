@@ -25,7 +25,7 @@ class ClipsSearchLoaderCallback(
         private val preparedAction: (list: List<Clip>) -> Unit
 ) : LoaderManager.LoaderCallbacks<Cursor> {
 
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor>? {
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
         val param = args?.getParcelable<ClipParam>(KEY_LOADER_PARAMS) ?:
                 throw IllegalArgumentException("Не заданы параметры запроса")
 
@@ -40,14 +40,14 @@ class ClipsSearchLoaderCallback(
                         null,
                         param.order.query)
             }
-            else -> return null
+            else -> error("Неизвестный загрузчик")
         }
     }
 
-    override fun onLoaderReset(loader: Loader<Cursor>?) {
+    override fun onLoaderReset(loader: Loader<Cursor>) {
     }
 
-    override fun onLoadFinished(loader: Loader<Cursor>?, data: Cursor?) {
+    override fun onLoadFinished(loader: Loader<Cursor>, data: Cursor?) {
         preparedAction(CursorToClipMapper().toClips(ClipCursor(data)))
     }
 
