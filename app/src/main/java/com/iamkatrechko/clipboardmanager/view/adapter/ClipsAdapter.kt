@@ -1,24 +1,24 @@
 package com.iamkatrechko.clipboardmanager.view.adapter
 
 import android.database.Cursor
+import android.databinding.DataBindingUtil
 import android.graphics.Typeface
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import com.bignerdranch.android.multiselector.MultiSelector
 import com.bignerdranch.android.multiselector.SwappingHolder
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
 import com.iamkatrechko.clipboardmanager.data.mapper.CursorToClipMapper
 import com.iamkatrechko.clipboardmanager.data.model.Clip
+import com.iamkatrechko.clipboardmanager.databinding.RvListItemClipBinding
 import com.iamkatrechko.clipboardmanager.domain.ClipsHelper
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.DateFormatUtils
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
+import com.iamkatrechko.clipboardmanager.view.extension.inflate
 import com.iamkatrechko.clipboardmanager.view.extension.setGone
 
 /**
@@ -32,7 +32,7 @@ internal class ClipsAdapter constructor(
 ) : RecyclerView.Adapter<ClipsAdapter.ViewHolder>() {
 
     /** Помощник множественного выделения  */
-    private val selector: MultiSelector = MultiSelector()
+    private val selector = MultiSelector()
     /** Список записей */
     private val clips = ArrayList<Clip>()
 
@@ -49,7 +49,7 @@ internal class ClipsAdapter constructor(
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         attachedRecyclerView = recyclerView
-        attachedRecyclerView!!.addItemDecoration(ItemDivider(recyclerView!!.context))
+        recyclerView.addItemDecoration(ItemDivider(recyclerView.context))
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
@@ -58,7 +58,7 @@ internal class ClipsAdapter constructor(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.rv_list_item_clip, parent, false))
+        return ViewHolder(DataBindingUtil.bind(parent.inflate(R.layout.rv_list_item_clip))!!)
     }
 
     override fun onBindViewHolder(vHolder: ClipsAdapter.ViewHolder, position: Int) {
@@ -148,38 +148,22 @@ internal class ClipsAdapter constructor(
     /** Холдер основного элемента списка  */
     internal inner class ViewHolder(
             /** Виджет элемента списка */
-            view: View
-    ) : SwappingHolder(view, selector) {
+            private val binding: RvListItemClipBinding
+    ) : SwappingHolder(binding.root, selector) {
 
         /** Идентификатор заметки */
         private var clipId: Long = 0
-        /** Идентификатор заметки */
-        private val tvId = view.findViewById<TextView>(R.id.tvId)
-        /** Заголовок заметки */
-        private val tvTitle = view.findViewById<TextView>(R.id.tvTitle) as TextView
-        /** Содержимое заметки */
-        private val tvContent = view.findViewById<TextView>(R.id.tvContent) as TextView
-        /** Дата заметки */
-        private val tvDate = view.findViewById<TextView>(R.id.tvDate) as TextView
-        /** Категория заметки */
-        private val tvCategoryId = view.findViewById<TextView>(R.id.tvCategoryId) as TextView
-        /** Признак удаленной записи */
-        private val tvIsDeleted = view.findViewById<TextView>(R.id.tvIsDeleted) as TextView
-        /** Иконка "скопировать" */
-        private val ivCopy = view.findViewById<ImageView>(R.id.ivCopy) as ImageView
-        /** Иконка избранности */
-        private val ivFavorite = view.findViewById<ImageView>(R.id.ivFavorite) as ImageView
 
         init {
-            val context = view.context
+            val context = binding.root.context
             selectionModeBackgroundDrawable = ContextCompat.getDrawable(context, R.drawable.selection_drawable)
 
             val showMeta = UtilPreferences.isShowMetaInAdapter(context)
-            tvId.setGone(!showMeta)
-            tvCategoryId.setGone(!showMeta)
-            tvIsDeleted.setGone(!showMeta)
+            binding.tvId.setGone(!showMeta)
+            binding.tvCategoryId.setGone(!showMeta)
+            binding.tvIsDeleted.setGone(!showMeta)
 
-            view.setOnClickListener {
+            binding.root.setOnClickListener {
                 if (selector.tapSelection(this@ViewHolder)) {
                     // Если множественное выделение активно
                     if (getSelectedIds().isEmpty()) {
@@ -193,7 +177,7 @@ internal class ClipsAdapter constructor(
                 }
             }
 
-            view.setOnLongClickListener(View.OnLongClickListener {
+            binding.root.setOnLongClickListener(View.OnLongClickListener {
                 if (!selector.isSelectable) {
                     selector.isSelectable = true
                     selector.setSelected(this@ViewHolder, true)
@@ -203,12 +187,12 @@ internal class ClipsAdapter constructor(
                 false
             })
 
-            ivCopy.setOnClickListener {
-                ClipUtils.copyToClipboard(context, tvContent.text.toString())
+            binding.ivCopy.setOnClickListener {
+                ClipUtils.copyToClipboard(context, binding.tvContent.text.toString())
                 notifyDataSetChanged()
             }
 
-            ivFavorite.setOnClickListener {
+            binding.ivFavorite.setOnClickListener {
                 val clip = clips[adapterPosition]
                 ClipsHelper.setFavorite(context, clipId, !clip.isFavorite)
             }
@@ -220,17 +204,16 @@ internal class ClipsAdapter constructor(
          */
         internal fun bindView(clip: Clip) {
             clipId = clip.id
-            tvId.text = clip.id.toString()
-            tvTitle.text = clip.title
-            tvContent.text = clip.text
-            tvDate.text = DateFormatUtils.getTimeInString(clip.dateTime)
-            tvCategoryId.text = clip.categoryId.toString()
-            tvIsDeleted.text = clip.isDeleted.toString()
+            binding.tvId.text = clip.id.toString()
+            binding.tvTitle.text = clip.title
+            binding.tvContent.text = clip.text
+            binding.tvDate.text = DateFormatUtils.getTimeInString(clip.dateTime)
+            binding.tvCategoryId.text = clip.categoryId.toString()
+            binding.tvIsDeleted.text = clip.isDeleted.toString()
+            binding.ivFavorite.setImageResource(if (clip.isFavorite) R.drawable.ic_star else R.drawable.ic_star_border)
 
-            ivFavorite.setImageResource(if (clip.isFavorite) R.drawable.ic_star else R.drawable.ic_star_border)
-
-            val clipInClipboard = clip.text == ClipUtils.getClipboardText(tvCategoryId.context)
-            tvContent.setTypeface(null, if (clipInClipboard) Typeface.BOLD else Typeface.NORMAL)
+            val clipInClipboard = clip.text == ClipUtils.getClipboardText(binding.tvCategoryId.context)
+            binding.tvContent.setTypeface(null, if (clipInClipboard) Typeface.BOLD else Typeface.NORMAL)
         }
     }
 }

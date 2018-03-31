@@ -26,8 +26,7 @@ class ClipsSearchLoaderCallback(
 ) : LoaderManager.LoaderCallbacks<Cursor> {
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
-        val param = args?.getParcelable<ClipParam>(KEY_LOADER_PARAMS) ?:
-                throw IllegalArgumentException("Не заданы параметры запроса")
+        val param = args?.getParcelable<ClipParam>(KEY_LOADER_PARAMS) ?: error("Не заданы параметры запроса")
 
         val whereQuery = "(${ClipsTable.COLUMN_TITLE} LIKE '%${param.queryText}%' OR ${ClipsTable.COLUMN_CONTENT} LIKE '%${param.queryText}%')"
 

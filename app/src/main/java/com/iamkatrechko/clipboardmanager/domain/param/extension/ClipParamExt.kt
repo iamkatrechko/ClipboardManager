@@ -10,10 +10,9 @@ import com.iamkatrechko.clipboardmanager.domain.param.ClipParam
  **************************************************************************************************************************************************************/
 
 fun ClipParam.createQuery(): String {
-    return listOf(
+    return listOfNotNull(
             if (categoryId == null) null else "${ClipsTable.COLUMN_CATEGORY_ID} = $categoryId",
             if (!onlyFav) null else "${ClipsTable.COLUMN_IS_FAVORITE} = 1",
             if (queryText.isBlank()) null else "(${ClipsTable.COLUMN_TITLE} LIKE '%$queryText%' OR ${ClipsTable.COLUMN_CONTENT} LIKE '%$queryText%')")
-            .filterNotNull()
             .joinToString(" AND ")
 }

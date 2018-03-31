@@ -3,25 +3,23 @@ package com.iamkatrechko.clipboardmanager.view.fragment
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
+import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.*
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.ClipsTable
 import com.iamkatrechko.clipboardmanager.data.model.Clip
 import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
+import com.iamkatrechko.clipboardmanager.databinding.FragmentClipEditBinding
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.DateFormatUtils
 import com.iamkatrechko.clipboardmanager.domain.util.IntentUtils
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 import com.iamkatrechko.clipboardmanager.view.DialogManager
+import com.iamkatrechko.clipboardmanager.view.extension.TAG
 import com.iamkatrechko.clipboardmanager.view.extension.showToast
 import com.jakewharton.rxbinding2.widget.RxTextView
 
@@ -46,24 +44,8 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
     /** Флаг принадлежности к избранным  */
     private var isFavorite = false
 
-    /** Текстовое поле с заголовком  */
-    private lateinit var etTitle: EditText
-    /** Текстовое поле с содержимым  */
-    private lateinit var etContent: EditText
-    /** Дата создания записи  */
-    private lateinit var tvDate: TextView
-    /** Название категории  */
-    private lateinit var tvCategoryName: TextView
-    /** Иконка принадлежности к избранным  */
-    private lateinit var ivIsFavorite: ImageView
-    /** Кнопка копирования в буфер  */
-    private lateinit var ivCopy: ImageView
-    /** Кнопка "поделиться"  */
-    private lateinit var ivShare: ImageView
-    /** Лэйаут с выбором категории  */
-    private lateinit var linearCategory: LinearLayout
-    /** Иконка сохранения/редкатирования  */
-    private lateinit var fab: FloatingActionButton
+    /** Биндинг разметки */
+    private lateinit var binding: FragmentClipEditBinding
 
     /** Слушатель редактирования полей заголовка и содержимого */
     private val listener: (s: CharSequence) -> Unit = { saveNeed = true }
@@ -86,47 +68,37 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_clip_edit, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_clip_edit, container, true)
 
-        etTitle = view.findViewById(R.id.etTitle) as EditText
-        etContent = view.findViewById(R.id.etContent) as EditText
-        tvDate = view.findViewById(R.id.tvDate) as TextView
-        tvCategoryName = view.findViewById(R.id.tvCategory) as TextView
-        ivIsFavorite = view.findViewById(R.id.ivIsFavorite) as ImageView
-        ivCopy = view.findViewById(R.id.ivCopy) as ImageView
-        ivShare = view.findViewById(R.id.ivShare) as ImageView
-        linearCategory = view.findViewById(R.id.linearCategory) as LinearLayout
-        fab = view.findViewById(R.id.fab) as FloatingActionButton
-
-        linearCategory.setOnClickListener(this)
-        ivIsFavorite.setOnClickListener(this)
-        ivCopy.setOnClickListener(this)
-        ivShare.setOnClickListener(this)
+        binding.linearCategory.setOnClickListener(this)
+        binding.ivIsFavorite.setOnClickListener(this)
+        binding.ivCopy.setOnClickListener(this)
+        binding.ivShare.setOnClickListener(this)
 
         if (isNewClip) {
             isEditMode = true
             categoryId = 1
 
             loadCategory(categoryId)
-            etContent.requestFocus()
+            binding.etContent.requestFocus()
         } else {
             loadClip(clipId!!)
         }
 
         isEditMode = true
         if (isEditMode) {
-            etTitle.isEnabled = true
-            etContent.isEnabled = true
+            binding.etTitle.isEnabled = true
+            binding.etContent.isEnabled = true
             toEditMode()
         }
         if (savedInstanceState != null) {
             categoryId = savedInstanceState.getLong("categoryId")
         }
-        fab.setOnClickListener({
+        binding.fab.setOnClickListener({
             if (!isEditMode) {
                 // Если стоит режим просмотра
                 toEditMode()
-                etContent.requestFocus()
+                binding.etContent.requestFocus()
             } else {
                 saveClip()
             }
@@ -137,36 +109,36 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
     /** Переключает в режим редактирования  */
     private fun toEditMode() {
         isEditMode = true
-        etTitle.isEnabled = true
-        etContent.isEnabled = true
-        fab.setImageResource(R.drawable.ic_done_24dp)
+        binding.etTitle.isEnabled = true
+        binding.etContent.isEnabled = true
+        binding.fab.setImageResource(R.drawable.ic_done_24dp)
     }
 
     /** Сохраняет заметку  */
     private fun saveClip() {
         // Создание объекта ContentValues с парами "ключ—значение"
-        if (etContent.text.isEmpty()) {
+        if (binding.etContent.text.isEmpty()) {
             showToast(getString(R.string.enter_clip_text))
             return
         }
         val contentValues = ClipsTable.getDefaultContentValues().apply {
-            put(ClipsTable.COLUMN_TITLE, etTitle.text.toString())
-            put(ClipsTable.COLUMN_CONTENT, etContent.text.toString())
+            put(ClipsTable.COLUMN_TITLE, binding.etTitle.text.toString())
+            put(ClipsTable.COLUMN_CONTENT, binding.etContent.text.toString())
             put(ClipsTable.COLUMN_IS_FAVORITE, isFavorite)
             put(ClipsTable.COLUMN_CATEGORY_ID, categoryId)
         }
 
         val isSuccess: Boolean
         if (isNewClip) {
-            if (etTitle.text.isEmpty()) {
-                val titleLength = Math.min(25, etContent.text.length)
-                contentValues.put(ClipsTable.COLUMN_TITLE, etContent.text.toString().substring(0, titleLength))
+            if (binding.etTitle.text.isEmpty()) {
+                val titleLength = Math.min(25, binding.etContent.text.length)
+                contentValues.put(ClipsTable.COLUMN_TITLE, binding.etContent.text.toString().substring(0, titleLength))
             }
             isSuccess = clipRepository.insertClip(context!!, contentValues) != null
         } else {
             isSuccess = clipRepository.updateClip(context!!, clipId!!, contentValues) > 0
         }
-        showToast(if (isSuccess) getString(R.string.saved) else getString(R.string.error_save))
+        showToast(if (isSuccess) R.string.saved else R.string.error_save)
         activity?.finish()
     }
 
@@ -197,9 +169,9 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(view: View) {
         when (view.id) {
-            R.id.ivShare -> IntentUtils.sendMail(context!!, etTitle.text.toString())
+            R.id.ivShare -> IntentUtils.sendMail(context!!, binding.etTitle.text.toString())
             R.id.ivIsFavorite -> setIsFavorite(!isFavorite)
-            R.id.ivCopy -> ClipUtils.copyToClipboard(context, etContent.text.toString())
+            R.id.ivCopy -> ClipUtils.copyToClipboard(context, binding.etContent.text.toString())
             R.id.linearCategory -> DialogManager.showDialogChangeCategory(this)
         }
     }
@@ -220,7 +192,7 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
      */
     private fun loadCategory(categoryId: Long) {
         val category = catRepository.getCategory(context!!, categoryId)!!
-        tvCategoryName.text = category.title
+        binding.tvCategory.text = category.title
     }
 
     /**
@@ -228,15 +200,15 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
      * @param [clip] запись
      */
     private fun initViews(clip: Clip) {
-        etTitle.setText(clip.title)
-        etContent.setText(clip.text)
-        tvDate.text = DateFormatUtils.getTimeInString(clip.dateTime)
+        binding.etTitle.setText(clip.title)
+        binding.etContent.setText(clip.text)
+        binding.tvDate.text = DateFormatUtils.getTimeInString(clip.dateTime)
         categoryId = clip.categoryId
         isFavorite = clip.isFavorite
         setFavIcon(isFavorite)
 
-        RxTextView.textChanges(etTitle).skip(1).subscribe(listener)
-        RxTextView.textChanges(etContent).skip(1).subscribe(listener)
+        RxTextView.textChanges(binding.etTitle).skip(1).subscribe(listener)
+        RxTextView.textChanges(binding.etContent).skip(1).subscribe(listener)
     }
 
     /**
@@ -245,9 +217,9 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
      */
     private fun setFavIcon(isFav: Boolean) {
         if (isFav) {
-            ivIsFavorite.setImageResource(R.drawable.ic_star)
+            binding.ivIsFavorite.setImageResource(R.drawable.ic_star)
         } else {
-            ivIsFavorite.setImageResource(R.drawable.ic_star_border)
+            binding.ivIsFavorite.setImageResource(R.drawable.ic_star_border)
         }
     }
 
@@ -310,11 +282,8 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
 
     companion object {
 
-        /** Тег для логирования  */
-        private val TAG = ClipEditFragment::class.java.simpleName
-
         /** Ключ аргумента. URI заметки  */
-        private val KEY_CLIP_ID = "KEY_CLIP_ID"
+        private const val KEY_CLIP_ID = "KEY_CLIP_ID"
 
         /**
          * Возвращает новый экземпляр фрагмента

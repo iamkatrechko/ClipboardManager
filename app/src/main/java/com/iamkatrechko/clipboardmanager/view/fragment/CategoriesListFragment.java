@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -32,14 +33,9 @@ import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescriptio
  */
 public class CategoriesListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    /** Тег для логирования */
-    private final static String TAG = CategoriesListFragment.class.getSimpleName();
-
     /** Идентификатор загрузчика категорий */
     private static final int CATEGORIES_LOADER = 0;
 
-    /** Виджет списка категорий */
-    private RecyclerView recyclerView;
     /** Адаптер списка категорий заметок */
     private CategoriesCursorAdapter categoriesAdapter;
 
@@ -65,7 +61,8 @@ public class CategoriesListFragment extends Fragment implements LoaderManager.Lo
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_edit_categories, container, false);
 
-        recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
+        /* Виджет списка категорий */
+        RecyclerView recyclerView = v.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(categoriesAdapter);
@@ -120,6 +117,7 @@ public class CategoriesListFragment extends Fragment implements LoaderManager.Lo
         }
     }
 
+    @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
@@ -136,7 +134,7 @@ public class CategoriesListFragment extends Fragment implements LoaderManager.Lo
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (categoriesAdapter != null) {
             categoriesAdapter.setCursor(data);
             categoriesAdapter.notifyDataSetChanged();
@@ -144,6 +142,6 @@ public class CategoriesListFragment extends Fragment implements LoaderManager.Lo
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
     }
 }

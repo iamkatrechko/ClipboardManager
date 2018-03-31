@@ -19,7 +19,7 @@ import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity
 
 /**
  * Помощник по созданию уведомления с историей записи
- * @author ivanov_m
+ * @author iamkatrechko
  *         Date: 23.08.17
  */
 object RemoteViewCreator {

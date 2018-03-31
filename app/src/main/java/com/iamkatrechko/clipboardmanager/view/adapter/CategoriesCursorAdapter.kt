@@ -1,15 +1,13 @@
 package com.iamkatrechko.clipboardmanager.view.adapter
 
 import android.database.Cursor
+import android.databinding.DataBindingUtil
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.CategoryCursor
+import com.iamkatrechko.clipboardmanager.databinding.RvListItemCategoryBinding
+import com.iamkatrechko.clipboardmanager.view.extension.inflate
 import com.iamkatrechko.clipboardmanager.view.extension.setGone
 
 /**
@@ -30,9 +28,8 @@ class CategoriesCursorAdapter(
         recyclerView.addItemDecoration(ItemDivider(recyclerView.context))
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.rv_list_item_category, parent, false))
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(DataBindingUtil.bind(parent.inflate(R.layout.rv_list_item_category))!!)
+
 
     override fun onBindViewHolder(vHolder: ViewHolder, position: Int) {
         categories?.let {
@@ -56,21 +53,15 @@ class CategoriesCursorAdapter(
     /** Холдер основного элемента списка  */
     inner class ViewHolder(
             /** Виджет элемента списка */
-            itemView: View
-    ) : RecyclerView.ViewHolder(itemView) {
+            private val binding: RvListItemCategoryBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         /** Идентификатор категории  */
         private var _id: Long = 0
-        /** Заголовок  */
-        private val tvTitle: TextView = itemView.findViewById(R.id.tvTitle)
-        /** Кнопка "редактировать"  */
-        private val ivEdit: ImageView = itemView.findViewById(R.id.ivEdit)
-        /** Кнопка "удалить"  */
-        private val ivDelete: ImageView = itemView.findViewById(R.id.ivDelete)
 
         init {
-            ivEdit.setOnClickListener { mMyClickListener.onEditClick(_id) }
-            ivDelete.setOnClickListener { mMyClickListener.onDeleteClick(_id) }
+            binding.ivEdit.setOnClickListener { mMyClickListener.onEditClick(_id) }
+            binding.ivDelete.setOnClickListener { mMyClickListener.onDeleteClick(_id) }
         }
 
         /**
@@ -79,8 +70,8 @@ class CategoriesCursorAdapter(
          */
         fun bindView(cursor: CategoryCursor) {
             _id = cursor.id
-            tvTitle.text = cursor.title
-            ivDelete.setGone(adapterPosition == 0)
+            binding.tvTitle.text = cursor.title
+            binding.ivDelete.setGone(adapterPosition == 0)
         }
     }
 
