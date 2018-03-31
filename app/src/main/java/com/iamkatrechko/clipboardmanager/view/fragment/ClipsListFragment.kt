@@ -186,7 +186,7 @@ class ClipsListFragment : Fragment() {
                 val shareText = ClipsHelper.joinToString(context!!,
                         clipsAdapter.getSelectedIds(),
                         UtilPreferences.getSeparator(context))
-                IntentUtils.sendMail(context, shareText)
+                IntentUtils.sendMail(context!!, shareText)
             }
         // Сменить категорию выделенных записей
             R.id.action_change_category -> DialogManager.showDialogChangeCategory(this)

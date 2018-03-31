@@ -15,4 +15,4 @@ import android.widget.Toast
  * @param duration задержка ([Toast.LENGTH_SHORT] или [Toast.LENGTH_LONG])
  */
 fun Fragment.showToast(text: String, duration: Int = Toast.LENGTH_SHORT) =
-        context.showToast(text, duration)
+        context?.showToast(text, duration)

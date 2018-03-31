@@ -2,6 +2,7 @@ package com.iamkatrechko.clipboardmanager.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.iamkatrechko.clipboardmanager.R;
+import com.iamkatrechko.clipboardmanager.databinding.ActivityClipEditBinding;
 import com.iamkatrechko.clipboardmanager.view.fragment.ClipEditFragment;
 
 /**
@@ -36,8 +38,8 @@ public class ClipEditActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_clip_edit);
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        ActivityClipEditBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_clip_edit);
+        setSupportActionBar(binding.toolbar);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

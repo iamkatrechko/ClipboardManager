@@ -76,7 +76,7 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        clipId = arguments.getLong(KEY_CLIP_ID)
+        clipId = arguments!!.getLong(KEY_CLIP_ID)
         if (clipId == -1L) clipId = null else clipId
         if (clipId == null) {
             isNewClip = true
@@ -162,20 +162,20 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
                 val titleLength = Math.min(25, etContent.text.length)
                 contentValues.put(ClipsTable.COLUMN_TITLE, etContent.text.toString().substring(0, titleLength))
             }
-            isSuccess = clipRepository.insertClip(context, contentValues) != null
+            isSuccess = clipRepository.insertClip(context!!, contentValues) != null
         } else {
-            isSuccess = clipRepository.updateClip(context, clipId!!, contentValues) > 0
+            isSuccess = clipRepository.updateClip(context!!, clipId!!, contentValues) > 0
         }
-        context.showToast(if (isSuccess) getString(R.string.saved) else getString(R.string.error_save))
-        activity.finish()
+        showToast(if (isSuccess) getString(R.string.saved) else getString(R.string.error_save))
+        activity?.finish()
     }
 
     /** Удаляет текущую заметку */
     private fun deleteClip() {
         if (!isNewClip) {
-            clipRepository.deleteClip(context, clipId!!)
+            clipRepository.deleteClip(context!!, clipId!!)
         }
-        activity.finish()
+        activity?.finish()
     }
 
     /**
@@ -191,13 +191,13 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
             val contentValues = ContentValues().apply {
                 put(ClipsTable.COLUMN_IS_FAVORITE, fav)
             }
-            clipRepository.updateClip(context, clipId!!, contentValues)
+            clipRepository.updateClip(context!!, clipId!!, contentValues)
         }
     }
 
     override fun onClick(view: View) {
         when (view.id) {
-            R.id.ivShare -> IntentUtils.sendMail(context, etTitle.text.toString())
+            R.id.ivShare -> IntentUtils.sendMail(context!!, etTitle.text.toString())
             R.id.ivIsFavorite -> setIsFavorite(!isFavorite)
             R.id.ivCopy -> ClipUtils.copyToClipboard(context, etContent.text.toString())
             R.id.linearCategory -> DialogManager.showDialogChangeCategory(this)
@@ -209,7 +209,7 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
      * @param [clipId] идентификатор записи
      */
     private fun loadClip(clipId: Long) {
-        val clip = clipRepository.getClip(context, clipId)!!
+        val clip = clipRepository.getClip(context!!, clipId)!!
         initViews(clip)
         loadCategory(clip.categoryId)
     }
@@ -219,7 +219,7 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
      * @param [categoryId] идентификатор категории
      */
     private fun loadCategory(categoryId: Long) {
-        val category = catRepository.getCategory(context, categoryId)!!
+        val category = catRepository.getCategory(context!!, categoryId)!!
         tvCategoryName.text = category.title
     }
 
@@ -264,7 +264,7 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
         if (DialogManager.DIALOG_CANCEL_CHANGES == requestCode) {
             val save = data.getBooleanExtra("save", true)
             if (!save) {
-                activity.finish()
+                activity?.finish()
             } else {
                 saveClip()
             }
@@ -301,10 +301,10 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
                 DialogManager.showDialogCancel(this)
             } else {
                 saveClip()
-                activity.finish()
+                activity?.finish()
             }
         } else {
-            activity.finish()
+            activity?.finish()
         }
     }
 
