@@ -11,10 +11,10 @@ import android.view.View
 import android.widget.ExpandableListView
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.model.Category
+import com.iamkatrechko.clipboardmanager.domain.loader.callback.CategoriesLoaderCallback
 import com.iamkatrechko.clipboardmanager.view.adapter.NavigationMenuAdapter
 import com.iamkatrechko.clipboardmanager.view.adapter.navigation.NavGroups
 import com.iamkatrechko.clipboardmanager.view.fragment.ClipsListFragment
-import com.iamkatrechko.clipboardmanager.domain.loader.callback.CategoriesLoaderCallback
 
 /**
  * Основаня активность экрана со списком заметок
@@ -54,12 +54,10 @@ class MainActivity : AppCompatActivity() {
         }
         initNavigationView()
 
-        supportLoaderManager.initLoader(CATEGORIES_LOADER, null, CategoriesLoaderCallback(this, object : CategoriesLoaderCallback.OnDataPreparedListener {
-            override fun onPrepared(data: List<Category>) {
-                categories.clear()
-                categories.addAll(data)
-                adapter.setOfChildren(data)
-            }
+        supportLoaderManager.initLoader(CategoriesLoaderCallback.CATEGORIES_LOADER, null, CategoriesLoaderCallback(this, { categories ->
+            this.categories.clear()
+            this.categories.addAll(categories)
+            adapter.setOfChildren(categories)
         }))
     }
 
@@ -132,7 +130,5 @@ class MainActivity : AppCompatActivity() {
         /** Тег для логирования  */
         private val TAG = MainActivity::class.java.simpleName
 
-        /** Идентификатор загрузчика категорий  */
-        val CATEGORIES_LOADER = 1
     }
 }

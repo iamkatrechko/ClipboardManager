@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.*
+import com.iamkatrechko.clipboardmanager.domain.util.TAG
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.ClipsTable
 import com.iamkatrechko.clipboardmanager.data.model.Clip
@@ -19,7 +20,6 @@ import com.iamkatrechko.clipboardmanager.domain.util.DateFormatUtils
 import com.iamkatrechko.clipboardmanager.domain.util.IntentUtils
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 import com.iamkatrechko.clipboardmanager.view.DialogManager
-import com.iamkatrechko.clipboardmanager.view.extension.TAG
 import com.iamkatrechko.clipboardmanager.view.extension.showToast
 import com.jakewharton.rxbinding2.widget.RxTextView
 

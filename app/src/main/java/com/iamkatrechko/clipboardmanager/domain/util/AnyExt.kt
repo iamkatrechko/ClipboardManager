@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.view.extension
+package com.iamkatrechko.clipboardmanager.domain.util
 
 /**
  * Функции расширения для всех объектов
@@ -9,10 +9,11 @@ package com.iamkatrechko.clipboardmanager.view.extension
 /** Тег для логирования */
 val Any.TAG: String
     get() {
-        val clazz = this::class.java
-        return if (clazz.isAnonymousClass) {
-            clazz.enclosingClass
-        } else {
-            clazz
+        return this::class.java.run {
+            if (isAnonymousClass) {
+                enclosingClass
+            } else {
+                this
+            }
         }.simpleName
     }

@@ -1,11 +1,10 @@
 package com.iamkatrechko.clipboardmanager.view.adapter
 
-import android.database.Cursor
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import com.iamkatrechko.clipboardmanager.R
-import com.iamkatrechko.clipboardmanager.data.database.wrapper.CategoryCursor
+import com.iamkatrechko.clipboardmanager.data.model.Category
 import com.iamkatrechko.clipboardmanager.databinding.RvListItemCategoryBinding
 import com.iamkatrechko.clipboardmanager.view.adapter.common.BindingItemViewHolder
 import com.iamkatrechko.clipboardmanager.view.extension.inflate
@@ -21,48 +20,42 @@ class CategoriesCursorAdapter(
         private val clickListener: MyClickListener
 ) : RecyclerView.Adapter<CategoriesCursorAdapter.ViewHolderCategory>() {
 
-    /** Список категорий  */
-    private var categories: CategoryCursor? = null
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        recyclerView.addItemDecoration(ItemDivider(recyclerView.context))
-    }
+    /** Список категорий */
+    private val categoriesList = ArrayList<Category>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderCategory =
             ViewHolderCategory(parent.inflate(R.layout.rv_list_item_category))
 
-    override fun onBindViewHolder(vHolder: ViewHolderCategory, position: Int) {
-        categories?.let {
-            it.moveToPosition(position)
-            vHolder.bindView(it)
-        }
-    }
+    override fun onBindViewHolder(vHolder: ViewHolderCategory, position: Int) =
+            vHolder.bindView(categoriesList[position])
 
     override fun getItemCount(): Int =
-            categories?.count ?: 0
+            categoriesList.size
 
     /**
      * Устанавливает данные в адаптер
-     * @param categoryCursor список категорий
+     * @param categories список категорий
      */
-    fun setCursor(categoryCursor: Cursor) {
-        categories = CategoryCursor(categoryCursor)
+    fun setCursor(categories: List<Category>) {
+        categoriesList.clear()
+        categoriesList.addAll(categories)
+        notifyDataSetChanged()
     }
 
-    inner class ViewHolderCategory(view: View) : BindingItemViewHolder<CategoryCursor, RvListItemCategoryBinding>(view) {
+    inner class ViewHolderCategory(view: View) : BindingItemViewHolder<Category, RvListItemCategoryBinding>(view) {
 
         /** Идентификатор категории */
-        private var _id: Long = 0
+        private var _id: Long = -1
 
         init {
             binding.ivEdit.setOnClickListener { clickListener.onEditClick(_id) }
             binding.ivDelete.setOnClickListener { clickListener.onDeleteClick(_id) }
         }
 
-        override fun bindView(item: CategoryCursor) {
+        override fun bindView(item: Category) {
             _id = item.id
             binding.tvTitle.text = item.title
+            // Не даем удалить основную категорию
             binding.ivDelete.setGone(adapterPosition == 0)
         }
     }
