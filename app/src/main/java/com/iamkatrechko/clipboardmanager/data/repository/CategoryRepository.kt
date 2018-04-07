@@ -1,6 +1,8 @@
 package com.iamkatrechko.clipboardmanager.data.repository
 
+import android.content.ContentValues
 import android.content.Context
+import android.net.Uri
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.CategoryCursor
 import com.iamkatrechko.clipboardmanager.data.mapper.CursorToCategoryMapper
@@ -15,9 +17,6 @@ class CategoryRepository private constructor() {
 
     /** Основной компаньон */
     companion object {
-
-        /** Тег для логирования */
-        private val TAG = CategoryRepository::class.java.simpleName
 
         /** Экземпляр текущего класса */
         @Volatile
@@ -63,5 +62,13 @@ class CategoryRepository private constructor() {
             list.addAll(CursorToCategoryMapper().toCategories(CategoryCursor(cursor)))
         }
         return list
+    }
+
+    /** Добавляет новую категорию с именем [title] */
+    fun addCategory(context: Context, title: String): Uri {
+        val uri = DatabaseDescription.CategoryTable.CONTENT_URI
+        val contentValues = ContentValues()
+        contentValues.put(DatabaseDescription.CategoryTable.COLUMN_TITLE, title)
+        return context.contentResolver.insert(uri, contentValues)
     }
 }

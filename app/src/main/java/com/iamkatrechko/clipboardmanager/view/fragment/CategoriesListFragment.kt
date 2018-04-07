@@ -11,10 +11,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.iamkatrechko.clipboardmanager.R
-import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.CategoryTable
-import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.ClipsTable
+import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository
 import com.iamkatrechko.clipboardmanager.domain.loader.callback.CategoriesLoaderCallback
+import com.iamkatrechko.clipboardmanager.domain.use_case.MoveClipsUseCase
 import com.iamkatrechko.clipboardmanager.view.DialogManager
 import com.iamkatrechko.clipboardmanager.view.adapter.CategoriesCursorAdapter
 import com.iamkatrechko.clipboardmanager.view.adapter.ItemDivider
@@ -26,6 +26,8 @@ import com.iamkatrechko.clipboardmanager.view.adapter.ItemDivider
  */
 class CategoriesListFragment : Fragment() {
 
+    /** Репозиторий список категорий */
+    private val repository = CategoryRepository.getInstance()
     /** Адаптер списка категорий заметок  */
     private lateinit var categoriesAdapter: CategoriesCursorAdapter
 
@@ -85,10 +87,7 @@ class CategoriesListFragment : Fragment() {
 
     /** Создает новую категорию */
     private fun createCategory(name: String) {
-        val uri = CategoryTable.CONTENT_URI
-        val contentValues = ContentValues()
-        contentValues.put(CategoryTable.COLUMN_TITLE, name)
-        activity!!.contentResolver.insert(uri, contentValues)
+        repository.addCategory(context!!, name)
     }
 
     /** Переименовывает категорию */
@@ -100,18 +99,8 @@ class CategoriesListFragment : Fragment() {
     }
 
     /** Перемещает записи из одной категории в другую */
-    private fun moveClips(oldCategoryId: Long, newCategoryId: Long) {
-        val uriMove = DatabaseDescription.ClipsTable.CONTENT_URI
-        val contentValues = ContentValues()
-        contentValues.put(ClipsTable.COLUMN_CATEGORY_ID, newCategoryId)
-
-        // Перемещение записей из удаляемой категории в новую
-        activity!!.contentResolver.update(uriMove,
-                contentValues,
-                DatabaseDescription.ClipsTable.COLUMN_CATEGORY_ID + "=" + oldCategoryId, null)
-
-        // Удаление категории (теперь уже пустой)
-        val uriDelete = CategoryTable.buildClipUri(oldCategoryId)
-        activity!!.contentResolver.delete(uriDelete, null, null)
+    private fun moveClips(fromCategoryId: Long, toCategoryId: Long) {
+        val params = MoveClipsUseCase.Params(context!!, fromCategoryId, toCategoryId)
+        MoveClipsUseCase().execute(params)
     }
 }
