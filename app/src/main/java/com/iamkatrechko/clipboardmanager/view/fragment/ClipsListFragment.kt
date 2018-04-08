@@ -40,7 +40,7 @@ class ClipsListFragment : Fragment() {
     /** Количество выделенных элементов  */
     private var selectedCount = 0
     /** Репозиторий для работы с базой записей  */
-    private var repository = ClipboardRepository()
+    private var repository = ClipboardRepository.getInstance()
     /** Слушатель для адаптера списка */
     private var listener = object : ClipsAdapter.ClipClickListener {
 

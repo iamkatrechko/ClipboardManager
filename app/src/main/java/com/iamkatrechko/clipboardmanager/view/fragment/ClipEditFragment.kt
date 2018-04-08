@@ -50,7 +50,7 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
     /** Слушатель редактирования полей заголовка и содержимого */
     private val listener: (s: CharSequence) -> Unit = { saveNeed = true }
     /** Репозиторий записей */
-    private val clipRepository = ClipboardRepository()
+    private val clipRepository = ClipboardRepository.getInstance()
     /** Репозиторий категорий */
     private val catRepository = CategoryRepository.getInstance()
 

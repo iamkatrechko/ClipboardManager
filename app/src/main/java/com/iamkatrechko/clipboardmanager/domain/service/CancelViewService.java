@@ -74,7 +74,7 @@ public class CancelViewService extends Service {
 
     @Override
     public void onCreate() {
-        repository = new ClipboardRepository();
+        repository = ClipboardRepository.Companion.getInstance();
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
     }
 

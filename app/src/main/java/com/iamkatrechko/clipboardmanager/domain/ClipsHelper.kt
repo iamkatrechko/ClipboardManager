@@ -12,6 +12,9 @@ import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
  */
 object ClipsHelper {
 
+    /** Репозиторий списка записей */
+    private val clipRepository = ClipboardRepository.getInstance()
+
     /**
      * Объединяет содержимое выделенных записей в одну строку
      * @param [context]   контекст
@@ -20,7 +23,7 @@ object ClipsHelper {
      * @return объединенная строка
      */
     fun joinToString(context: Context, clipIds: List<Long>, separator: String): String {
-        return ClipboardRepository().getClips(context, clipIds).joinToString(separator)
+        return clipRepository.getClips(context, clipIds).joinToString(separator)
     }
 
     /**
@@ -33,9 +36,9 @@ object ClipsHelper {
     fun joinAndDelete(context: Context, clipIds: List<Long>, separator: String, deleteOld: Boolean) {
         val newClipText = ClipsHelper.joinToString(context, clipIds, separator)
         if (deleteOld) {
-            ClipboardRepository().deleteClips(context, clipIds)
+            clipRepository.deleteClips(context, clipIds)
         }
-        ClipboardRepository().insertClip(context, newClipText)
+        clipRepository.insertClip(context, newClipText)
     }
 
     /**

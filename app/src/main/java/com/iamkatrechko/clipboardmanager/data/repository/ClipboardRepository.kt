@@ -15,7 +15,7 @@ import com.iamkatrechko.clipboardmanager.data.repository.common.Provider
  * @author iamkatrechko
  *         Date: 03.11.17
  */
-class ClipboardRepository {
+class ClipboardRepository private constructor() {
 
     /**
      * Добавление новой записи в базу данных
