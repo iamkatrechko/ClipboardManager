@@ -3,7 +3,6 @@ package com.iamkatrechko.clipboardmanager.data.repository
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
-import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.ClipsTable
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
 import com.iamkatrechko.clipboardmanager.data.mapper.CursorToClipMapper
@@ -25,13 +24,14 @@ class ClipboardRepository private constructor() {
      */
     fun insertClip(context: Context, text: String): Uri? {
         var titleLength = 25
-
-        val contentValues = ClipsTable.getDefaultContentValues()
         if (text.length < titleLength) {
             titleLength = text.length
         }
-        contentValues.put(ClipsTable.COLUMN_TITLE, text.substring(0, titleLength))
-        contentValues.put(ClipsTable.COLUMN_CONTENT, text)
+
+        val contentValues = ClipsTable.getDefaultContentValues().apply {
+            put(ClipsTable.COLUMN_TITLE, text.substring(0, titleLength))
+            put(ClipsTable.COLUMN_CONTENT, text)
+        }
 
         return insertClip(context, contentValues)
     }
@@ -68,10 +68,8 @@ class ClipboardRepository private constructor() {
      * @return запись из базы данных
      */
     fun getClip(context: Context, id: Long): Clip? {
-        val uri = ClipsTable.buildClipUri(id)
-        val cursor = ClipCursor(
-                context.contentResolver.query(uri, null, null, null, null)
-        )
+        val clipUri = ClipsTable.buildClipUri(id)
+        val cursor = ClipCursor(context.contentResolver.query(clipUri, null, null, null, null))
         if (cursor.moveToFirst()) {
             return CursorToClipMapper().toClip(ClipCursor(cursor))
         }
@@ -85,7 +83,7 @@ class ClipboardRepository private constructor() {
      * @return список записей по их идентификаторам
      */
     fun getClips(context: Context, ids: List<Long>): List<String> {
-        return ids.mapTo(ArrayList()) { ClipboardRepository().getClip(context, it) }.mapNotNull { it?.text }
+        return ids.mapTo(ArrayList()) { getClip(context, it) }.mapNotNull { it?.text }
     }
 
     /**
@@ -94,8 +92,7 @@ class ClipboardRepository private constructor() {
      * @param [id]      идентификатор записи
      */
     fun deleteClip(context: Context, id: Long) {
-        context.contentResolver.delete(ClipsTable.buildClipUri(id),
-                null, null)
+        context.contentResolver.delete(ClipsTable.buildClipUri(id), null, null)
     }
 
     /**
@@ -115,7 +112,7 @@ class ClipboardRepository private constructor() {
      * @return количество обновленных записей
      */
     fun updateClip(context: Context, clipId: Long, contentValues: ContentValues): Int {
-        val clipUri = DatabaseDescription.ClipsTable.buildClipUri(clipId)
+        val clipUri = ClipsTable.buildClipUri(clipId)
         return context.contentResolver.update(clipUri, contentValues, null, null)
     }
 

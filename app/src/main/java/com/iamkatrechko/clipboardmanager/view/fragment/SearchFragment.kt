@@ -57,15 +57,13 @@ class SearchFragment : Fragment() {
         recyclerView.adapter = clipsAdapter
 
         RxTextView.textChanges(etSearch)
-                .subscribe { charSequence -> searchOnText(charSequence.toString()) }
+                .map { it.toString() }
+                .subscribe(this::searchOnText)
         ibSearch.setOnClickListener { searchOnText(etSearch.text.toString()) }
         return view
     }
 
-    /**
-     * Производит поиск по заметкам
-     * @param query текст запроса
-     */
+    /** Производит поиск по заметкам по тексту [query] */
     private fun searchOnText(query: String) {
         val bundle = Bundle().apply {
             putParcelable(ClipsLoaderCallback.KEY_LOADER_PARAMS, ClipParam(queryText = query))

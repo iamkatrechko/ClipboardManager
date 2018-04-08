@@ -8,17 +8,14 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.*
-import com.iamkatrechko.clipboardmanager.domain.util.TAG
+import androidx.core.os.bundleOf
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.ClipsTable
 import com.iamkatrechko.clipboardmanager.data.model.Clip
 import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 import com.iamkatrechko.clipboardmanager.databinding.FragmentClipEditBinding
-import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
-import com.iamkatrechko.clipboardmanager.domain.util.DateFormatUtils
-import com.iamkatrechko.clipboardmanager.domain.util.IntentUtils
-import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
+import com.iamkatrechko.clipboardmanager.domain.util.*
 import com.iamkatrechko.clipboardmanager.view.DialogManager
 import com.iamkatrechko.clipboardmanager.view.extension.showToast
 import com.jakewharton.rxbinding2.widget.RxTextView
@@ -47,8 +44,6 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
     /** Биндинг разметки */
     private lateinit var binding: FragmentClipEditBinding
 
-    /** Слушатель редактирования полей заголовка и содержимого */
-    private val listener: (s: CharSequence) -> Unit = { saveNeed = true }
     /** Репозиторий записей */
     private val clipRepository = ClipboardRepository.getInstance()
     /** Репозиторий категорий */
@@ -59,12 +54,11 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
         setHasOptionsMenu(true)
 
         clipId = arguments!!.getLong(KEY_CLIP_ID)
-        if (clipId == -1L) clipId = null else clipId
-        if (clipId == null) {
+        if (clipId == null || clipId == -1L) {
             isNewClip = true
         }
 
-        Log.d(TAG, clipId.toString())
+        Log.i(TAG, "Редактирование заметки [id=$clipId]")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -207,8 +201,9 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
         isFavorite = clip.isFavorite
         setFavIcon(isFavorite)
 
-        RxTextView.textChanges(binding.etTitle).skip(1).subscribe(listener)
-        RxTextView.textChanges(binding.etContent).skip(1).subscribe(listener)
+        RxTextView.textChanges(binding.etTitle).skipInitialValue()
+                .mergeWith(RxTextView.textChanges(binding.etContent).skipInitialValue())
+                .subscribe { saveNeed = true }
     }
 
     /**
@@ -266,7 +261,7 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
         return super.onOptionsItemSelected(item)
     }
 
-    /** Нажатие на кнопку назад  */
+    /** Нажатие на кнопку назад */
     fun onBackPressed() {
         if (isEditMode && saveNeed) {
             if (UtilPreferences.getShowSaveDialogBeforeExit(context)) {
@@ -282,21 +277,18 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
 
     companion object {
 
-        /** Ключ аргумента. URI заметки  */
+        /** Ключ аргумента. URI заметки */
         private const val KEY_CLIP_ID = "KEY_CLIP_ID"
 
         /**
          * Возвращает новый экземпляр фрагмента
-         * @param uri URI редактируемой заметки
-         * @return новый экземпляр фрагмента
+         * @param clipId id редактируемой записи
          */
-        fun newInstance(uri: Long?): ClipEditFragment {
+        fun newInstance(clipId: Long?): ClipEditFragment {
             val fragment = ClipEditFragment()
-
-            fragment.arguments = Bundle().apply {
-                putLong(KEY_CLIP_ID, uri ?: -1)
-            }
-
+            fragment.arguments = bundleOf(
+                    KEY_CLIP_ID to clipId
+            )
             return fragment
         }
     }

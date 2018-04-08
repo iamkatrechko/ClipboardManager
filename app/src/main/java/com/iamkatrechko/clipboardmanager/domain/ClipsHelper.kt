@@ -1,8 +1,8 @@
 package com.iamkatrechko.clipboardmanager.domain
 
-import android.content.ContentValues
 import android.content.Context
-import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
+import androidx.core.content.contentValuesOf
+import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.ClipsTable
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 
 /**
@@ -49,9 +49,8 @@ object ClipsHelper {
      */
     fun changeCategory(context: Context, clipIds: List<Long>, categoryId: Long) {
         for (id in clipIds) {
-            val contentValues = ContentValues()
-            contentValues.put(DatabaseDescription.ClipsTable.COLUMN_CATEGORY_ID, categoryId)
-            clipRepository.updateClip(context, id, contentValues)
+            val content = contentValuesOf(ClipsTable.COLUMN_CATEGORY_ID to categoryId)
+            clipRepository.updateClip(context, id, content)
         }
     }
 
@@ -62,8 +61,7 @@ object ClipsHelper {
      * @param [isFavorite] флаг избранности
      */
     fun setFavorite(context: Context, clipId: Long, isFavorite: Boolean) {
-        val contentValues = ContentValues()
-        contentValues.put(DatabaseDescription.ClipsTable.COLUMN_IS_FAVORITE, isFavorite)
-        clipRepository.updateClip(context, clipId, contentValues)
+        val content = contentValuesOf(ClipsTable.COLUMN_IS_FAVORITE to isFavorite)
+        clipRepository.updateClip(context, clipId, content)
     }
 }

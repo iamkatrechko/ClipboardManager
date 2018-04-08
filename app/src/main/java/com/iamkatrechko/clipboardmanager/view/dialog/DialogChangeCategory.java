@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 
-import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
-import com.iamkatrechko.clipboardmanager.data.database.wrapper.CategoryCursor;
+import com.iamkatrechko.clipboardmanager.data.model.Category;
+import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository;
+
+import java.util.List;
 
 /**
  * Диалог смены категории для заметки
@@ -42,29 +44,25 @@ public class DialogChangeCategory extends DialogFragment {
 
     @NonNull
     public Dialog onCreateDialog(Bundle bundle) {
-        CategoryCursor categories = new CategoryCursor(getActivity().getContentResolver().query(DatabaseDescription.CategoryTable.CONTENT_URI,
-                null,
-                null,
-                null,
-                null));
+        List<Category> categoryList = CategoryRepository.Companion.getInstance().getCategories(getActivity());
 
-        final String[] mItemsNames = new String[categories.getCount()];
-        final long[] mItemsValues = new long[categories.getCount()];
-        for (int i = 0; i < categories.getCount(); i++) {
-            categories.moveToPosition(i);
-            mItemsNames[i] = categories.getTitle();
-            mItemsValues[i] = categories.getID();
+        final String[] mItemsNames = new String[categoryList.size()];
+        final long[] mItemsValues = new long[categoryList.size()];
+        for (int i = 0; i < categoryList.size(); i++) {
+            Category category = categoryList.get(i);
+            mItemsNames[i] = category.getTitle();
+            mItemsValues[i] = category.getId();
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Переместить в:");
-        builder.setItems(mItemsNames, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                sendResult(mItemsValues[item]);
-            }
-        });
-        return builder.create();
+        return new AlertDialog.Builder(getActivity())
+                .setTitle("Переместить в:")
+                .setItems(mItemsNames, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        sendResult(mItemsValues[item]);
+                    }
+                })
+                .create();
     }
 }
 
