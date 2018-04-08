@@ -42,18 +42,16 @@ object ClipsHelper {
     }
 
     /**
-     * Изменяет категорию выделенных записей
+     * Изменяет категорию записей
      * @param [context]    контекст
      * @param [clipIds]    идентификаторы записей
      * @param [categoryId] идентификатор новой категории
      */
     fun changeCategory(context: Context, clipIds: List<Long>, categoryId: Long) {
         for (id in clipIds) {
-            val uri = DatabaseDescription.ClipsTable.buildClipUri(id)
-
             val contentValues = ContentValues()
             contentValues.put(DatabaseDescription.ClipsTable.COLUMN_CATEGORY_ID, categoryId)
-            context.contentResolver.update(uri, contentValues, null, null)
+            clipRepository.updateClip(context, id, contentValues)
         }
     }
 
@@ -66,6 +64,6 @@ object ClipsHelper {
     fun setFavorite(context: Context, clipId: Long, isFavorite: Boolean) {
         val contentValues = ContentValues()
         contentValues.put(DatabaseDescription.ClipsTable.COLUMN_IS_FAVORITE, isFavorite)
-        context.contentResolver.update(DatabaseDescription.ClipsTable.buildClipUri(clipId), contentValues, null, null)
+        clipRepository.updateClip(context, clipId, contentValues)
     }
 }

@@ -59,6 +59,12 @@ class CategoryRepository private constructor() {
         return context.contentResolver.insert(uri, contentValues)
     }
 
+    /** Удаляет категорию с определенным [id] */
+    fun deleteCategory(context: Context, id: Long) {
+        val uriDelete = DatabaseDescription.CategoryTable.buildClipUri(id)
+        context.contentResolver.delete(uriDelete, null, null)
+    }
+
     companion object : Provider<CategoryRepository>() {
 
         override fun createInstance() = CategoryRepository()
