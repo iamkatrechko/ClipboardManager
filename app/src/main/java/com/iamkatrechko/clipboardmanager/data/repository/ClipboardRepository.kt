@@ -8,6 +8,7 @@ import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.Clips
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
 import com.iamkatrechko.clipboardmanager.data.mapper.CursorToClipMapper
 import com.iamkatrechko.clipboardmanager.data.model.Clip
+import com.iamkatrechko.clipboardmanager.data.repository.common.Provider
 
 /**
  * Репозиторий записей
@@ -15,23 +16,6 @@ import com.iamkatrechko.clipboardmanager.data.model.Clip
  *         Date: 03.11.17
  */
 class ClipboardRepository {
-
-    /** Основной компаньон */
-    companion object {
-
-        /** Тег для логирования */
-        private val TAG = ClipboardRepository::class.java.simpleName
-
-        /** Экземпляр текущего класса */
-        @Volatile
-        private var INSTANCE: ClipboardRepository? = null
-
-        /** Возвращает экземпляр текущего класса */
-        fun getInstance(): ClipboardRepository =
-                INSTANCE ?: synchronized(this) {
-                    INSTANCE ?: ClipboardRepository().also { INSTANCE = it }
-                }
-    }
 
     /**
      * Добавление новой записи в базу данных
@@ -133,5 +117,10 @@ class ClipboardRepository {
     fun updateClip(context: Context, clipId: Long, contentValues: ContentValues): Int {
         val clipUri = DatabaseDescription.ClipsTable.buildClipUri(clipId)
         return context.contentResolver.update(clipUri, contentValues, null, null)
+    }
+
+    companion object : Provider<ClipboardRepository>() {
+
+        override fun createInstance() = ClipboardRepository()
     }
 }

@@ -7,6 +7,7 @@ import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.CategoryCursor
 import com.iamkatrechko.clipboardmanager.data.mapper.CursorToCategoryMapper
 import com.iamkatrechko.clipboardmanager.data.model.Category
+import com.iamkatrechko.clipboardmanager.data.repository.common.Provider
 
 /**
  * Репозиторий категорий записей
@@ -14,20 +15,6 @@ import com.iamkatrechko.clipboardmanager.data.model.Category
  *         Date: 08.11.17
  */
 class CategoryRepository private constructor() {
-
-    /** Основной компаньон */
-    companion object {
-
-        /** Экземпляр текущего класса */
-        @Volatile
-        private var INSTANCE: CategoryRepository? = null
-
-        /** Возвращает экземпляр текущего класса */
-        fun getInstance(): CategoryRepository =
-                INSTANCE ?: synchronized(this) {
-                    INSTANCE ?: CategoryRepository().also { INSTANCE = it }
-                }
-    }
 
     /**
      * Возвращает категорию по его идентификатору
@@ -70,5 +57,10 @@ class CategoryRepository private constructor() {
         val contentValues = ContentValues()
         contentValues.put(DatabaseDescription.CategoryTable.COLUMN_TITLE, title)
         return context.contentResolver.insert(uri, contentValues)
+    }
+
+    companion object : Provider<CategoryRepository>() {
+
+        override fun createInstance() = CategoryRepository()
     }
 }
