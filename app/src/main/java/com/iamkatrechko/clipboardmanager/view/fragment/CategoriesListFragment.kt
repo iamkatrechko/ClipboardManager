@@ -17,7 +17,7 @@ import com.iamkatrechko.clipboardmanager.domain.loader.callback.CategoriesLoader
 import com.iamkatrechko.clipboardmanager.domain.use_case.MoveClipsUseCase
 import com.iamkatrechko.clipboardmanager.view.DialogManager
 import com.iamkatrechko.clipboardmanager.view.adapter.CategoriesCursorAdapter
-import com.iamkatrechko.clipboardmanager.view.adapter.ItemDivider
+import com.iamkatrechko.clipboardmanager.view.adapter.common.ItemDivider
 
 /**
  * Фрагмент экрана со списком категорий

@@ -7,7 +7,7 @@ import android.support.v4.app.LoaderManager
 import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
 import android.util.Log
-import com.iamkatrechko.clipboardmanager.domain.util.TAG
+import com.iamkatrechko.clipboardmanager.view.extension.TAG
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.CategoryCursor
 import com.iamkatrechko.clipboardmanager.data.mapper.CursorToCategoryMapper

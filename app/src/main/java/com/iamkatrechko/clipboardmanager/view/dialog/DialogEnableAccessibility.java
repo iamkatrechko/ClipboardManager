@@ -9,6 +9,8 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 
+import com.iamkatrechko.clipboardmanager.R;
+
 /**
  * Диалог включения служебного сервиса
  * @author iamkatrechko
@@ -38,6 +40,6 @@ public class DialogEnableAccessibility extends DialogFragment {
                                 startActivityForResult(intent, 122161);
                             }
                         })
-                .setNegativeButton("Отмена", null).create();
+                .setNegativeButton(R.string.cancel, null).create();
     }
 }

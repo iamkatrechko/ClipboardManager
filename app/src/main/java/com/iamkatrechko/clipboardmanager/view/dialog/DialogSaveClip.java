@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
+import com.iamkatrechko.clipboardmanager.R;
+
 /**
  * Диалог сохранения заметки перед выходом
  * @author iamkatrechko
@@ -41,15 +43,15 @@ public class DialogSaveClip extends DialogFragment {
     public Dialog onCreateDialog(Bundle bundle) {
 
         return new AlertDialog.Builder(getActivity())
-                .setTitle("Отменить?")
-                .setMessage("Изменения не сохранены. Выйти без сохранения?")
-                .setPositiveButton("ОК",
+                .setTitle(R.string.question_cancel)
+                .setMessage(R.string.question_exit_without_save)
+                .setPositiveButton(R.string.yes,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                                 int id) {
                                 sendResult(false);
                             }
                         })
-                .setNegativeButton("Отмена", null).create();
+                .setNegativeButton(R.string.cancel, null).create();
     }
 }

@@ -9,7 +9,7 @@ import androidx.core.content.systemService
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
-import com.iamkatrechko.clipboardmanager.domain.util.TAG
+import com.iamkatrechko.clipboardmanager.view.extension.TAG
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 import com.iamkatrechko.clipboardmanager.view.NotificationManager
 import com.iamkatrechko.clipboardmanager.view.extension.showToast

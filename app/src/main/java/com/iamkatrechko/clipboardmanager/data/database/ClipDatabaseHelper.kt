@@ -8,7 +8,7 @@ import androidx.core.content.contentValuesOf
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.CategoryTable
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.ClipsTable
-import com.iamkatrechko.clipboardmanager.domain.util.TAG
+import com.iamkatrechko.clipboardmanager.view.extension.TAG
 import java.util.*
 
 /**

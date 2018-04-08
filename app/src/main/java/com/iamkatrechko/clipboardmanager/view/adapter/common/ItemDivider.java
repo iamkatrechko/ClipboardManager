@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.view.adapter;
+package com.iamkatrechko.clipboardmanager.view.adapter.common;
 
 import android.content.Context;
 import android.graphics.Canvas;

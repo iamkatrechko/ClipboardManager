@@ -17,6 +17,7 @@ import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 import com.iamkatrechko.clipboardmanager.databinding.FragmentClipEditBinding
 import com.iamkatrechko.clipboardmanager.domain.util.*
 import com.iamkatrechko.clipboardmanager.view.DialogManager
+import com.iamkatrechko.clipboardmanager.view.extension.TAG
 import com.iamkatrechko.clipboardmanager.view.extension.showToast
 import com.jakewharton.rxbinding2.widget.RxTextView
 

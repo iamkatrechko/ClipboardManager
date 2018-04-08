@@ -32,7 +32,7 @@ class HideNotificationService : Service() {
     companion object {
 
         /** Ключ идентификатора уведомления  */
-        private val KEY_NOTIFICATION_ID = "KEY_NOTIFICATION_ID"
+        private const val KEY_NOTIFICATION_ID = "KEY_NOTIFICATION_ID"
 
         /**
          * Возвращает интент сервиса

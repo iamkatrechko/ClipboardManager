@@ -16,6 +16,7 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription;
 
 import java.util.HashMap;
@@ -86,15 +87,15 @@ public class DialogCategoryDelete extends DialogFragment implements LoaderManage
         } while (categoriesCursor.moveToNext());
 
         return new AlertDialog.Builder(getActivity())
-                .setTitle("Удалить категорию и переместить ее записи в:")
-                .setPositiveButton("Удалить", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.title_delete_and_move)
+                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Log.d("DialogCategoryDelete", "" + deleteCategoryId + "-" + hm.get(moveCategoryPos) + "-" + moveCategoryPos);
                         sendResult(deleteCategoryId, hm.get(moveCategoryPos), true);
                     }
                 })
-                .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,
                                         int id) {
                         dialog.cancel();

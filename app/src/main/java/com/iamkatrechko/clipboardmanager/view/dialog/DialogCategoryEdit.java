@@ -55,10 +55,10 @@ public class DialogCategoryEdit extends DialogFragment {
 
         etTitle = (EditText) view.findViewById(R.id.etTitle);
 
-        if (categoryId == -1){
+        if (categoryId == -1) {
             isAddNewCategory = true;
-            etTitle.setText("Новая категория");
-        }else{
+            etTitle.setText(R.string.new_category);
+        } else {
             Uri categoryUri = DatabaseDescription.CategoryTable.buildClipUri(categoryId);
             CategoryCursor cursor =
                     new CategoryCursor(getActivity().getContentResolver().query(categoryUri,
@@ -74,13 +74,13 @@ public class DialogCategoryEdit extends DialogFragment {
 
         return new AlertDialog.Builder(getActivity())
                 .setView(view)
-                .setTitle("Изменение имени")
-                .setPositiveButton("Сохранить", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.title_title_change)
+                .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int n) {
                         sendResult(categoryId, etTitle.getText().toString());
                     }
                 })
-                .setNegativeButton("Отмена", null)
+                .setNegativeButton(R.string.cancel, null)
                 .create();
     }
 }

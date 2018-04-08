@@ -1,24 +1,19 @@
 <resources>
     <string name="app_name">Clipboard Manager</string>
     <string name="app_description">Менеджер буфера обмена</string>
-    <string name="action_settings">Settings</string>
-
-    <string name="invalid_query_uri">Invalid query Uri:</string>
-    <string name="invalid_insert_uri">Invalid insert Uri:</string>
-    <string name="invalid_update_uri">Invalid update Uri:</string>
-    <string name="invalid_delete_uri">Invalid delete Uri:</string>
-    <string name="insert_failed">Insert failed: s</string>
 
     <string name="empty_record">Пустая запись</string>
     <string name="record_already_exists">Запись уже существует в базе</string>
     <string name="deleted">Удалено: </string>
+    <string name="delete">Удалить</string>
 
     <string name="select_records">Выберите записи...</string>
     <string name="copy_in_app">Добавлено в менеджер буфера</string>
     <string name="select_app_to_share">Выберите приложение...</string>
     <string name="action_delete">Удалить</string>
+    <string name="action_settings">Settings</string>
 
-    <string name="group_header">Шапочка</string>
+    <!-- Боковое меню -->
     <string name="group_all_clips">Все записи</string>
     <string name="group_categories">Категории</string>
     <string name="group_settings">Настройки</string>
@@ -26,6 +21,24 @@
 
     <string name="setting_categories">Настроить категории</string>
 
+    <string name="split">Объединить</string>
+    <string name="cancel">Отмена</string>
+    <string name="confirm">Подтверждение</string>
+
+    <string name="question.cancel">Отменить?</string>
+    <string name="question.exit_without_save">Изменения не сохранены. Выйти без сохранения?</string>
+    <string name="question.delete_selected">Удалить выделенные записи?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+
+    <string name="title.split_items">Объединение записей</string>
+    <string name="title.sort">Сортировка:</string>
+    <string name="title.title_change">Изменение имени</string>
+    <string name="title.delete_and_move">Удалить категорию и переместить ее записи в:</string>
+    <string name="move_to">Переместить в:</string>
+    <string name="new_category">Новая категория</string>
+
+    <string name="save">Сохранить</string>
     <string name="saved">Сохранено</string>
     <string name="error.save">Ошибка сохранения</string>
     <string name="enter_clip_text">Введите текст записи!</string>
@@ -150,6 +163,7 @@
     <string name="enter_content">Введите текст записи</string>
     <string name="current_clipboard_text">Текущая запись в буфере обмена:</string>
 
+    <!-- Список категорий по умолчанию -->
     <string-array name="default_categories">
         <item>Основная категория</item>
         <item>Категория №2</item>

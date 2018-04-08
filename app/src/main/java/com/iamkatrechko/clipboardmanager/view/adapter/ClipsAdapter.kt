@@ -18,6 +18,7 @@ import com.iamkatrechko.clipboardmanager.domain.ClipsHelper
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.DateFormatUtils
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
+import com.iamkatrechko.clipboardmanager.view.adapter.common.ItemDivider
 import com.iamkatrechko.clipboardmanager.view.extension.inflate
 import com.iamkatrechko.clipboardmanager.view.extension.setGone
 

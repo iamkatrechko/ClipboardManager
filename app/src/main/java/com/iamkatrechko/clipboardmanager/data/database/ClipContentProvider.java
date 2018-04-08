@@ -11,8 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.iamkatrechko.clipboardmanager.R;
-
 /**
  * Провайдер данных с заметками
  * @author iamkatrechko
@@ -48,7 +46,7 @@ public class ClipContentProvider extends ContentProvider {
     public boolean onCreate() {
         dbHelper = new ClipDatabaseHelper(getContext());
         Log.d(TAG, "Успешное создание");
-        return true;                                                                                // Объект ContentProvider создан успешно
+        return true;
     }
 
     @Nullable
@@ -75,8 +73,7 @@ public class ClipContentProvider extends ContentProvider {
                 queryBuilder.setTables(DatabaseDescription.CategoryTable.TABLE_NAME);
                 break;
             default:
-                throw new UnsupportedOperationException(
-                        getContext().getString(R.string.invalid_query_uri) + uri);
+                throw new UnsupportedOperationException("Invalid query Uri:" + uri);
         }
 
         // Выполнить запрос для получения одной или всех записей
@@ -108,8 +105,7 @@ public class ClipContentProvider extends ContentProvider {
                     // Оповестить наблюдателей об изменениях в базе данных
                     getContext().getContentResolver().notifyChange(uri, null);
                 } else
-                    throw new SQLException(
-                            getContext().getString(R.string.insert_failed) + uri);
+                    throw new SQLException("Insert failed: s" + uri);
                 break;
             case CATEGORIES:
                 // При успехе возвращается идентификатор новой записи
@@ -123,12 +119,10 @@ public class ClipContentProvider extends ContentProvider {
                     // Оповестить наблюдателей об изменениях в базе данных
                     getContext().getContentResolver().notifyChange(uri, null);
                 } else
-                    throw new SQLException(
-                            getContext().getString(R.string.insert_failed) + uri);
+                    throw new SQLException("Insert failed: s" + uri);
                 break;
             default:
-                throw new UnsupportedOperationException(
-                        getContext().getString(R.string.invalid_insert_uri) + uri);
+                throw new UnsupportedOperationException("Invalid insert Uri:" + uri);
         }
 
         return newUri;
@@ -158,8 +152,7 @@ public class ClipContentProvider extends ContentProvider {
                 //TODO добавить удаление записей данной категории
                 break;
             default:
-                throw new UnsupportedOperationException(
-                        getContext().getString(R.string.invalid_delete_uri) + uri);
+                throw new UnsupportedOperationException("Invalid delete Uri:" + uri);
         }
 
         // Оповестить наблюдателей об изменениях в базе данных
@@ -202,8 +195,7 @@ public class ClipContentProvider extends ContentProvider {
                         selectionArgs);
                 break;
             default:
-                throw new UnsupportedOperationException(
-                        getContext().getString(R.string.invalid_update_uri) + uri);
+                throw new UnsupportedOperationException("Invalid update Uri:" + uri);
         }
 
         // Если были внесены изменения, оповестить наблюдателей

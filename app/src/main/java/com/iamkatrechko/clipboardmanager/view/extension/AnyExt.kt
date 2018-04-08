@@ -1,4 +1,4 @@
-package com.iamkatrechko.clipboardmanager.domain.util
+package com.iamkatrechko.clipboardmanager.view.extension
 
 /**
  * Функции расширения для всех объектов

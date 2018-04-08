@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 
@@ -21,21 +22,19 @@ class DialogSetOrderType : DialogFragment() {
      * @param orderType тип сортировки
      */
     private fun sendResult(orderType: Int) {
-        if (targetFragment == null) {
-            return
+        val intent = Intent().apply {
+            putExtra("orderType", orderType)
         }
-        val intent = Intent()
-        intent.putExtra("orderType", orderType)
         targetFragment?.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
     }
 
     override fun onCreateDialog(bundle: Bundle?): Dialog {
-        val mItemsNames = OrderType.values().mapNotNull { getString(it.nameResId) }.toTypedArray()
-        val current = UtilPreferences.getOrderType(activity)
+        val itemsNames = OrderType.values().map { getString(it.nameResId) }.toTypedArray()
+        val current = UtilPreferences.getOrderType(context)
 
-        return AlertDialog.Builder(activity)
-                .setTitle("Сортировка:")
-                .setSingleChoiceItems(mItemsNames, current.ordinal) { dialog, which ->
+        return AlertDialog.Builder(context)
+                .setTitle(R.string.title_sort)
+                .setSingleChoiceItems(itemsNames, current.ordinal) { _, which ->
                     sendResult(which)
                     dismiss()
                 }

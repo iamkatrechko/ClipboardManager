@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
+import com.iamkatrechko.clipboardmanager.R;
+
 /**
  * Диалог подтверждения удаления
  * @author iamkatrechko
@@ -40,15 +42,15 @@ public class DialogDeleteConfirm extends DialogFragment {
     @NonNull
     public Dialog onCreateDialog(Bundle bundle) {
         return new AlertDialog.Builder(getActivity())
-                .setTitle("Подтверждение")
-                .setMessage("Удалить выделенные записи?")
-                .setPositiveButton("Ок",
+                .setTitle(R.string.confirm)
+                .setMessage(R.string.question_delete_selected)
+                .setPositiveButton(R.string.yes,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                                 int id) {
                                 sendResult(true);
                             }
                         })
-                .setNegativeButton("Отмена", null).create();
+                .setNegativeButton(R.string.cancel, null).create();
     }
 }

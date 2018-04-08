@@ -61,8 +61,8 @@ public class DialogSplitClips extends DialogFragment {
 
         return new AlertDialog.Builder(getActivity())
                 .setView(view)
-                .setTitle("Объединение записей")
-                .setPositiveButton("Объединить", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.title_split_items)
+                .setPositiveButton(R.string.split, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int n) {
                         String splitChar = etSplitChar.getText().toString();
                         boolean deleteOldClips = cbDelete.isChecked();
@@ -72,7 +72,7 @@ public class DialogSplitClips extends DialogFragment {
                         sendResult(splitChar, deleteOldClips);
                     }
                 })
-                .setNegativeButton("Отмена", null)
+                .setNegativeButton(R.string.cancel, null)
                 .create();
     }
 }

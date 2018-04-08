@@ -74,12 +74,7 @@ class SearchFragment : Fragment() {
 
     companion object {
 
-        /**
-         * Возвращает новый экземпляр фрагмента
-         * @return новый экземпляр фрагмента
-         */
-        fun newInstance(): SearchFragment {
-            return SearchFragment()
-        }
+        /** Возвращает новый экземпляр фрагмента */
+        fun newInstance() = SearchFragment()
     }
 }

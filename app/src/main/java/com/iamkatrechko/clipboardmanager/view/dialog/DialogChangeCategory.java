@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 
+import com.iamkatrechko.clipboardmanager.R;
 import com.iamkatrechko.clipboardmanager.data.model.Category;
 import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository;
 
@@ -55,7 +56,7 @@ public class DialogChangeCategory extends DialogFragment {
         }
 
         return new AlertDialog.Builder(getActivity())
-                .setTitle("Переместить в:")
+                .setTitle(R.string.move_to)
                 .setItems(mItemsNames, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
