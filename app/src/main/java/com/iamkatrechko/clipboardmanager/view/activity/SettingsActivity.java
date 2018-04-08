@@ -178,7 +178,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 if (stringKey.equals(PREF_ENABLE_SERVICE)){
                     boolean enable = Boolean.parseBoolean(stringValue);
                     if (enable){
-                        ClipboardService.startMyService(getActivity());
+                        ClipboardService.Companion.startMyService(getActivity());
                     }else{
                         getActivity().stopService(new Intent(getActivity(), ClipboardService.class));
                     }
@@ -262,13 +262,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             if (stringKey.equals(PREF_NOTIFICATION_PRIORITY)){
                 // TODO
                 setPreferenceText(stringKey);
-                ClipboardService.startMyService(getActivity());
+                ClipboardService.Companion.startMyService(getActivity());
             }
             if (stringKey.equals(PREF_DISPLAY_NOTIFICATION)){
-                ClipboardService.startMyService(getActivity());
+                ClipboardService.Companion.startMyService(getActivity());
             }
             if (stringKey.equals(PREF_DISPLAY_HISTORY)){
-                ClipboardService.startMyService(getActivity());
+                ClipboardService.Companion.startMyService(getActivity());
             }
         }
 

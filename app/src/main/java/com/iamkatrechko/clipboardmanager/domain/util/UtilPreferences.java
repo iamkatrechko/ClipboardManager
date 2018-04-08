@@ -127,7 +127,7 @@ public class UtilPreferences {
                 .getString(SettingsActivity.PREF_NOTIFICATION_PRIORITY, "1"));
     }
 
-    public static boolean getDisplayNotification(Context context) {
+    public static boolean isShowNotification(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(SettingsActivity.PREF_DISPLAY_NOTIFICATION, true);
     }

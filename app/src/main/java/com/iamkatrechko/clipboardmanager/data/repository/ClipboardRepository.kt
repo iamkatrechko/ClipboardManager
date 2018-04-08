@@ -58,7 +58,9 @@ class ClipboardRepository private constructor() {
                 ClipsTable.COLUMN_CONTENT + " = ?",
                 arrayOf(text),
                 null)
-        return cursor != null && cursor.count != 0
+        cursor.use {
+            return it != null && it.count > 0
+        }
     }
 
     /**
