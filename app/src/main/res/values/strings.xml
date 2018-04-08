@@ -149,4 +149,12 @@
     <string name="enter_title">Введите название</string>
     <string name="enter_content">Введите текст записи</string>
     <string name="current_clipboard_text">Текущая запись в буфере обмена:</string>
+
+    <string-array name="default_categories">
+        <item>Основная категория</item>
+        <item>Категория №2</item>
+        <item>Категория №3</item>
+        <item>Категория №4</item>
+    </string-array>
+
 </resources>
