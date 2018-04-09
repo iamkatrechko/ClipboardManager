@@ -1,5 +1,8 @@
 package com.iamkatrechko.clipboardmanager.view.extension
 
+import android.app.Activity
+import android.app.Service
+import android.content.Intent
 import android.support.annotation.StringRes
 import android.support.v4.app.Fragment
 import android.widget.Toast
@@ -26,3 +29,21 @@ fun Fragment.showToast(text: String, duration: Int = Toast.LENGTH_SHORT) =
  */
 fun Fragment.showToast(@StringRes textId: Int, duration: Int = Toast.LENGTH_SHORT) =
         context?.showToast(textId, duration)
+
+/**
+ * Запускает активность
+ * @param [preparer] функция обработки интента перед запуском
+ * @property [T] класс запускаемой активности
+ */
+inline fun <reified T : Activity> Fragment.startActivity(preparer: Intent.() -> Unit = {}) {
+    context?.startActivity<T>(preparer)
+}
+
+/**
+ * Запускает сервис
+ * @param [preparer] функция обработки интента перед запуском
+ * @property [T] класс запускаемого сервиса
+ */
+inline fun <reified T : Service> Fragment.startService(preparer: Intent.() -> Unit = {}) {
+    context?.startService<T>(preparer)
+}
