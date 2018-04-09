@@ -76,7 +76,7 @@ public class DialogManager {
 
     public static void showDialogDeleteConfirm(Fragment fragment) {
         FragmentManager fragmentManager = fragment.getActivity().getSupportFragmentManager();
-        DialogDeleteConfirm fragmentDialog = DialogDeleteConfirm.newInstance();
+        DialogDeleteConfirm fragmentDialog = DialogDeleteConfirm.Companion.newInstance();
         fragmentDialog.setTargetFragment(fragment, DIALOG_DELETE_CONFIRM);
         fragmentDialog.show(fragmentManager, "DIALOG_CANCEL_CHANGES");
     }

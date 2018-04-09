@@ -23,6 +23,7 @@ import com.iamkatrechko.clipboardmanager.view.activity.DeveloperActivity
 import com.iamkatrechko.clipboardmanager.view.activity.SearchActivity
 import com.iamkatrechko.clipboardmanager.view.adapter.ClipsAdapter
 import com.iamkatrechko.clipboardmanager.view.dialog.DialogChangeCategory
+import com.iamkatrechko.clipboardmanager.view.dialog.DialogDeleteConfirm
 
 /**
  * Основной фрагмент экрана со списком заметок
@@ -215,7 +216,7 @@ class ClipsListFragment : Fragment() {
             ClipsHelper.changeCategory(context!!, clipsAdapter.getSelectedIds(), categoryId)
         }
         if (requestCode == DialogManager.DIALOG_DELETE_CONFIRM) {
-            val delete = data.getBooleanExtra("delete", false)
+            val delete = data.getBooleanExtra(DialogDeleteConfirm.KEY_IS_DELETE, false)
             if (delete) {
                 repository.deleteClips(context!!, clipsAdapter.getSelectedIds())
                 clipsAdapter.resetSelectMode()
