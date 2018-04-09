@@ -48,13 +48,13 @@ class ClipsListFragment : Fragment() {
     private var listener = object : ClipsAdapter.ClipClickListener {
 
         override fun onClick(clipId: Long) {
-            startActivity(ClipEditActivity.newIntent(context, clipId))
+            startActivity(ClipEditActivity.newIntent(context!!, clipId))
         }
 
         override fun onSelectedChange(isSelectedMode: Boolean, selectedCount: Int) {
             isContextMenu = isSelectedMode
             this@ClipsListFragment.selectedCount = selectedCount
-            activity!!.invalidateOptionsMenu()
+            activity?.invalidateOptionsMenu()
         }
     }
     /** Адаптер списка заметок  */
@@ -119,7 +119,7 @@ class ClipsListFragment : Fragment() {
 
     /** Открывает экран создания новой заметки  */
     fun addNewClip() {
-        val i = ClipEditActivity.newIntent(context, null)
+        val i = ClipEditActivity.newIntent(context!!, null)
         startActivity(i)
     }
 
