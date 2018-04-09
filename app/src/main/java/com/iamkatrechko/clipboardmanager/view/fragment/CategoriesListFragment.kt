@@ -18,6 +18,7 @@ import com.iamkatrechko.clipboardmanager.domain.use_case.MoveClipsUseCase
 import com.iamkatrechko.clipboardmanager.view.DialogManager
 import com.iamkatrechko.clipboardmanager.view.adapter.CategoriesCursorAdapter
 import com.iamkatrechko.clipboardmanager.view.adapter.common.ItemDivider
+import com.iamkatrechko.clipboardmanager.view.dialog.DialogCategoryDelete
 
 /**
  * Фрагмент экрана со списком категорий
@@ -74,7 +75,7 @@ class CategoriesListFragment : Fragment() {
             createCategory(data.getStringExtra("newName"))
         }
         if (DialogManager.DIALOG_DELETE == requestCode) {
-            val deleteCategoryId = data.getLongExtra("deleteCategoryId", -1)
+            val deleteCategoryId = data.getLongExtra(DialogCategoryDelete.KEY_DELETE_CATEGORY_ID, -1)
             val newCategoryId = data.getLongExtra("newCategoryId", 1)
             moveClips(deleteCategoryId, newCategoryId)
         }

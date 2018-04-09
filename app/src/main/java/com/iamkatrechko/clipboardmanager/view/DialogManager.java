@@ -41,7 +41,7 @@ public class DialogManager {
 
     public static void showDialogCategoryDelete(Fragment fragment, long categoryId){
         FragmentManager fragmentManager = fragment.getActivity().getSupportFragmentManager();
-        DialogCategoryDelete fragmentDialog = DialogCategoryDelete.newInstance(categoryId);
+        DialogCategoryDelete fragmentDialog = DialogCategoryDelete.Companion.newInstance(categoryId);
         fragmentDialog.setTargetFragment(fragment, DIALOG_DELETE);
         fragmentDialog.show(fragmentManager, "dialog_delete_category");
     }
