@@ -19,6 +19,7 @@ import com.iamkatrechko.clipboardmanager.view.DialogManager
 import com.iamkatrechko.clipboardmanager.view.adapter.CategoriesCursorAdapter
 import com.iamkatrechko.clipboardmanager.view.adapter.common.ItemDivider
 import com.iamkatrechko.clipboardmanager.view.dialog.DialogCategoryDelete
+import com.iamkatrechko.clipboardmanager.view.dialog.DialogCategoryEdit
 
 /**
  * Фрагмент экрана со списком категорий
@@ -67,12 +68,13 @@ class CategoriesListFragment : Fragment() {
             return
         }
         if (DialogManager.DIALOG_EDIT == requestCode) {
-            val categoryId = data.getLongExtra("categoryId", 1)
-            val newName = data.getStringExtra("newName")
+            val categoryId = data.getLongExtra(DialogCategoryEdit.KEY_CATEGORY_ID, 1)
+            val newName = data.getStringExtra(DialogCategoryEdit.KEY_NEW_CATEGORY_ID)
             renameCategory(categoryId, newName)
         }
         if (DialogManager.DIALOG_ADD == requestCode) {
-            createCategory(data.getStringExtra("newName"))
+            val newName = data.getStringExtra(DialogCategoryEdit.KEY_NEW_CATEGORY_ID)
+            createCategory(newName)
         }
         if (DialogManager.DIALOG_DELETE == requestCode) {
             val deleteCategoryId = data.getLongExtra(DialogCategoryDelete.KEY_DELETE_CATEGORY_ID, -1)

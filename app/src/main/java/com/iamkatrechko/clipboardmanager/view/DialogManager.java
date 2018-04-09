@@ -48,14 +48,14 @@ public class DialogManager {
 
     public static void showDialogCategoryAdd(Fragment fragment){
         FragmentManager fragmentManager = fragment.getActivity().getSupportFragmentManager();
-        DialogCategoryEdit fragmentDialog = DialogCategoryEdit.newInstance(-1);
+        DialogCategoryEdit fragmentDialog = DialogCategoryEdit.Companion.newInstance(-1);
         fragmentDialog.setTargetFragment(fragment, DIALOG_ADD);
         fragmentDialog.show(fragmentManager, "dialog_category_edit");
     }
 
     public static void showDialogCategoryEdit(Fragment fragment, long categoryId){
         FragmentManager fragmentManager = fragment.getActivity().getSupportFragmentManager();
-        DialogCategoryEdit fragmentDialog = DialogCategoryEdit.newInstance(categoryId);
+        DialogCategoryEdit fragmentDialog = DialogCategoryEdit.Companion.newInstance(categoryId);
         fragmentDialog.setTargetFragment(fragment, DIALOG_EDIT);
         fragmentDialog.show(fragmentManager, "dialog_category_edit");
     }
