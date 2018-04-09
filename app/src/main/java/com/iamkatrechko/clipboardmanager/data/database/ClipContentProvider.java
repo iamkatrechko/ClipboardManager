@@ -11,6 +11,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.AUTHORITY;
+import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.CategoryTable;
+import static com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.ClipsTable;
+
 /**
  * Провайдер данных с заметками
  * @author iamkatrechko
@@ -33,10 +37,10 @@ public class ClipContentProvider extends ContentProvider {
     private static final int CATEGORIES = 4;
 
     static {
-        uriMatcher.addURI(DatabaseDescription.AUTHORITY, DatabaseDescription.ClipsTable.TABLE_NAME + "/#", ONE_CLIP);
-        uriMatcher.addURI(DatabaseDescription.AUTHORITY, DatabaseDescription.ClipsTable.TABLE_NAME, CLIPS);
-        uriMatcher.addURI(DatabaseDescription.AUTHORITY, DatabaseDescription.CategoryTable.TABLE_NAME + "/#", ONE_CATEGORY);
-        uriMatcher.addURI(DatabaseDescription.AUTHORITY, DatabaseDescription.CategoryTable.TABLE_NAME, CATEGORIES);
+        uriMatcher.addURI(AUTHORITY, ClipsTable.TABLE_NAME + "/#", ONE_CLIP);
+        uriMatcher.addURI(AUTHORITY, ClipsTable.TABLE_NAME, CLIPS);
+        uriMatcher.addURI(AUTHORITY, CategoryTable.TABLE_NAME + "/#", ONE_CATEGORY);
+        uriMatcher.addURI(AUTHORITY, CategoryTable.TABLE_NAME, CATEGORIES);
     }
 
     /** Экземпляр базы данных записей */
@@ -52,25 +56,23 @@ public class ClipContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        Log.d(TAG, "query");
+        Log.d(TAG, "Запрос на выборку данных");
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
         switch (uriMatcher.match(uri)) {
             case ONE_CLIP: // Выбрать запись с заданным идентификатором
-                queryBuilder.setTables(DatabaseDescription.ClipsTable.TABLE_NAME);
-                queryBuilder.appendWhere(
-                        DatabaseDescription.ClipsTable._ID + "=" + uri.getLastPathSegment());
+                queryBuilder.setTables(ClipsTable.TABLE_NAME);
+                queryBuilder.appendWhere(ClipsTable._ID + "=" + uri.getLastPathSegment());
                 break;
             case ONE_CATEGORY: // Выбрать запись с заданным идентификатором
-                queryBuilder.setTables(DatabaseDescription.CategoryTable.TABLE_NAME);
-                queryBuilder.appendWhere(
-                        DatabaseDescription.CategoryTable._ID + "=" + uri.getLastPathSegment());
+                queryBuilder.setTables(CategoryTable.TABLE_NAME);
+                queryBuilder.appendWhere(CategoryTable._ID + "=" + uri.getLastPathSegment());
                 break;
             case CLIPS: // Выбрать все записи
-                queryBuilder.setTables(DatabaseDescription.ClipsTable.TABLE_NAME);
+                queryBuilder.setTables(ClipsTable.TABLE_NAME);
                 break;
             case CATEGORIES:
-                queryBuilder.setTables(DatabaseDescription.CategoryTable.TABLE_NAME);
+                queryBuilder.setTables(CategoryTable.TABLE_NAME);
                 break;
             default:
                 throw new UnsupportedOperationException("Invalid query Uri:" + uri);
@@ -88,20 +90,16 @@ public class ClipContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
-        Log.d(TAG, "insert: " + values.toString());
-        Uri newUri = null;
-        String tableName;
-
+        Log.d(TAG, "Запрос на вставку данных");
+        Uri newUri;
         switch (uriMatcher.match(uri)) {
             case CLIPS:
                 // При успехе возвращается идентификатор новой записи
-                long rowId = dbHelper.getWritableDatabase().insert(
-                        DatabaseDescription.ClipsTable.TABLE_NAME, null, values);
+                long clipId = dbHelper.getWritableDatabase().insert(ClipsTable.TABLE_NAME, null, values);
                 // Если запись была вставлеан, создать подходящий Uri;
                 // в противном случае выдать исключение
-                if (rowId > 0) { // SQLite row IDs start at 1
-                    newUri = DatabaseDescription.ClipsTable.buildClipUri(rowId);
-
+                if (clipId > 0) { // SQLite row IDs start at 1
+                    newUri = ClipsTable.buildClipUri(clipId);
                     // Оповестить наблюдателей об изменениях в базе данных
                     getContext().getContentResolver().notifyChange(uri, null);
                 } else
@@ -109,13 +107,11 @@ public class ClipContentProvider extends ContentProvider {
                 break;
             case CATEGORIES:
                 // При успехе возвращается идентификатор новой записи
-                long rowId2 = dbHelper.getWritableDatabase().insert(
-                        DatabaseDescription.CategoryTable.TABLE_NAME, null, values);
+                long categoryId = dbHelper.getWritableDatabase().insert(CategoryTable.TABLE_NAME, null, values);
                 // Если запись была вставлеан, создать подходящий Uri;
                 // в противном случае выдать исключение
-                if (rowId2 > 0) { // SQLite row IDs start at 1
-                    newUri = DatabaseDescription.CategoryTable.buildClipUri(rowId2);
-
+                if (categoryId > 0) { // SQLite row IDs start at 1
+                    newUri = CategoryTable.buildClipUri(categoryId);
                     // Оповестить наблюдателей об изменениях в базе данных
                     getContext().getContentResolver().notifyChange(uri, null);
                 } else
@@ -130,25 +126,23 @@ public class ClipContentProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, String s, String[] selectionArgs) {
-        Log.d(TAG, "delete");
+        Log.d(TAG, "Запрос на удаление данных");
         int numberOfRowsDeleted;
 
         switch (uriMatcher.match(uri)) {
             case ONE_CLIP:
                 // Получение из URI идентификатора записи
-                String id = uri.getLastPathSegment();
+                String clipId = uri.getLastPathSegment();
 
                 // Удаление записи
-                numberOfRowsDeleted = dbHelper.getWritableDatabase().delete(
-                        DatabaseDescription.ClipsTable.TABLE_NAME, DatabaseDescription.ClipsTable._ID + "=" + id, selectionArgs);
+                numberOfRowsDeleted = dbHelper.getWritableDatabase().delete(ClipsTable.TABLE_NAME, ClipsTable._ID + "=" + clipId, selectionArgs);
                 break;
             case ONE_CATEGORY:
                 // Получение из URI идентификатора записи
-                String id2 = uri.getLastPathSegment();
+                String categoryId = uri.getLastPathSegment();
 
                 // Удаление записи
-                numberOfRowsDeleted = dbHelper.getWritableDatabase().delete(
-                        DatabaseDescription.CategoryTable.TABLE_NAME, DatabaseDescription.CategoryTable._ID + "=" + id2, selectionArgs);
+                numberOfRowsDeleted = dbHelper.getWritableDatabase().delete(CategoryTable.TABLE_NAME, CategoryTable._ID + "=" + categoryId, selectionArgs);
                 //TODO добавить удаление записей данной категории
                 break;
             default:
@@ -164,34 +158,38 @@ public class ClipContentProvider extends ContentProvider {
     }
 
     @Override
-    public int update(@NonNull Uri uri, ContentValues values, String s, String[] selectionArgs) {
-        Log.d(TAG, "update");
+    public int update(@NonNull Uri uri, ContentValues values, String filter, String[] selectionArgs) {
+        Log.d(TAG, "Запрос на обновление данных");
         int numberOfRowsUpdated; // 1, если обновление успешно; 0 при неудаче
 
         switch (uriMatcher.match(uri)) {
             case ONE_CLIP:
                 // Получение идентификатора записи из Uri
-                String id = uri.getLastPathSegment();
+                String clipId = uri.getLastPathSegment();
 
                 // Обновление записи
                 numberOfRowsUpdated = dbHelper.getWritableDatabase().update(
-                        DatabaseDescription.ClipsTable.TABLE_NAME, values, DatabaseDescription.ClipsTable._ID + "=" + id,
+                        ClipsTable.TABLE_NAME,
+                        values,
+                        ClipsTable._ID + "=" + clipId,
                         selectionArgs);
                 break;
             case CLIPS:
                 numberOfRowsUpdated = dbHelper.getWritableDatabase().update(
-                        DatabaseDescription.ClipsTable.TABLE_NAME,
+                        ClipsTable.TABLE_NAME,
                         values,
-                        s,
+                        filter,
                         selectionArgs);
                 break;
             case ONE_CATEGORY:
                 // Получение идентификатора записи из Uri
-                String id2 = uri.getLastPathSegment();
+                String categoryId = uri.getLastPathSegment();
 
                 // Обновление записи
                 numberOfRowsUpdated = dbHelper.getWritableDatabase().update(
-                        DatabaseDescription.CategoryTable.TABLE_NAME, values, DatabaseDescription.CategoryTable._ID + "=" + id2,
+                        CategoryTable.TABLE_NAME,
+                        values,
+                        CategoryTable._ID + "=" + categoryId,
                         selectionArgs);
                 break;
             default:
