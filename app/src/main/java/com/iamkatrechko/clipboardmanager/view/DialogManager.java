@@ -62,7 +62,7 @@ public class DialogManager {
 
     public static void showDialogChangeCategory(Fragment fragment) {
         FragmentManager fragmentManager = fragment.getActivity().getSupportFragmentManager();
-        DialogChangeCategory fragmentDialog = DialogChangeCategory.newInstance();
+        DialogChangeCategory fragmentDialog = DialogChangeCategory.Companion.newInstance();
         fragmentDialog.setTargetFragment(fragment, DIALOG_CHANGE_CATEGORY);
         fragmentDialog.show(fragmentManager, "dialog_change_category");
     }

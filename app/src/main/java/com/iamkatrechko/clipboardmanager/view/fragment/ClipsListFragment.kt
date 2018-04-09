@@ -22,6 +22,7 @@ import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity
 import com.iamkatrechko.clipboardmanager.view.activity.DeveloperActivity
 import com.iamkatrechko.clipboardmanager.view.activity.SearchActivity
 import com.iamkatrechko.clipboardmanager.view.adapter.ClipsAdapter
+import com.iamkatrechko.clipboardmanager.view.dialog.DialogChangeCategory
 
 /**
  * Основной фрагмент экрана со списком заметок
@@ -210,7 +211,7 @@ class ClipsListFragment : Fragment() {
             }
         }
         if (requestCode == DialogManager.DIALOG_CHANGE_CATEGORY) {
-            val categoryId = data.getLongExtra("categoryId", 0)
+            val categoryId = data.getLongExtra(DialogChangeCategory.KEY_CATEGORY_ID, 0)
             ClipsHelper.changeCategory(context!!, clipsAdapter.getSelectedIds(), categoryId)
         }
         if (requestCode == DialogManager.DIALOG_DELETE_CONFIRM) {
