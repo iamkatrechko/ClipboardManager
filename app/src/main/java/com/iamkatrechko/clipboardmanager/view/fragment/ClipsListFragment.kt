@@ -24,6 +24,7 @@ import com.iamkatrechko.clipboardmanager.view.activity.SearchActivity
 import com.iamkatrechko.clipboardmanager.view.adapter.ClipsAdapter
 import com.iamkatrechko.clipboardmanager.view.dialog.DialogChangeCategory
 import com.iamkatrechko.clipboardmanager.view.dialog.DialogDeleteConfirm
+import com.iamkatrechko.clipboardmanager.view.dialog.DialogSplitClips
 
 /**
  * Основной фрагмент экрана со списком заметок
@@ -201,9 +202,9 @@ class ClipsListFragment : Fragment() {
             return
         }
         if (requestCode == DialogManager.DIALOG_SPLIT_CLIPS) {
-            val splitChar = data.getStringExtra("splitChar")
+            val splitChar = data.getStringExtra(DialogSplitClips.KEY_SPLIT_CHAR)
             if (clipsAdapter.getSelectedIds().isNotEmpty()) {
-                val deleteOldClips = data.getBooleanExtra("deleteOldClips", false)
+                val deleteOldClips = data.getBooleanExtra(DialogSplitClips.KEY_IS_DELETE_OLD_CLIPS, false)
                 ClipsHelper.joinAndDelete(context!!, clipsAdapter.getSelectedIds(), splitChar, deleteOldClips)
                 clipsAdapter.resetSelectMode()
                 Toast.makeText(context, R.string.splited, Toast.LENGTH_SHORT).show()

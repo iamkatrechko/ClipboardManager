@@ -34,7 +34,7 @@ public class DialogManager {
 
     public static void showDialogSplitClips(Fragment fragment){
         FragmentManager fragmentManager = fragment.getActivity().getSupportFragmentManager();
-        DialogSplitClips fragmentDialog = DialogSplitClips.newInstance();
+        DialogSplitClips fragmentDialog = DialogSplitClips.Companion.newInstance();
         fragmentDialog.setTargetFragment(fragment, DIALOG_SPLIT_CLIPS);
         fragmentDialog.show(fragmentManager, "DIALOG_SPLIT_CLIPS");
     }
