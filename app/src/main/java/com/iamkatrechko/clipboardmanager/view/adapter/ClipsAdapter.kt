@@ -19,8 +19,8 @@ import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.DateFormatUtils
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 import com.iamkatrechko.clipboardmanager.view.adapter.common.ItemDivider
+import com.iamkatrechko.clipboardmanager.view.extension.gone
 import com.iamkatrechko.clipboardmanager.view.extension.inflate
-import com.iamkatrechko.clipboardmanager.view.extension.setGone
 
 /**
  * Адаптер списка заметок
@@ -84,8 +84,8 @@ internal class ClipsAdapter constructor(
      * @param isShow отображается ли виджет
      */
     private fun showEmptyView(isShow: Boolean) {
-        emptyView?.setGone(!isShow)
-        attachedRecyclerView?.setGone(isShow)
+        emptyView?.gone = !isShow
+        attachedRecyclerView?.gone = isShow
     }
 
     /**
@@ -160,9 +160,9 @@ internal class ClipsAdapter constructor(
             selectionModeBackgroundDrawable = ContextCompat.getDrawable(context, R.drawable.selection_drawable)
 
             val showMeta = UtilPreferences.isShowMetaInAdapter(context)
-            binding.tvId.setGone(!showMeta)
-            binding.tvCategoryId.setGone(!showMeta)
-            binding.tvIsDeleted.setGone(!showMeta)
+            binding.tvId.gone = !showMeta
+            binding.tvCategoryId.gone = !showMeta
+            binding.tvIsDeleted.gone = !showMeta
 
             binding.root.setOnClickListener {
                 if (selector.tapSelection(this@ViewHolder)) {

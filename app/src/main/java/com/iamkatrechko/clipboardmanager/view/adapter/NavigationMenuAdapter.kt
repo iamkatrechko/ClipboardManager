@@ -8,8 +8,8 @@ import android.widget.TextView
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.model.Category
 import com.iamkatrechko.clipboardmanager.view.adapter.navigation.NavGroups
+import com.iamkatrechko.clipboardmanager.view.extension.gone
 import com.iamkatrechko.clipboardmanager.view.extension.inflate
-import com.iamkatrechko.clipboardmanager.view.extension.setGone
 
 /**
  * Адаптер списка бокового меню
@@ -58,7 +58,7 @@ class NavigationMenuAdapter : BaseExpandableListAdapter() {
 
         val imageViewIndicator = view.findViewById(R.id.image_view_indicator) as ImageView
         if (getChildrenCount(groupPos) == 0) {
-            imageViewIndicator.setGone(true)
+            imageViewIndicator.gone = true
         } else {
             if (isExpanded) {
                 imageViewIndicator.setImageResource(R.drawable.ic_arrow_up)

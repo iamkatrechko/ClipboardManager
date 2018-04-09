@@ -1,6 +1,8 @@
 package com.iamkatrechko.clipboardmanager.view.extension
 
+import android.databinding.BindingAdapter
 import android.view.View
+import android.view.View.*
 
 /**
  * Функции расширения для класса View
@@ -9,17 +11,45 @@ import android.view.View
  **************************************************************************************************************************************************************/
 
 /**
- * Скрытие виджета
- * @param [isGone] флаг скрытия
+ * Видимость элемента.
+ * true - элемент видим, false - элемент полностью отсутствует
  */
-fun View.setGone(isGone: Boolean) {
-    visibility = if (isGone) View.GONE else View.VISIBLE
-}
+@set:BindingAdapter("visibleOrGone")
+var View.visibleOrGone
+    get() = visibility == VISIBLE
+    set(value) {
+        visibility = if (value) VISIBLE else GONE
+    }
 
 /**
- * Скрытие виджета
- * @param [isInvisible] флаг скрытия
+ * Видимость элемента.
+ * true - элемент видим, false - элемент невидим
  */
-fun View.setInvisible(isInvisible: Boolean) {
-    visibility = if (isInvisible) View.INVISIBLE else View.VISIBLE
-}
+@set:BindingAdapter("visible")
+var View.visible
+    get() = visibility == VISIBLE
+    set(value) {
+        visibility = if (value) VISIBLE else INVISIBLE
+    }
+
+/**
+ * Видимость элемента.
+ * true - элемент невидим, false - элемент видим
+ */
+@set:BindingAdapter("invisible")
+var View.invisible
+    get() = visibility == INVISIBLE
+    set(value) {
+        visibility = if (value) INVISIBLE else VISIBLE
+    }
+
+/**
+ * Видимость элемента.
+ * true - элемент полностью отсутствует, false - элемент видим
+ */
+@set:BindingAdapter("gone")
+var View.gone
+    get() = visibility == GONE
+    set(value) {
+        visibility = if (value) GONE else VISIBLE
+    }

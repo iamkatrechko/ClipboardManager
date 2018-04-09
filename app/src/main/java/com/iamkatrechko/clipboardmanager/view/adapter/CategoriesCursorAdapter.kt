@@ -7,8 +7,8 @@ import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.model.Category
 import com.iamkatrechko.clipboardmanager.databinding.RvListItemCategoryBinding
 import com.iamkatrechko.clipboardmanager.view.adapter.common.BindingItemViewHolder
+import com.iamkatrechko.clipboardmanager.view.extension.gone
 import com.iamkatrechko.clipboardmanager.view.extension.inflate
-import com.iamkatrechko.clipboardmanager.view.extension.setGone
 
 /**
  * Адаптер списка категорий
@@ -56,7 +56,7 @@ class CategoriesCursorAdapter(
             _id = item.id
             binding.tvTitle.text = item.title
             // Не даем удалить основную категорию
-            binding.ivDelete.setGone(adapterPosition == 0)
+            binding.ivDelete.gone = adapterPosition == 0
         }
     }
 
