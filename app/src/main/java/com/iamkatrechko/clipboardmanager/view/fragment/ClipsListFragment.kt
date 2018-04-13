@@ -16,6 +16,7 @@ import com.iamkatrechko.clipboardmanager.domain.loader.callback.ClipsLoaderCallb
 import com.iamkatrechko.clipboardmanager.domain.param.ClipParam
 import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType
 import com.iamkatrechko.clipboardmanager.domain.util.IntentUtils
+import com.iamkatrechko.clipboardmanager.domain.util.PrefsManager
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 import com.iamkatrechko.clipboardmanager.view.DialogManager
 import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity
@@ -188,7 +189,7 @@ class ClipsListFragment : Fragment() {
             R.id.action_share -> {
                 val shareText = ClipsHelper.joinToString(context!!,
                         clipsAdapter.getSelectedIds(),
-                        UtilPreferences.getSeparator(context))
+                        PrefsManager.getInstance().clipSplitChar)
                 IntentUtils.sendMail(context!!, shareText)
             }
         // Сменить категорию выделенных записей

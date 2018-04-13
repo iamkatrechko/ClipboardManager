@@ -56,24 +56,6 @@ public class UtilPreferences {
     }
 
     /**
-     * Возвращает строку-разделитель, использующуюся для соединения нескольких записей
-     */
-    public static String getSeparator(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(PREF_SPLIT_CHAR, " | ");
-    }
-
-    /**
-     * Сохраняет строку-разделитель, использующуюся для соединения нескольких записей
-     */
-    public static void setSplitChar(Context context, String splitChar) {
-        PreferenceManager.getDefaultSharedPreferences(context)
-                .edit()
-                .putString(PREF_SPLIT_CHAR, splitChar)
-                .apply();
-    }
-
-    /**
      * Отображатся ли в списке записей только избранные (в уведомлении)
      */
     public static boolean isShowOnlyFavoriteInNotification(Context context) {

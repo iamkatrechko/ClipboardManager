@@ -9,7 +9,7 @@ import android.support.v7.app.AlertDialog
 import android.widget.CheckBox
 import android.widget.EditText
 import com.iamkatrechko.clipboardmanager.R
-import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
+import com.iamkatrechko.clipboardmanager.domain.util.PrefsManager
 
 /**
  * Диалог объединения заметок в одну
@@ -32,11 +32,11 @@ class DialogSplitClips : DialogFragment() {
     }
 
     override fun onCreateDialog(bundle: Bundle?): Dialog {
-        val view = layoutInflater.inflate(R.layout.dialog_split_clips, null)
+        val view = activity!!.layoutInflater.inflate(R.layout.dialog_split_clips, null)
         val etSplitChar = view.findViewById<EditText>(R.id.etSplitChar)
         val cbDelete = view.findViewById<CheckBox>(R.id.cbDelete)
 
-        etSplitChar.setText(UtilPreferences.getSeparator(context))
+        etSplitChar.setText(PrefsManager.getInstance().clipSplitChar)
 
         return AlertDialog.Builder(context!!)
                 .setView(view)
@@ -45,7 +45,7 @@ class DialogSplitClips : DialogFragment() {
                     val splitChar = etSplitChar.text.toString()
                     val deleteOldClips = cbDelete.isChecked
 
-                    UtilPreferences.setSplitChar(activity, splitChar)
+                    PrefsManager.getInstance().clipSplitChar = splitChar
                     sendResult(splitChar, deleteOldClips)
                 }
                 .setNegativeButton(R.string.cancel, null)
@@ -57,8 +57,6 @@ class DialogSplitClips : DialogFragment() {
         const val KEY_SPLIT_CHAR = "KEY_SPLIT_CHAR"
         const val KEY_IS_DELETE_OLD_CLIPS = "KEY_IS_DELETE_OLD_CLIPS"
 
-        fun newInstance(): DialogSplitClips {
-            return DialogSplitClips()
-        }
+        fun newInstance() = DialogSplitClips()
     }
 }
