@@ -5,6 +5,7 @@ import android.content.Context
 import android.support.v4.app.NotificationCompat
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
+import com.iamkatrechko.clipboardmanager.domain.util.SettingsValues
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 
 /**
@@ -21,7 +22,7 @@ class NotificationManager {
      */
     fun getNotification(context: Context): Notification {
         val priority = UtilPreferences.getNotificationPriority(context)
-        val displayHistory = UtilPreferences.getDisplayHistory(context)
+        val displayHistory = SettingsValues.getInstance().displayHistory
 
         val builder = NotificationCompat.Builder(context)
                 .setContentTitle(context.getString(R.string.current_clipboard_text))

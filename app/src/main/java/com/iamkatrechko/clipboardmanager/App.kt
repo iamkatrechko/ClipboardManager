@@ -3,6 +3,7 @@ package com.iamkatrechko.clipboardmanager
 import android.app.Application
 import android.util.Log
 import com.iamkatrechko.clipboardmanager.domain.service.ClipboardService
+import com.iamkatrechko.clipboardmanager.domain.util.SettingsValues
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 
 /**
@@ -16,7 +17,8 @@ class App : Application() {
         super.onCreate()
         Log.d("App", "CreateAppInstance")
 
-        if (UtilPreferences.isEnabledService(this)) {
+        SettingsValues.init(this)
+        if (SettingsValues.getInstance().monitoringEnabled) {
             ClipboardService.startMyService(this)
         }
     }

@@ -9,6 +9,7 @@ import androidx.core.content.systemService
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
+import com.iamkatrechko.clipboardmanager.domain.util.SettingsValues
 import com.iamkatrechko.clipboardmanager.view.extension.TAG
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 import com.iamkatrechko.clipboardmanager.view.NotificationManager
@@ -25,6 +26,8 @@ class ClipboardService : Service() {
     private val repository = ClipboardRepository.getInstance()
     /** Менеджер буфера обмена  */
     private var clipboardManager: ClipboardManager? = null
+    /** Хранилище настроек программы */
+    private val settings = SettingsValues.getInstance()
     /** Слушатель новых записей в буфере обмена */
     private val clipListener = ClipboardManager.OnPrimaryClipChangedListener {
         Log.d(TAG, "Обнаружена новая запись в буфере обмена")
@@ -79,8 +82,7 @@ class ClipboardService : Service() {
     /** Запускает фоновый сервис */
     private fun startForegroundService() {
         startForeground(NOTIFICATION_ID, NotificationManager().getNotification(this))
-        // TODO Создать SettingsManager (возможно, стоит прослушивать изменения настроек)
-        if (!UtilPreferences.isShowNotification(this)) {
+        if (!settings.notificationShow) {
             startService(HideNotificationService.newIntent(this, NOTIFICATION_ID))
         }
     }

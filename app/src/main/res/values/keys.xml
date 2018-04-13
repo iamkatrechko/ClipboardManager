@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="key.settings.monitoring_enable">enable_service</string>
+    <string name="key.settings.notification_enable">display_notification</string>
+    <string name="key.settings.display_history">display_history</string>
+</resources>

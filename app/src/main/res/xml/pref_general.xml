@@ -2,14 +2,14 @@
 
     <SwitchPreference
         android:defaultValue="true"
-        android:key="enable_service"
+        android:key="@string/key.settings.monitoring_enable"
         android:summary="Включить мониторинг буфера обмена"
         android:title="Мониторинг"/>
 
     <SwitchPreference
         android:dependency="enable_service"
-        android:defaultValue="false"
-        android:key="display_notification"
+        android:defaultValue="true"
+        android:key="@string/key.settings.notification_enable"
         android:summary="Отображать уведомление в строке состояния"
         android:title="Уведомление"/>
 
@@ -24,7 +24,7 @@
     <SwitchPreference
         android:dependency="display_notification"
         android:defaultValue="true"
-        android:key="display_history"
+        android:key="@string/key.settings.display_history"
         android:summary="Отображать историю буфера обмена в уведомлении"
         android:title="История буфера"/>
 

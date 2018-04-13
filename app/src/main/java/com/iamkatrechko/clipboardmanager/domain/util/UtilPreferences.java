@@ -112,29 +112,9 @@ public class UtilPreferences {
                 .apply();
     }
 
-    /**
-     * Включен ли сервис из настроек
-     * @param context контекст
-     * @return флаг включенного сервиса
-     */
-    public static boolean isEnabledService(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(SettingsActivity.PREF_ENABLE_SERVICE, true);
-    }
-
     public static int getNotificationPriority(Context context) {
         return Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(context)
                 .getString(SettingsActivity.PREF_NOTIFICATION_PRIORITY, "1"));
-    }
-
-    public static boolean isShowNotification(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(SettingsActivity.PREF_DISPLAY_NOTIFICATION, true);
-    }
-
-    public static boolean getDisplayHistory(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(SettingsActivity.PREF_DISPLAY_HISTORY, true);
     }
 
     public static boolean getShowSaveDialogBeforeExit(Context context) {
