@@ -2,20 +2,19 @@ package com.iamkatrechko.clipboardmanager.domain.service
 
 import android.app.Service
 import android.content.Intent
+import android.databinding.DataBindingUtil
 import android.graphics.PixelFormat
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.Spinner
 import android.widget.Toast
 import androidx.core.content.systemService
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
+import com.iamkatrechko.clipboardmanager.databinding.FloatViewBinding
 import com.iamkatrechko.clipboardmanager.domain.service.experiment.CursorClipsRepo
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.view.adapter.ClipsAdapter
@@ -34,16 +33,8 @@ class FloatingViewService : Service() {
     /** Менеджер экрана  */
     private val windowManager by lazy { systemService<WindowManager>() }
 
-    /** Главный виджет  */
-    private lateinit var mainView: View
-    /** Виджет списка с записями  */
-    private lateinit var recyclerView: RecyclerView
-    /** Кнопка закрытия окна  */
-    private lateinit var ivClose: ImageView
-    /** Кнопка перемещения окна  */
-    private lateinit var ivMove: ImageView
-    /** Выпадающий список с категориями записей  */
-    private lateinit var spinner: Spinner
+    /** Биндинг разметки */
+    private lateinit var binding: FloatViewBinding
 
     /** Адаптер списка записей  */
     private var cursorAdapter: ClipsAdapter? = null
@@ -54,18 +45,8 @@ class FloatingViewService : Service() {
 
     override fun onCreate() {
         Log.i(TAG, "onCreate")
-        //windowManager =
-        mainView = LayoutInflater.from(this).inflate(R.layout.float_view, null)
+        binding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.float_view, null, false)
 
-        mainView.run {
-            recyclerView = findViewById(R.id.recyclerView)
-            ivClose = findViewById(R.id.ivClose)
-            ivMove = findViewById(R.id.ivMove)
-            spinner = findViewById(R.id.spinner)
-        }
-
-        recyclerView.layoutManager = LinearLayoutManager(baseContext)
-        recyclerView.setHasFixedSize(true)
         cursorAdapter = ClipsAdapter(object : ClipsAdapter.ClipClickListener {
 
             override fun onClick(clipId: Long) {
@@ -78,12 +59,14 @@ class FloatingViewService : Service() {
 
             }
         })
-        ivClose.setOnClickListener {
-            windowManager?.removeView(mainView)
+        binding.ivClose.setOnClickListener {
+            windowManager?.removeView(binding.root)
             stopSelf()
         }
         // TODO Добавить пустой view
-        recyclerView.adapter = cursorAdapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(baseContext)
+        binding.recyclerView.setHasFixedSize(true)
+        binding.recyclerView.adapter = cursorAdapter
 
         CursorClipsRepo.getInstance()
                 .getClips(this)
@@ -92,18 +75,16 @@ class FloatingViewService : Service() {
                 }, {
                     Log.e(TAG, "Ошибка", it)
                     showToast("Ошибка")
-                }).addTo(disposables)
+                })
+                .addTo(disposables)
 
-        //////////////////
         val categoriesTitles = CategoryRepository.getInstance().getCategories(this).map { it.title }.toTypedArray()
         spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesTitles)
         spinnerAdapter?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = spinnerAdapter
-        //////////////////
+        binding.spinner.adapter = spinnerAdapter
 
         val displayMetrics = DisplayMetrics()
         windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-
         val myParams = WindowManager.LayoutParams(
                 Math.round(320 * displayMetrics.density),
                 Math.round(320 * displayMetrics.density),
@@ -116,7 +97,7 @@ class FloatingViewService : Service() {
 
         try {
             //for moving the picture on touch and slide
-            mainView.setOnTouchListener(object : View.OnTouchListener {
+            binding.root.setOnTouchListener(object : View.OnTouchListener {
                 internal var paramsT = myParams
                 private var initialX: Int = 0   //Откуда стартовал левый угол
                 private var initialY: Int = 0
@@ -151,15 +132,15 @@ class FloatingViewService : Service() {
 
                             myParams.x = initialX + (event.rawX - initialTouchX).toInt()
                             myParams.y = initialY + (event.rawY - initialTouchY).toInt()        //>0
-                            windowManager?.updateViewLayout(mainView, myParams)
+                            windowManager?.updateViewLayout(binding.root, myParams)
 
                             /*Point size = new Point();
                             windowManager.getDefaultDisplay().getSize(size);*/
                             val posLeft = myParams.x.toFloat()
-                            val posRight = posLeft + mainView.layoutParams.height
+                            val posRight = posLeft + binding.root.layoutParams.height
 
                             val posTop = myParams.y.toFloat()
-                            val posBottom = posTop + mainView.layoutParams.width
+                            val posBottom = posTop + binding.root.layoutParams.width
 
                             if (posTop < 0) {
                                 Log.d("ERROR", "YYYYYYYYYY")
@@ -180,7 +161,7 @@ class FloatingViewService : Service() {
             Log.e(TAG, "Ошибка плавающего окна", e)
         }
 
-        windowManager?.addView(mainView, myParams)
+        windowManager?.addView(binding.root, myParams)
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
