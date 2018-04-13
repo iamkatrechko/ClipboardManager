@@ -38,7 +38,9 @@ class CursorClipsRepo private constructor() {
                 clipsSubject.onNext(CursorToClipMapper().toClips(ClipCursor(clipsCursor)))
             }
             cursor?.registerOnLoadCanceledListener {
-                clipsSubject.onError(Exception("Остановка"))
+                if (clipsSubject.hasObservers()) {
+                    clipsSubject.onError(Exception("Остановка"))
+                }
             }
             cursor?.startLoading()
         }

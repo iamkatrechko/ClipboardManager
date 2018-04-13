@@ -29,8 +29,11 @@ import com.iamkatrechko.clipboardmanager.view.extension.inflate
  */
 internal class ClipsAdapter constructor(
         /** Слушатель нажатий */
-        private val clickListener: ClipClickListener?
+        private val clickListener: ClipClickListener? = null
 ) : RecyclerView.Adapter<ClipsAdapter.ViewHolder>() {
+
+    /** Слушатель нажатий */
+    var onClickListener: (clipId: Long) -> Unit = {}
 
     /** Помощник множественного выделения  */
     private val selector = MultiSelector()
@@ -174,6 +177,7 @@ internal class ClipsAdapter constructor(
                     }
                 } else {
                     // Если множественное выделение неактивно, жмем
+                    onClickListener(clipId)
                     clickListener?.onClick(clipId)
                 }
             }

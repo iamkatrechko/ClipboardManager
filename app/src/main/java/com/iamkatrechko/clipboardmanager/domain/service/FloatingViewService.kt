@@ -9,7 +9,6 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.core.content.systemService
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository
@@ -37,7 +36,7 @@ class FloatingViewService : Service() {
     private lateinit var binding: FloatViewBinding
 
     /** Адаптер списка записей  */
-    private var cursorAdapter: ClipsAdapter? = null
+    private var clipsAdapter: ClipsAdapter = ClipsAdapter()
     /** Адаптер выпадающего списка  */
     private var spinnerAdapter: ArrayAdapter<CharSequence>? = null
     /** Список подписчиков */
@@ -47,31 +46,25 @@ class FloatingViewService : Service() {
         Log.i(TAG, "onCreate")
         binding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.float_view, null, false)
 
-        cursorAdapter = ClipsAdapter(object : ClipsAdapter.ClipClickListener {
+        // TODO Добавить пустой view
+        binding.recyclerView.layoutManager = LinearLayoutManager(baseContext)
+        binding.recyclerView.setHasFixedSize(true)
+        binding.recyclerView.adapter = clipsAdapter
 
-            override fun onClick(clipId: Long) {
-                val clip = ClipboardRepository.getInstance().getClip(this@FloatingViewService, clipId)
-                ClipUtils.sendClipToMyAccessibilityService(this@FloatingViewService, clip?.text)
-                Toast.makeText(applicationContext, "Id = $clipId", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onSelectedChange(isSelectedMode: Boolean, selectedCount: Int) {
-
-            }
-        })
+        clipsAdapter.onClickListener = { clipId ->
+            val clip = ClipboardRepository.getInstance().getClip(this@FloatingViewService, clipId)
+            ClipUtils.sendClipToMyAccessibilityService(this@FloatingViewService, clip?.text)
+            showToast("Id = $clipId")
+        }
         binding.ivClose.setOnClickListener {
             windowManager?.removeView(binding.root)
             stopSelf()
         }
-        // TODO Добавить пустой view
-        binding.recyclerView.layoutManager = LinearLayoutManager(baseContext)
-        binding.recyclerView.setHasFixedSize(true)
-        binding.recyclerView.adapter = cursorAdapter
 
         CursorClipsRepo.getInstance()
                 .getClips(this)
                 .subscribe({ clips ->
-                    cursorAdapter?.setClips(clips)
+                    clipsAdapter.setClips(clips)
                 }, {
                     Log.e(TAG, "Ошибка", it)
                     showToast("Ошибка")
