@@ -1,14 +1,13 @@
 package com.iamkatrechko.clipboardmanager.view.dialog
 
-import android.app.Activity
 import android.app.Dialog
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import androidx.core.os.bundleOf
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository
+import com.iamkatrechko.clipboardmanager.view.extension.onActivityResultOk
 
 /**
  * Диалог удаления категории
@@ -18,12 +17,11 @@ import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository
 class DialogCategoryDelete : DialogFragment() {
 
     private fun sendResult(deleteCategoryId: Long, newCategoryId: Long, moveToNewCategory: Boolean) {
-        val intent = Intent().apply {
+        onActivityResultOk {
             putExtra(KEY_DELETE_CATEGORY_ID, deleteCategoryId)
             putExtra("newCategoryId", newCategoryId)
             putExtra("moveToNewCategory", moveToNewCategory)
         }
-        targetFragment?.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
     }
 
     override fun onCreateDialog(bundle: Bundle?): Dialog {

@@ -1,8 +1,6 @@
 package com.iamkatrechko.clipboardmanager.view.dialog
 
-import android.app.Activity
 import android.app.Dialog
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
@@ -10,6 +8,7 @@ import android.widget.CheckBox
 import android.widget.EditText
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.domain.util.PrefsManager
+import com.iamkatrechko.clipboardmanager.view.extension.onActivityResultOk
 
 /**
  * Диалог объединения заметок в одну
@@ -24,11 +23,10 @@ class DialogSplitClips : DialogFragment() {
      * @param deleteOldClips флаг удаления объединенных заметок
      */
     private fun sendResult(splitChar: String, deleteOldClips: Boolean) {
-        val intent = Intent().apply {
+        onActivityResultOk {
             putExtra(KEY_SPLIT_CHAR, splitChar)
             putExtra(KEY_IS_DELETE_OLD_CLIPS, deleteOldClips)
         }
-        targetFragment?.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
     }
 
     override fun onCreateDialog(bundle: Bundle?): Dialog {

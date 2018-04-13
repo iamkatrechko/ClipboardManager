@@ -1,12 +1,11 @@
 package com.iamkatrechko.clipboardmanager.view.dialog
 
-import android.app.Activity
 import android.app.Dialog
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import com.iamkatrechko.clipboardmanager.R
+import com.iamkatrechko.clipboardmanager.view.extension.onActivityResultOk
 
 /**
  * Диалог сохранения заметки перед выходом
@@ -20,10 +19,9 @@ class DialogSaveClip : DialogFragment() {
      * @param save флаг сохранения заметки
      */
     private fun sendResult(save: Boolean) {
-        val intent = Intent().apply {
+        onActivityResultOk {
             putExtra(KEY_IS_SAVE, save)
         }
-        targetFragment?.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
     }
 
     override fun onCreateDialog(bundle: Bundle?): Dialog {

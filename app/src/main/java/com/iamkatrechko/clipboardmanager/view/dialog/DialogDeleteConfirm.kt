@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import com.iamkatrechko.clipboardmanager.R
+import com.iamkatrechko.clipboardmanager.view.extension.onActivityResultOk
 
 /**
  * Диалог подтверждения удаления
@@ -20,10 +21,10 @@ class DialogDeleteConfirm : DialogFragment() {
      * @param delete флаг подтверждения удаления
      */
     private fun sendResult(delete: Boolean) {
-        val intent = Intent().apply {
+        onActivityResultOk {
             putExtra(KEY_IS_DELETE, delete)
+
         }
-        targetFragment?.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
     }
 
     override fun onCreateDialog(bundle: Bundle?): Dialog {

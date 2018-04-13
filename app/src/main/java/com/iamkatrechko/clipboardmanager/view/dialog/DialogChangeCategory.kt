@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository
+import com.iamkatrechko.clipboardmanager.view.extension.onActivityResultOk
 
 /**
  * Диалог смены категории для заметки
@@ -21,10 +22,9 @@ class DialogChangeCategory : DialogFragment() {
      * @param categoryId идентификатор выбранной категории
      */
     private fun sendResult(categoryId: Long) {
-        val intent = Intent().apply {
+        onActivityResultOk {
             putExtra(KEY_CATEGORY_ID, categoryId)
         }
-        targetFragment?.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
     }
 
     override fun onCreateDialog(bundle: Bundle?): Dialog {

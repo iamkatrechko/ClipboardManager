@@ -10,6 +10,7 @@ import android.widget.EditText
 import androidx.core.os.bundleOf
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository
+import com.iamkatrechko.clipboardmanager.view.extension.onActivityResultOk
 
 /**
  * Диалог редактирования категории
@@ -19,11 +20,10 @@ import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository
 class DialogCategoryEdit : DialogFragment() {
 
     private fun sendResult(categoryId: Long, newName: String) {
-        val intent = Intent().apply {
+        onActivityResultOk {
             putExtra(KEY_CATEGORY_ID, categoryId)
             putExtra(KEY_NEW_CATEGORY_ID, newName)
         }
-        targetFragment?.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
     }
 
     override fun onCreateDialog(bundle: Bundle?): Dialog {

@@ -1,14 +1,13 @@
 package com.iamkatrechko.clipboardmanager.view.dialog
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
+import com.iamkatrechko.clipboardmanager.view.extension.onActivityResultOk
 
 /**
  * Диалог выбора сортировки заметки
@@ -22,10 +21,9 @@ class DialogSetOrderType : DialogFragment() {
      * @param orderType тип сортировки
      */
     private fun sendResult(orderType: Int) {
-        val intent = Intent().apply {
+        onActivityResultOk {
             putExtra("orderType", orderType)
         }
-        targetFragment?.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
     }
 
     override fun onCreateDialog(bundle: Bundle?): Dialog {
