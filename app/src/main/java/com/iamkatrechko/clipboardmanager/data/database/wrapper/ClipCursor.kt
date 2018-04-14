@@ -43,4 +43,8 @@ class ClipCursor(
     /** Была ли заметка удалена */
     val isDeleted: Boolean
         get() = wrappedCursor.getInt(COLUMN_IS_DELETED) == 1
+
+    /** Позиция записи в списке */
+    val positn: Int
+        get() = wrappedCursor.getInt(COLUMN_POSITION)
 }

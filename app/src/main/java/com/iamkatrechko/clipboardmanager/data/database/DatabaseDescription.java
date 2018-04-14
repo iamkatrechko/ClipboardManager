@@ -37,6 +37,8 @@ public class DatabaseDescription {
         public static final String COLUMN_CATEGORY_ID = "category_id";
         /** Имя столбца с принадлежностью к корзине */
         public static final String COLUMN_IS_DELETED = "is_deleted";
+        /** Имя столбца с позицией в списке */
+        public static final String COLUMN_POSITION = "position";
 
         /** Создание Uri для конкретной записи */
         public static Uri buildClipUri(long id) {

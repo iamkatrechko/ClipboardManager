@@ -31,15 +31,17 @@ class ClipDatabaseHelper(
         Log.d(TAG, "Начало создания базы данных")
         database.execSQL(CREATE_CATEGORIES_TABLE)
         database.execSQL(CREATE_CLIPS_TABLE)
-        createDefalutCategories(database)
-        createTestClips(database)
         Log.d(TAG, "База данных создана")
+        Log.d(TAG, "Заполнение базы данных")
+        createDefaultCategories(database)
+        createTestClips(database)
+        Log.d(TAG, "База данных заполнена")
     }
 
     override fun onUpgrade(sqLiteDatabase: SQLiteDatabase, old: Int, new: Int) {}
 
     /** Создает категории по умолчанию */
-    private fun createDefalutCategories(sqLiteDatabase: SQLiteDatabase) {
+    private fun createDefaultCategories(sqLiteDatabase: SQLiteDatabase) {
         val categories = context.resources.getStringArray(R.array.default_categories)
         for (categoryName in categories) {
             val contentValues = contentValuesOf(CategoryTable.COLUMN_TITLE to categoryName)
@@ -56,7 +58,8 @@ class ClipDatabaseHelper(
                     ClipsTable.COLUMN_DATE to randomDate,
                     ClipsTable.COLUMN_IS_FAVORITE to i % 2,
                     ClipsTable.COLUMN_CATEGORY_ID to 2,
-                    ClipsTable.COLUMN_IS_DELETED to i % 2
+                    ClipsTable.COLUMN_IS_DELETED to i % 2,
+                    ClipsTable.COLUMN_POSITION to i
             )
             sqLiteDatabase.insert(ClipsTable.TABLE_NAME, null, content)
         }
@@ -76,7 +79,7 @@ class ClipDatabaseHelper(
     companion object {
 
         /** Имя базы данных  */
-        private const val DATABASE_NAME = "Clipboard.db"
+        private const val DATABASE_NAME = "clipboards.db"
         /** Версия базы данных  */
         private const val DATABASE_VERSION = 1
 
@@ -93,6 +96,7 @@ class ClipDatabaseHelper(
                 ClipsTable.COLUMN_DATE + " INTEGER, " +
                 ClipsTable.COLUMN_IS_FAVORITE + " INTEGER, " +
                 ClipsTable.COLUMN_CATEGORY_ID + " INTEGER, " +
-                ClipsTable.COLUMN_IS_DELETED + " INTEGER);"
+                ClipsTable.COLUMN_IS_DELETED + " INTEGER, " +
+                ClipsTable.COLUMN_POSITION + " INTEGER);"
     }
 }
