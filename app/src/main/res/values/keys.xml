@@ -3,5 +3,6 @@
 
     <string name="key.settings.monitoring_enable">enable_service</string>
     <string name="key.settings.notification_enable">display_notification</string>
+    <string name="key.settings.notification_priority">notification_priority</string>
     <string name="key.settings.display_history">display_history</string>
 </resources>

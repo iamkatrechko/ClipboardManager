@@ -13,65 +13,7 @@ import com.iamkatrechko.clipboardmanager.view.activity.SettingsActivity;
  */
 public class UtilPreferences {
 
-    private static final String PREF_SHOW_ONLY_FAVORITE = "spOnlyFavorite";
-    private static final String PREF_SHOW_ONLY_FAVORITE_IN_NOTIFICATION = "spOnlyFavoriteInNotification";
-    private static final String PREF_SHOW_META_IN_ADAPTER = "showMetaInAdapter";
-    private static final String PREF_SPLIT_CHAR = "splitChar";
     private static final String PREF_ORDER_TYPE = "order_type";
-
-    /**
-     * Отображатся ли в списке записей только избранные
-     */
-    public static boolean isShowOnlyFavorite(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(PREF_SHOW_ONLY_FAVORITE, false);
-    }
-
-    /**
-     * Сохраняет булевую запись о том, отображаются ли в списке записей только избранные
-     */
-    public static void setShowOnlyFavorite(Context context, boolean isOnlyFavorite) {
-        PreferenceManager.getDefaultSharedPreferences(context)
-                .edit()
-                .putBoolean(PREF_SHOW_ONLY_FAVORITE, isOnlyFavorite)
-                .apply();
-    }
-
-    /**
-     * Отображаются ли в адаптере всех записей метаданные
-     */
-    public static boolean isShowMetaInAdapter(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(PREF_SHOW_META_IN_ADAPTER, false);
-    }
-
-    /**
-     * Сохраняет булевую запись о том, отображаются ли в адаптере всех записей метаданные
-     */
-    public static void setShowMetaInAdapter(Context context, boolean showMeta) {
-        PreferenceManager.getDefaultSharedPreferences(context)
-                .edit()
-                .putBoolean(PREF_SHOW_META_IN_ADAPTER, showMeta)
-                .apply();
-    }
-
-    /**
-     * Отображатся ли в списке записей только избранные (в уведомлении)
-     */
-    public static boolean isShowOnlyFavoriteInNotification(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(PREF_SHOW_ONLY_FAVORITE_IN_NOTIFICATION, false);
-    }
-
-    /**
-     * Сохраняет булевую запись о том, отображаются ли в списке записей только избранные (в уведомлении)
-     */
-    public static void setShowOnlyFavoriteInNotification(Context context, boolean isOnlyFavorite) {
-        PreferenceManager.getDefaultSharedPreferences(context)
-                .edit()
-                .putBoolean(PREF_SHOW_ONLY_FAVORITE_IN_NOTIFICATION, isOnlyFavorite)
-                .apply();
-    }
 
     /**
      * Возвращает тип сортировки записей
@@ -92,11 +34,6 @@ public class UtilPreferences {
                 .edit()
                 .putInt(PREF_ORDER_TYPE, orderType.ordinal())
                 .apply();
-    }
-
-    public static int getNotificationPriority(Context context) {
-        return Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(SettingsActivity.PREF_NOTIFICATION_PRIORITY, "1"));
     }
 
     public static boolean getShowSaveDialogBeforeExit(Context context) {

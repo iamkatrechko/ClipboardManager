@@ -18,7 +18,7 @@
         android:defaultValue="1"
         android:entries="@array/pref_priority_titles"
         android:entryValues="@array/pref_priority_values"
-        android:key="notification_priority"
+        android:key="@string/key.settings.notification_priority"
         android:title="Приоритет уведомления"/>
 
     <SwitchPreference
@@ -64,11 +64,17 @@
         android:positiveButtonText="@null"
         android:title="@string/pref_title_add_friends_to_messages"/>
 
-    <PreferenceCategory android:title="Для разработчика">
+    <PreferenceCategory
+        android:title="Для разработчика"
+        >
+
         <SwitchPreference
             android:defaultValue="false"
-            android:key="showMetaInAdapter"
+            android:key="devShowMetaInClipsList"
             android:summary="Отображать метаданные"
-            android:title="Метаданные"/>
+            android:title="Метаданные"
+            />
+
     </PreferenceCategory>
+
 </PreferenceScreen>

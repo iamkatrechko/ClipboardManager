@@ -17,6 +17,7 @@ import com.iamkatrechko.clipboardmanager.databinding.RvListItemClipBinding
 import com.iamkatrechko.clipboardmanager.domain.ClipsHelper
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.DateFormatUtils
+import com.iamkatrechko.clipboardmanager.domain.util.PrefsManager
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 import com.iamkatrechko.clipboardmanager.view.adapter.common.ItemDivider
 import com.iamkatrechko.clipboardmanager.view.extension.gone
@@ -162,7 +163,7 @@ internal class ClipsAdapter constructor(
             val context = binding.root.context
             selectionModeBackgroundDrawable = ContextCompat.getDrawable(context, R.drawable.selection_drawable)
 
-            val showMeta = UtilPreferences.isShowMetaInAdapter(context)
+            val showMeta = PrefsManager.getInstance().devShowMetaInClipsList
             binding.tvId.gone = !showMeta
             binding.tvCategoryId.gone = !showMeta
             binding.tvIsDeleted.gone = !showMeta

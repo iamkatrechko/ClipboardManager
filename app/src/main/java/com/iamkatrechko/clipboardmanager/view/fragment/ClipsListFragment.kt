@@ -109,7 +109,7 @@ class ClipsListFragment : Fragment() {
     fun showClipsByCategoryId(categoryId: Long?) {
         currentCategoryId = categoryId
         val order = UtilPreferences.getOrderType(context)
-        val onlyFav = UtilPreferences.isShowOnlyFavorite(context)
+        val onlyFav = PrefsManager.getInstance().isShowOnlyFavorite
         clipsAdapter.resetSelectMode()
         val bundle = Bundle().apply {
             putParcelable(ClipsLoaderCallback.KEY_LOADER_PARAMS, ClipParam(categoryId = categoryId, order = order, onlyFav = onlyFav))
@@ -158,7 +158,7 @@ class ClipsListFragment : Fragment() {
             menu!!.findItem(R.id.action_split).isVisible = selectedCount > 1
         }
 
-        val showOnlyFavorite = UtilPreferences.isShowOnlyFavorite(activity)
+        val showOnlyFavorite = PrefsManager.getInstance().isShowOnlyFavorite
         val itemStar = menu?.findItem(R.id.action_show_favorites)
         changeToolbarItemIcon(itemStar, showOnlyFavorite)
     }
@@ -171,9 +171,9 @@ class ClipsListFragment : Fragment() {
             R.id.action_set_order -> DialogManager.showDialogSetOrderType(this)
         // Показывать только избранные
             R.id.action_show_favorites -> {
-                val isOnly = UtilPreferences.isShowOnlyFavorite(activity)
+                val isOnly = PrefsManager.getInstance().isShowOnlyFavorite
                 changeToolbarItemIcon(item, !isOnly)
-                UtilPreferences.setShowOnlyFavorite(activity, !isOnly)
+                PrefsManager.getInstance().isShowOnlyFavorite = !isOnly
                 showClipsByCategoryId(currentCategoryId)
             }
         // Меню разработчика

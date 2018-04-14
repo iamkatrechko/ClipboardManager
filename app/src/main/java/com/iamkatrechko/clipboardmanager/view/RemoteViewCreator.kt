@@ -14,6 +14,7 @@ import com.iamkatrechko.clipboardmanager.data.model.Clip
 import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType
 import com.iamkatrechko.clipboardmanager.domain.service.ClipboardService
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
+import com.iamkatrechko.clipboardmanager.domain.util.PrefsManager
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity
 
@@ -26,12 +27,12 @@ object RemoteViewCreator {
 
     /** Создает кастомное уведомление со списком последних записей */
     fun createHistoryRemoteView(context: Context): RemoteViews {
-        val onlyFavorite = UtilPreferences.isShowOnlyFavoriteInNotification(context)
+        val onlyFavorite = PrefsManager.getInstance().isShowOnlyFavoriteInNotification
 
         val generalRemoteViews = RemoteViews(context.packageName, R.layout.remote_view_notification)
         val currentClip = ClipUtils.getClipboardText(context)
 
-        generalRemoteViews.setTextViewText(R.id.tvCurrent, "> " + currentClip)
+        generalRemoteViews.setTextViewText(R.id.tvCurrent, "> $currentClip")
 
         val intentAdd = Intent(context, ClipEditActivity::class.java)
         intentAdd.action = "ACTION_ADD"

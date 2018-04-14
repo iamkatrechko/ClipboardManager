@@ -15,6 +15,7 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.iamkatrechko.clipboardmanager.R;
+import com.iamkatrechko.clipboardmanager.domain.util.PrefsManager;
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences;
 import com.iamkatrechko.clipboardmanager.domain.service.ClipboardService;
 import com.iamkatrechko.clipboardmanager.domain.service.CancelViewService;
@@ -37,7 +38,7 @@ public class DeveloperActivity extends AppCompatActivity {
         setContentView(R.layout.activity_developer);
 
         cbShowMeta = (CheckBox) findViewById(R.id.cbShowMeta);
-        cbShowMeta.setChecked(UtilPreferences.isShowMetaInAdapter(this));
+        cbShowMeta.setChecked(PrefsManager.Companion.getInstance().getDevShowMetaInClipsList());
 
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,7 +111,7 @@ public class DeveloperActivity extends AppCompatActivity {
         cbShowMeta.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                UtilPreferences.setShowMetaInAdapter(getApplicationContext(), b);
+                PrefsManager.Companion.getInstance().setDevShowMetaInClipsList(b);
             }
         });
     }

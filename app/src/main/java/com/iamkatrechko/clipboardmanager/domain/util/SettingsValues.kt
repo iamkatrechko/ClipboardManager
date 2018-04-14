@@ -5,6 +5,7 @@ import android.preference.PreferenceManager
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.repository.common.Provider
 import com.iamkatrechko.clipboardmanager.view.extension.delegateBoolean
+import com.iamkatrechko.clipboardmanager.view.extension.delegateInt
 
 /**
  * Хранилище настроек программы
@@ -20,6 +21,8 @@ class SettingsValues private constructor(context: Context) {
     val monitoringEnabled by prefs.delegateBoolean(true, context.getString(R.string.key_settings_monitoring_enable))
     /** Статус отображения уведомления */
     val notificationShow by prefs.delegateBoolean(true, context.getString(R.string.key_settings_notification_enable))
+    /** Приоритет уведомления */
+    val notificationPriority by prefs.delegateInt(1, context.getString(R.string.key_settings_notification_priority))
     /** Статус отображения истории записей в уведомлении */
     val displayHistory by prefs.delegateBoolean(true, context.getString(R.string.key_settings_display_history))
 

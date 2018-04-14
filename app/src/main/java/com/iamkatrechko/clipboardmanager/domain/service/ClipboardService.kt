@@ -9,6 +9,7 @@ import androidx.core.content.systemService
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
+import com.iamkatrechko.clipboardmanager.domain.util.PrefsManager
 import com.iamkatrechko.clipboardmanager.domain.util.SettingsValues
 import com.iamkatrechko.clipboardmanager.view.extension.TAG
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
@@ -89,8 +90,8 @@ class ClipboardService : Service() {
 
     /** Включает режим отображения избранных записей */
     private fun showOnlyFavorite() {
-        val show = UtilPreferences.isShowOnlyFavoriteInNotification(this)
-        UtilPreferences.setShowOnlyFavoriteInNotification(this, !show)
+        val prefs = PrefsManager.getInstance()
+        prefs.isShowOnlyFavoriteInNotification = !prefs.isShowOnlyFavoriteInNotification
         startMyService(this)
     }
 
