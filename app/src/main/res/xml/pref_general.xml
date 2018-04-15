@@ -7,23 +7,23 @@
         android:title="Мониторинг"/>
 
     <SwitchPreference
-        android:dependency="enable_service"
         android:defaultValue="true"
+        android:dependency="enable_service"
         android:key="@string/key.settings.notification_enable"
         android:summary="Отображать уведомление в строке состояния"
         android:title="Уведомление"/>
 
     <ListPreference
-        android:dependency="display_notification"
         android:defaultValue="1"
+        android:dependency="display_notification"
         android:entries="@array/pref_priority_titles"
         android:entryValues="@array/pref_priority_values"
         android:key="@string/key.settings.notification_priority"
         android:title="Приоритет уведомления"/>
 
     <SwitchPreference
-        android:dependency="display_notification"
         android:defaultValue="true"
+        android:dependency="display_notification"
         android:key="@string/key.settings.display_history"
         android:summary="Отображать историю буфера обмена в уведомлении"
         android:title="История буфера"/>
@@ -34,14 +34,15 @@
         android:summary="Для отображения окна быстрой вставки при редактировании текста"
         android:title="Специальная служба"/>
 
+    <!-- Автоматически сохранять запись при выходе из режима редактирования -->
     <SwitchPreference
         android:defaultValue="true"
         android:key="show_save_dialog_before_exit"
         android:summary="Отображать диалог подтверждения перед выходом из режима редактирования"
         android:title="Диалог подтверждения"/>
 
-    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
-    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+    <!-- NOTE: EditTextPreference включает EditText аттрибуты -->
+    <!-- NOTE: EditTextPreference's описание настраивается в коде фрагмента -->
     <EditTextPreference
         android:capitalize="words"
         android:defaultValue="@string/pref_default_display_name"
@@ -51,18 +52,6 @@
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:title="@string/pref_title_display_name"/>
-
-    <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
-         dismiss it. -->
-    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
-    <ListPreference
-        android:defaultValue="-1"
-        android:entries="@array/pref_example_list_titles"
-        android:entryValues="@array/pref_example_list_values"
-        android:key="example_list"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null"
-        android:title="@string/pref_title_add_friends_to_messages"/>
 
     <PreferenceCategory
         android:title="Для разработчика"

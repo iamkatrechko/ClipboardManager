@@ -68,7 +68,6 @@
             android:label="@string/title_activity_settings"
             >
         </activity>
-
         <service
             android:name=".domain.service.MyAccessibilityService"
             android:enabled="true"

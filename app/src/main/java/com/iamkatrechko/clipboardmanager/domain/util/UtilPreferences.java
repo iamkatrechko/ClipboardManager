@@ -5,6 +5,7 @@ import android.preference.PreferenceManager;
 
 import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType;
 import com.iamkatrechko.clipboardmanager.view.activity.SettingsActivity;
+import com.iamkatrechko.clipboardmanager.view.fragment.SettingsFragment;
 
 /**
  * Утилиты по работы с SharedPreferences
@@ -37,7 +38,6 @@ public class UtilPreferences {
     }
 
     public static boolean getShowSaveDialogBeforeExit(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(SettingsActivity.PREF_SHOW_SAVE_DIALOG_BEFORE_EXIT, true);
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(SettingsFragment.PREF_SHOW_SAVE_DIALOG_BEFORE_EXIT, true);
     }
 }

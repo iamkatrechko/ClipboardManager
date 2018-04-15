@@ -45,13 +45,13 @@
     <string name="title_activity_edit_categories">EditCategoriesActivity</string>
     <string name="action_split">Объединить</string>
     <string name="action_share">Поделиться</string>
-    <string name="action_change_category">Переместить в...</string>
+    <string name="action_change_category">Переместить в…</string>
     <string name="splited">Объединено</string>
     <string name="select_cancel">Для объединения выделите больше 1-й записи</string>
     <string name="title_activity_search">SearchActivity</string>
     <string name="enter_query_text">Введите искомый текст</string>
     <string name="no_matches_found">Совпадений не найдено</string>
-    <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_settings">Настройки</string>
 
     <string name="order_type_date_asc">По дате (сначала новые)</string>
     <string name="order_type_date_desc">По дате (сначала старые)</string>
