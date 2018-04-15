@@ -222,7 +222,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             findPreference(PREF_ENABLE_SERVICE).setOnPreferenceChangeListener(preferenceChangeListener);
             findPreference(PREF_ACCESSIBILITY_SERVICE).setOnPreferenceChangeListener(preferenceChangeListener);
 
-            bindPreferenceSummaryToValue2(findPreference("showMetaInAdapter"));
+            bindPreferenceSummaryToValue2(findPreference("devShowMetaInClipsList"));
             bindPreferenceSummaryToValue(findPreference("example_text"));
             bindPreferenceSummaryToValue(findPreference("example_list"));
 

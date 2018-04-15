@@ -28,7 +28,7 @@ class NotificationManager {
             builder.setCustomBigContentView(RemoteViewCreator.createHistoryRemoteView(context))
         }
 
-        builder.priority = when (settings.notificationPriority) {
+        builder.priority = when (settings.notificationPriority.toInt()) {
             1 -> NotificationCompat.PRIORITY_MAX
             2 -> NotificationCompat.PRIORITY_HIGH
             3 -> NotificationCompat.PRIORITY_DEFAULT
