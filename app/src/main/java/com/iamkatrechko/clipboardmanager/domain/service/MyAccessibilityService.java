@@ -68,7 +68,7 @@ public class MyAccessibilityService extends AccessibilityService {
         mClipboardManager.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
             @Override
             public void onPrimaryClipChanged() {
-                String label = ClipUtils.getClipboardLabel(MyAccessibilityService.this);
+                String label = ClipUtils.INSTANCE.getClipboardLabel(MyAccessibilityService.this);
                 if (label.equals(ClipUtils.CLIP_LABEL_ACCESSIBILITY)) {
                     try {
                         if (ServiceUtils.INSTANCE.checkSupportActionPaste(activeSource)) {

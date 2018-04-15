@@ -168,7 +168,7 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
         when (view.id) {
             R.id.ivShare -> IntentUtils.sendMail(context!!, binding.etTitle.text.toString())
             R.id.ivIsFavorite -> setIsFavorite(!isFavorite)
-            R.id.ivCopy -> ClipUtils.copyToClipboard(context, binding.etContent.text.toString())
+            R.id.ivCopy -> ClipUtils.copyToClipboard(context!!, binding.etContent.text.toString())
             R.id.linearCategory -> DialogManager.showDialogChangeCategory(this)
         }
     }
