@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.Toast
 import com.iamkatrechko.clipboardmanager.R
-import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 import com.iamkatrechko.clipboardmanager.domain.ClipsHelper
 import com.iamkatrechko.clipboardmanager.domain.loader.callback.ClipsLoaderCallback
@@ -108,7 +107,7 @@ class ClipsListFragment : Fragment() {
      */
     fun showClipsByCategoryId(categoryId: Long?) {
         currentCategoryId = categoryId
-        val order = UtilPreferences.getOrderType(context)
+        val order = PrefsManager.getInstance().clipsOrderType
         val onlyFav = PrefsManager.getInstance().isShowOnlyFavorite
         clipsAdapter.resetSelectMode()
         val bundle = Bundle().apply {
@@ -226,7 +225,7 @@ class ClipsListFragment : Fragment() {
         }
         if (requestCode == DialogManager.DIALOG_SET_ORDER_TYPE) {
             val pos = data.getIntExtra("orderType", 0)
-            UtilPreferences.setOrderType(activity, OrderType.values()[pos])
+            PrefsManager.getInstance().clipsOrderType = OrderType.values()[pos]
             showClipsByCategoryId(currentCategoryId)
         }
     }

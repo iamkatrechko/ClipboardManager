@@ -30,15 +30,11 @@ import com.iamkatrechko.clipboardmanager.domain.service.HideNotificationService;
 public class DeveloperActivity extends AppCompatActivity {
 
     public static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE= 5469;
-    private CheckBox cbShowMeta;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_developer);
-
-        cbShowMeta = (CheckBox) findViewById(R.id.cbShowMeta);
-        cbShowMeta.setChecked(PrefsManager.Companion.getInstance().getDevShowMetaInClipsList());
 
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,13 +101,6 @@ public class DeveloperActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), CancelViewService.class);
                     startService(intent);
                 }
-            }
-        });
-
-        cbShowMeta.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                PrefsManager.Companion.getInstance().setDevShowMetaInClipsList(b);
             }
         });
     }

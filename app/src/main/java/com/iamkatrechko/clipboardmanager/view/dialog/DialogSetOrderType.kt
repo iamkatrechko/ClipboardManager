@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType
+import com.iamkatrechko.clipboardmanager.domain.util.PrefsManager
 import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 import com.iamkatrechko.clipboardmanager.view.extension.onActivityResultOk
 
@@ -28,7 +29,7 @@ class DialogSetOrderType : DialogFragment() {
 
     override fun onCreateDialog(bundle: Bundle?): Dialog {
         val itemsNames = OrderType.values().map { getString(it.nameResId) }.toTypedArray()
-        val current = UtilPreferences.getOrderType(context)
+        val current = PrefsManager.getInstance().clipsOrderType
 
         return AlertDialog.Builder(context)
                 .setTitle(R.string.title_sort)
