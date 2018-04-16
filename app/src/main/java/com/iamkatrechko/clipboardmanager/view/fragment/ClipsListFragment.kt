@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.PopupMenu
 import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.Toast
@@ -14,9 +15,9 @@ import com.iamkatrechko.clipboardmanager.domain.ClipsHelper
 import com.iamkatrechko.clipboardmanager.domain.loader.callback.ClipsLoaderCallback
 import com.iamkatrechko.clipboardmanager.domain.param.ClipParam
 import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType
+import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.IntentUtils
 import com.iamkatrechko.clipboardmanager.domain.util.PrefsManager
-import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 import com.iamkatrechko.clipboardmanager.view.DialogManager
 import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity
 import com.iamkatrechko.clipboardmanager.view.activity.DeveloperActivity
@@ -90,13 +91,14 @@ class ClipsListFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
-        recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView) as RecyclerView
+        recyclerView = view.findViewById(R.id.recyclerView)
         clipsAdapter.setEmptyView(view.findViewById(R.id.linearEmpty))
 
-        recyclerView.layoutManager = LinearLayoutManager(activity?.baseContext)
+        recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = clipsAdapter
 
+        clipsAdapter.onMoreClickListener = ::showPopupMenu
         showClipsByCategoryId(currentCategoryId)
         return view
     }
@@ -121,6 +123,38 @@ class ClipsListFragment : Fragment() {
     fun addNewClip() {
         val i = ClipEditActivity.newIntent(context!!, null)
         startActivity(i)
+    }
+
+    private fun showPopupMenu(view: View, pos: Int, clipId: Long) {
+        val popupMenu = PopupMenu(context!!, view)
+        popupMenu.inflate(R.menu.menu_popup_clip_options) // Для Android 4.0
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_copy -> {
+                    ClipUtils.copyToClipboard(context!!, repository.getClip(context!!, clipId)?.text.orEmpty())
+                    clipsAdapter.notifyDataSetChanged()
+                }
+                R.id.action_copy_close -> {
+                    ClipUtils.copyToClipboard(context!!, repository.getClip(context!!, clipId)?.text.orEmpty())
+                    activity?.finish()
+                }
+                R.id.action_view -> {
+                    startActivity(ClipEditActivity.newIntent(context!!, clipId, 1))
+                }
+                R.id.action_edit -> {
+                    startActivity(ClipEditActivity.newIntent(context!!, clipId))
+                }
+                R.id.action_delete -> {
+                    repository.deleteClip(context!!, clipId)
+                    clipsAdapter.notifyItemRemoved(pos)
+                }
+                R.id.action_share -> {
+                    IntentUtils.sendMail(context!!, repository.getClip(context!!, clipId)?.text.orEmpty())
+                }
+            }
+            return@setOnMenuItemClickListener true
+        }
+        popupMenu.show()
     }
 
     /**

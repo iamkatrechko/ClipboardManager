@@ -15,7 +15,10 @@ import com.iamkatrechko.clipboardmanager.data.model.Clip
 import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 import com.iamkatrechko.clipboardmanager.databinding.FragmentClipEditBinding
-import com.iamkatrechko.clipboardmanager.domain.util.*
+import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
+import com.iamkatrechko.clipboardmanager.domain.util.DateFormatUtils
+import com.iamkatrechko.clipboardmanager.domain.util.IntentUtils
+import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 import com.iamkatrechko.clipboardmanager.view.DialogManager
 import com.iamkatrechko.clipboardmanager.view.dialog.DialogChangeCategory
 import com.iamkatrechko.clipboardmanager.view.dialog.DialogSaveClip
@@ -56,6 +59,8 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
+        val action = arguments!!.getInt(KEY_ACTION, -1)
+        isEditMode = action != 1
         clipId = arguments!!.getLong(KEY_CLIP_ID)
         if (clipId == null || clipId == -1L) {
             isNewClip = true
@@ -82,7 +87,6 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
             loadClip(clipId!!)
         }
 
-        isEditMode = true
         if (isEditMode) {
             binding.etTitle.isEnabled = true
             binding.etContent.isEnabled = true
@@ -282,15 +286,18 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
 
         /** Ключ аргумента. URI заметки */
         private const val KEY_CLIP_ID = "KEY_CLIP_ID"
+        /** Ключ аргумента. Действие при открытии (просмотр/редактирование) */
+        private const val KEY_ACTION = "KEY_ACTION"
 
         /**
          * Возвращает новый экземпляр фрагмента
          * @param clipId id редактируемой записи
          */
-        fun newInstance(clipId: Long?): ClipEditFragment {
+        fun newInstance(clipId: Long?, action: Int): ClipEditFragment {
             val fragment = ClipEditFragment()
             fragment.arguments = bundleOf(
-                    KEY_CLIP_ID to clipId
+                    KEY_CLIP_ID to clipId,
+                    KEY_ACTION to action
             )
             return fragment
         }

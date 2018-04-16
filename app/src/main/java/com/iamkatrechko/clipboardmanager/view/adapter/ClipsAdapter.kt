@@ -18,7 +18,6 @@ import com.iamkatrechko.clipboardmanager.domain.ClipsHelper
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.DateFormatUtils
 import com.iamkatrechko.clipboardmanager.domain.util.PrefsManager
-import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 import com.iamkatrechko.clipboardmanager.view.adapter.common.ItemDivider
 import com.iamkatrechko.clipboardmanager.view.extension.gone
 import com.iamkatrechko.clipboardmanager.view.extension.inflate
@@ -35,6 +34,8 @@ internal class ClipsAdapter constructor(
 
     /** Слушатель нажатий */
     var onClickListener: (clipId: Long) -> Unit = {}
+    /** Слушатель нажатий на кнопку опций */
+    var onMoreClickListener: (view: View, pos: Int, clipId: Long) -> Unit = { _, _, _ -> }
 
     /** Помощник множественного выделения  */
     private val selector = MultiSelector()
@@ -192,6 +193,8 @@ internal class ClipsAdapter constructor(
                 }
                 false
             })
+
+            binding.buttonMore.setOnClickListener { onMoreClickListener(it, adapterPosition, clipId) }
 
             binding.ivCopy.setOnClickListener {
                 ClipUtils.copyToClipboard(context, binding.tvContent.text.toString())
