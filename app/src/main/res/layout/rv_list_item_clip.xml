@@ -142,7 +142,7 @@
             android:id="@+id/button_more"
             android:layout_width="48dp"
             android:layout_height="match_parent"
-            android:background="?attr/selectableItemBackground"
+            android:background="#00000000"
             app:srcCompat="@drawable/ic_more_vert_black_24dp"
             />
 

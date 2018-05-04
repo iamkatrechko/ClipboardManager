@@ -10,6 +10,7 @@ import com.iamkatrechko.clipboardmanager.data.repository.common.Provider
 import io.reactivex.Observable
 import io.reactivex.annotations.Experimental
 import io.reactivex.subjects.BehaviorSubject
+import java.util.*
 
 
 /**
@@ -45,6 +46,28 @@ class CursorClipsRepo private constructor() {
             cursor?.startLoading()
         }
         return clipsSubject.share()
+    }
+
+    /** Возвращает запись по ее [clipId] */
+    fun getClip(context: Context, clipId: Long): Observable<Clip> {
+        val clipUri = ClipsTable.buildClipUri(clipId)
+        return Observable.create<Clip> { emitter ->
+            // TODO При успехе перевести в функцию расширения CursorLoader.toDisposable()
+            // TODO Сейвить в мапу или в лист, если лоадер будет сам останавливаться
+            val cursorLoader = CursorLoader(context, clipUri, null, null, null, null)
+            cursorLoader.registerListener(Random().nextInt()) { _, clipsCursor ->
+                if (clipsCursor?.moveToFirst() == true) {
+                    emitter.onNext(CursorToClipMapper().toClip(ClipCursor(clipsCursor)))
+                } else {
+                    emitter.onError(Exception("Запись не найдена"))
+                }
+            }
+            cursorLoader.registerOnLoadCanceledListener {
+                emitter.onError(Exception("Остановка"))
+            }
+            emitter.setCancellable { cursorLoader.stopLoading() }
+            cursorLoader.startLoading()
+        }
     }
 
     companion object : Provider<CursorClipsRepo>() {
