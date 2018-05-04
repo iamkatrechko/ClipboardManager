@@ -68,6 +68,11 @@
             android:label="@string/title_activity_settings"
             >
         </activity>
+        <activity
+            android:name=".view.activity.ClipViewActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+
         <service
             android:name=".domain.service.MyAccessibilityService"
             android:enabled="true"

@@ -20,6 +20,7 @@ import com.iamkatrechko.clipboardmanager.domain.util.IntentUtils
 import com.iamkatrechko.clipboardmanager.domain.util.PrefsManager
 import com.iamkatrechko.clipboardmanager.view.DialogManager
 import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity
+import com.iamkatrechko.clipboardmanager.view.activity.ClipViewActivity
 import com.iamkatrechko.clipboardmanager.view.activity.DeveloperActivity
 import com.iamkatrechko.clipboardmanager.view.activity.SearchActivity
 import com.iamkatrechko.clipboardmanager.view.adapter.ClipsAdapter
@@ -139,7 +140,7 @@ class ClipsListFragment : Fragment() {
                     activity?.finish()
                 }
                 R.id.action_view -> {
-                    startActivity(ClipEditActivity.newIntent(context!!, clipId, 1))
+                    startActivity(ClipViewActivity.newIntent(context!!, clipId))
                 }
                 R.id.action_edit -> {
                     startActivity(ClipEditActivity.newIntent(context!!, clipId))

@@ -18,8 +18,7 @@ class ClipboardRepository private constructor() {
 
     /**
      * Добавление новой записи в базу данных
-     * @param [context] контекст
-     * @param [text]    текст записи
+     * @param [text] текст записи
      * @return uri новой записи, если она успешно добавлена
      */
     fun insertClip(context: Context, text: String): Uri? {
@@ -38,7 +37,6 @@ class ClipboardRepository private constructor() {
 
     /**
      * Добавление новой записи в базу данных
-     * @param [context]       контекст
      * @param [contentValues] свойства записи
      * @return uri новой записи, если она успешно добавлена
      */
@@ -48,8 +46,7 @@ class ClipboardRepository private constructor() {
 
     /**
      * Существует ли текущая запись в базе данных
-     * @param [context] контекст
-     * @param [text]    текст записи
+     * @param [text] текст записи
      * @return true - существует, false - не существует
      */
     fun alreadyExists(context: Context, text: String): Boolean {
@@ -65,8 +62,7 @@ class ClipboardRepository private constructor() {
 
     /**
      * Возвращает запись из базы данных
-     * @param [context] контекст
-     * @param [id]      идентификатор записи
+     * @param [id] идентификатор записи
      * @return запись из базы данных
      */
     fun getClip(context: Context, id: Long): Clip? {
@@ -80,8 +76,7 @@ class ClipboardRepository private constructor() {
 
     /**
      * Возвращает список записей по их идентификаторам
-     * @param [context] контекст
-     * @param [ids]     список идентификаторов записей
+     * @param [ids] список идентификаторов записей
      * @return список записей по их идентификаторам
      */
     fun getClips(context: Context, ids: List<Long>): List<String> {
@@ -90,8 +85,7 @@ class ClipboardRepository private constructor() {
 
     /**
      * Удаляет запись из базы данных
-     * @param [context] контект
-     * @param [id]      идентификатор записи
+     * @param [id] идентификатор записи
      */
     fun deleteClip(context: Context, id: Long) {
         context.contentResolver.delete(ClipsTable.buildClipUri(id), null, null)
@@ -99,8 +93,7 @@ class ClipboardRepository private constructor() {
 
     /**
      * Удаляет записи из базы данных
-     * @param [context] контекст
-     * @param [ids]     идентификаторы записей на удаление
+     * @param [ids] идентификаторы записей на удаление
      */
     fun deleteClips(context: Context, ids: List<Long>) {
         ids.forEach { deleteClip(context, it) }
@@ -108,7 +101,6 @@ class ClipboardRepository private constructor() {
 
     /**
      * Обновляет содержимое записи
-     * @param [context]       контекст
      * @param [clipId]        идентификатор записи
      * @param [contentValues] новые свойства записи
      * @return количество обновленных записей
