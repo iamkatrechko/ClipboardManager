@@ -101,7 +101,7 @@ internal class ClipsAdapter constructor(
         if (cursor == null) {
             return
         }
-        setClips(CursorToClipMapper().toClips(ClipCursor(cursor)))
+        setClips(CursorToClipMapper.toClips(ClipCursor(cursor)))
     }
 
     /**
@@ -203,7 +203,7 @@ internal class ClipsAdapter constructor(
 
             binding.ivFavorite.setOnClickListener {
                 val clip = clips[adapterPosition]
-                ClipsHelper.setFavorite(context, clipId, !clip.isFavorite)
+                ClipsHelper.setFavorite(clipId, !clip.isFavorite)
             }
         }
 

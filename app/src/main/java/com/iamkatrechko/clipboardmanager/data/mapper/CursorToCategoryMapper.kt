@@ -8,29 +8,26 @@ import com.iamkatrechko.clipboardmanager.data.model.Category
  * @author iamkatrechko
  *         Date: 04.11.2017
  */
-class CursorToCategoryMapper {
+object CursorToCategoryMapper {
 
     /**
      * Переводит из курсора в категорию
-     * @param [catCursor] курсор с записью в нужной позиции
+     * @param [cursor] курсор с записью в нужной позиции
      * @return категория
      */
-    fun toCategory(catCursor: CategoryCursor): Category {
-        return Category(catCursor.id,
-                catCursor.title)
-    }
+    fun toCategory(cursor: CategoryCursor): Category =
+            Category(cursor.id, cursor.title)
 
     /**
      * Переводит из курсора в список категорий
-     * @param [catCursor] курсор с категориями
+     * @param [cursor] курсор с категориями
      * @return список категорий
      */
-    fun toCategories(catCursor: CategoryCursor): List<Category> {
-        return ArrayList<Category>().apply {
-            for (i in 0 until catCursor.count) {
-                catCursor.moveToPosition(i)
-                add(toCategory(catCursor))
-            }
+    fun toCategories(cursor: CategoryCursor?): List<Category> {
+        cursor ?: return emptyList()
+        return MutableList(cursor.count) {
+            cursor.moveToPosition(it)
+            toCategory(cursor)
         }
     }
 }

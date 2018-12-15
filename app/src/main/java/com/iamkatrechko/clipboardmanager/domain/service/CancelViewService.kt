@@ -26,7 +26,7 @@ import com.iamkatrechko.clipboardmanager.view.extension.showToast
  */
 class CancelViewService : Service() {
 
-    /** Менеджер экрана */
+    /** Менеджер экрана */ // ToDo:
     private val windowManager by lazy { systemService<WindowManager>() }
     /** Репозиторий записей */
     private var repository: ClipboardRepository = ClipboardRepository.getInstance()
@@ -48,7 +48,7 @@ class CancelViewService : Service() {
 
         binding.linearCancel.setOnClickListener {
             windowManager.removeView(binding.root)
-            repository.deleteClip(this, deleteClipId)
+            repository.deleteClip(deleteClipId)
             showToast(getString(R.string.deleted) + deleteClipId)
             stopSelf()
         }
@@ -83,7 +83,7 @@ class CancelViewService : Service() {
             try {
                 windowManager.removeView(binding.root)
                 stopSelf()
-            } catch (_: Exception) {
+            } catch (_: Throwable) {
             }
         }
     }

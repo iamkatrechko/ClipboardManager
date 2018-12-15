@@ -132,11 +132,11 @@ class ClipsListFragment : Fragment() {
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_copy -> {
-                    ClipUtils.copyToClipboard(context!!, repository.getClip(context!!, clipId)?.text.orEmpty())
+                    ClipUtils.copyToClipboard(context!!, repository.getClip(clipId)?.text.orEmpty())
                     clipsAdapter.notifyDataSetChanged()
                 }
                 R.id.action_copy_close -> {
-                    ClipUtils.copyToClipboard(context!!, repository.getClip(context!!, clipId)?.text.orEmpty())
+                    ClipUtils.copyToClipboard(context!!, repository.getClip(clipId)?.text.orEmpty())
                     activity?.finish()
                 }
                 R.id.action_view -> {
@@ -146,11 +146,11 @@ class ClipsListFragment : Fragment() {
                     startActivity(ClipEditActivity.newIntent(context!!, clipId))
                 }
                 R.id.action_delete -> {
-                    repository.deleteClip(context!!, clipId)
+                    repository.deleteClip(clipId)
                     clipsAdapter.notifyItemRemoved(pos)
                 }
                 R.id.action_share -> {
-                    IntentUtils.sendMail(context!!, repository.getClip(context!!, clipId)?.text.orEmpty())
+                    IntentUtils.sendMail(context!!, repository.getClip(clipId)?.text.orEmpty())
                 }
             }
             return@setOnMenuItemClickListener true
@@ -221,7 +221,7 @@ class ClipsListFragment : Fragment() {
             R.id.action_split -> DialogManager.showDialogSplitClips(this)
         // Поделиться выделенными записями
             R.id.action_share -> {
-                val shareText = ClipsHelper.joinToString(context!!,
+                val shareText = ClipsHelper.joinToString(
                         clipsAdapter.getSelectedIds(),
                         PrefsManager.getInstance().clipSplitChar)
                 IntentUtils.sendMail(context!!, shareText)
@@ -240,7 +240,7 @@ class ClipsListFragment : Fragment() {
             val splitChar = data.getStringExtra(DialogSplitClips.KEY_SPLIT_CHAR)
             if (clipsAdapter.getSelectedIds().isNotEmpty()) {
                 val deleteOldClips = data.getBooleanExtra(DialogSplitClips.KEY_IS_DELETE_OLD_CLIPS, false)
-                ClipsHelper.joinAndDelete(context!!, clipsAdapter.getSelectedIds(), splitChar, deleteOldClips)
+                ClipsHelper.joinAndDelete(clipsAdapter.getSelectedIds(), splitChar, deleteOldClips)
                 clipsAdapter.resetSelectMode()
                 Toast.makeText(context, R.string.splited, Toast.LENGTH_SHORT).show()
             } else {
@@ -249,12 +249,12 @@ class ClipsListFragment : Fragment() {
         }
         if (requestCode == DialogManager.DIALOG_CHANGE_CATEGORY) {
             val categoryId = data.getLongExtra(DialogChangeCategory.KEY_CATEGORY_ID, 0)
-            ClipsHelper.changeCategory(context!!, clipsAdapter.getSelectedIds(), categoryId)
+            ClipsHelper.changeCategory(clipsAdapter.getSelectedIds(), categoryId)
         }
         if (requestCode == DialogManager.DIALOG_DELETE_CONFIRM) {
             val delete = data.getBooleanExtra(DialogDeleteConfirm.KEY_IS_DELETE, false)
             if (delete) {
-                repository.deleteClips(context!!, clipsAdapter.getSelectedIds())
+                repository.deleteClips(clipsAdapter.getSelectedIds())
                 clipsAdapter.resetSelectMode()
             }
         }

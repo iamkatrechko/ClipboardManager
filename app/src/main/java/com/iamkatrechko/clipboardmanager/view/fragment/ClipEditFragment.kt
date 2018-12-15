@@ -15,6 +15,7 @@ import com.iamkatrechko.clipboardmanager.data.model.Clip
 import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 import com.iamkatrechko.clipboardmanager.databinding.FragmentClipEditBinding
+import com.iamkatrechko.clipboardmanager.domain.request.InsertClipRequest
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.DateFormatUtils
 import com.iamkatrechko.clipboardmanager.domain.util.IntentUtils
@@ -34,7 +35,8 @@ import com.jakewharton.rxbinding2.widget.RxTextView
 class ClipEditFragment : Fragment(), View.OnClickListener {
 
     /** Создание новой заметки  */
-    private var isNewClip: Boolean = false
+    private val isNewClip: Boolean
+        get() = clipId == null || clipId == -1L
     /** Режим редактирования  */
     private var isEditMode: Boolean = false
     /** Необходимость сохранения  */
@@ -59,12 +61,9 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        val action = arguments!!.getInt(KEY_ACTION, -1)
+        val action = arguments?.getInt(KEY_ACTION, -1)
         isEditMode = action != 1
-        clipId = arguments!!.getLong(KEY_CLIP_ID)
-        if (clipId == null || clipId == -1L) {
-            isNewClip = true
-        }
+        clipId = arguments?.getLong(KEY_CLIP_ID)
 
         Log.i(TAG, "Редактирование заметки [id=$clipId]")
     }
@@ -122,22 +121,29 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
             showToast(getString(R.string.enter_clip_text))
             return
         }
-        val contentValues = ClipsTable.getDefaultContentValues().apply {
-            put(ClipsTable.COLUMN_TITLE, binding.etTitle.text.toString())
-            put(ClipsTable.COLUMN_CONTENT, binding.etContent.text.toString())
-            put(ClipsTable.COLUMN_IS_FAVORITE, isFavorite)
-            put(ClipsTable.COLUMN_CATEGORY_ID, categoryId)
-        }
 
         val isSuccess: Boolean
         if (isNewClip) {
             if (binding.etTitle.text.isEmpty()) {
                 val titleLength = Math.min(25, binding.etContent.text.length)
-                contentValues.put(ClipsTable.COLUMN_TITLE, binding.etContent.text.toString().substring(0, titleLength))
+                binding.etTitle.setText(binding.etContent.text.toString().substring(0, titleLength))
             }
-            isSuccess = clipRepository.insertClip(context!!, contentValues) != null
+            val request = InsertClipRequest(
+                    binding.etTitle.text.toString(),
+                    binding.etContent.text.toString(),
+                    categoryId.toInt(),
+                    isFavorite
+            )
+            isSuccess = clipRepository.insertClip(request) != null
         } else {
-            isSuccess = clipRepository.updateClip(context!!, clipId!!, contentValues) > 0
+            val clip = Clip(
+                    clipId!!,
+                    binding.etTitle.text.toString(),
+                    binding.etContent.text.toString(),
+                    isFavorite,
+                    categoryId = categoryId
+            )
+            isSuccess = clipRepository.updateClip(clipId!!, clip)
         }
         showToast(if (isSuccess) R.string.saved else R.string.error_save)
         activity?.finish()
@@ -146,7 +152,7 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
     /** Удаляет текущую заметку */
     private fun deleteClip() {
         if (!isNewClip) {
-            clipRepository.deleteClip(context!!, clipId!!)
+            clipRepository.deleteClip(clipId!!)
         }
         activity?.finish()
     }
@@ -161,10 +167,7 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
         setFavIcon(isFavorite)
 
         if (!isEditMode && !isNewClip) {
-            val contentValues = ContentValues().apply {
-                put(ClipsTable.COLUMN_IS_FAVORITE, fav)
-            }
-            clipRepository.updateClip(context!!, clipId!!, contentValues)
+            clipRepository.setFavorite(clipId!!, fav)
         }
     }
 
@@ -182,7 +185,7 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
      * @param [clipId] идентификатор записи
      */
     private fun loadClip(clipId: Long) {
-        val clip = clipRepository.getClip(context!!, clipId)!!
+        val clip = clipRepository.getClip(clipId)!!
         initViews(clip)
         loadCategory(clip.categoryId)
     }
@@ -192,7 +195,7 @@ class ClipEditFragment : Fragment(), View.OnClickListener {
      * @param [categoryId] идентификатор категории
      */
     private fun loadCategory(categoryId: Long) {
-        val category = catRepository.getCategory(context!!, categoryId)!!
+        val category = catRepository.getCategory(categoryId)!!
         binding.tvCategory.text = category.title
     }
 

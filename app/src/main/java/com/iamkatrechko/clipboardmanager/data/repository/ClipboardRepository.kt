@@ -2,116 +2,101 @@ package com.iamkatrechko.clipboardmanager.data.repository
 
 import android.content.ContentValues
 import android.content.Context
-import android.net.Uri
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.ClipsTable
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
+import com.iamkatrechko.clipboardmanager.data.mapper.ClipToContentsMapper
 import com.iamkatrechko.clipboardmanager.data.mapper.CursorToClipMapper
 import com.iamkatrechko.clipboardmanager.data.model.Clip
 import com.iamkatrechko.clipboardmanager.data.repository.common.Provider
+import com.iamkatrechko.clipboardmanager.domain.repository.IClipRepository
+import com.iamkatrechko.clipboardmanager.domain.request.InsertClipRequest
+import com.iamkatrechko.clipboardmanager.domain.util.isNullOrEmpty
 
 /**
  * Репозиторий записей
  * @author iamkatrechko
  *         Date: 03.11.17
+ *
+ * @param ctx контекст приложения
  */
-class ClipboardRepository private constructor() {
+class ClipboardRepository private constructor(
+        private val ctx: Context
+) : IClipRepository {
 
-    /**
-     * Добавление новой записи в базу данных
-     * @param [text] текст записи
-     * @return uri новой записи, если она успешно добавлена
-     */
-    fun insertClip(context: Context, text: String): Uri? {
-        var titleLength = 25
-        if (text.length < titleLength) {
-            titleLength = text.length
+    override fun insertClip(request: InsertClipRequest): Int? {
+        val contentValues = ContentValues().apply {
+            put(ClipsTable.COLUMN_TITLE, request.title)
+            put(ClipsTable.COLUMN_CONTENT, request.content)
+            put(ClipsTable.COLUMN_CATEGORY_ID, request.categoryId.toLong())
+            put(ClipsTable.COLUMN_DATE, request.date)
+            put(ClipsTable.COLUMN_IS_FAVORITE, request.isFavorite)
+            put(ClipsTable.COLUMN_IS_DELETED, 0)
+            put(ClipsTable.COLUMN_POSITION, request.position)
         }
 
-        val contentValues = ClipsTable.getDefaultContentValues().apply {
-            put(ClipsTable.COLUMN_TITLE, text.substring(0, titleLength))
-            put(ClipsTable.COLUMN_CONTENT, text)
-        }
-
-        return insertClip(context, contentValues)
+        return ctx.contentResolver.insert(ClipsTable.CONTENT_URI, contentValues).lastPathSegment.toInt()
     }
 
-    /**
-     * Добавление новой записи в базу данных
-     * @param [contentValues] свойства записи
-     * @return uri новой записи, если она успешно добавлена
-     */
-    fun insertClip(context: Context, contentValues: ContentValues): Uri? {
-        return context.contentResolver.insert(ClipsTable.CONTENT_URI, contentValues)
-    }
-
-    /**
-     * Существует ли текущая запись в базе данных
-     * @param [text] текст записи
-     * @return true - существует, false - не существует
-     */
-    fun alreadyExists(context: Context, text: String): Boolean {
-        val cursor = context.contentResolver.query(ClipsTable.CONTENT_URI,
+    override fun alreadyExists(content: String): Boolean {
+        val cursor = ctx.contentResolver.query(ClipsTable.CONTENT_URI,
                 null,
                 ClipsTable.COLUMN_CONTENT + " = ?",
-                arrayOf(text),
+                arrayOf(content),
                 null)
         cursor.use {
             return it != null && it.count > 0
         }
     }
 
-    /**
-     * Возвращает запись из базы данных
-     * @param [id] идентификатор записи
-     * @return запись из базы данных
-     */
-    fun getClip(context: Context, id: Long): Clip? {
+    override fun getClip(id: Long): Clip? {
         val clipUri = ClipsTable.buildClipUri(id)
-        val cursor = ClipCursor(context.contentResolver.query(clipUri, null, null, null, null))
-        if (cursor.moveToFirst()) {
-            return CursorToClipMapper().toClip(ClipCursor(cursor))
+        val cursor = ClipCursor(ctx.contentResolver.query(clipUri, null, null, null, null))
+        if (!cursor.isNullOrEmpty()) {
+            cursor.moveToFirst()
+            return CursorToClipMapper.toClip(cursor)
         }
         return null
     }
 
-    /**
-     * Возвращает список записей по их идентификаторам
-     * @param [ids] список идентификаторов записей
-     * @return список записей по их идентификаторам
-     */
-    fun getClips(context: Context, ids: List<Long>): List<String> {
-        return ids.mapTo(ArrayList()) { getClip(context, it) }.mapNotNull { it?.text }
+    override fun getClips(ids: Collection<Long>): List<Clip> =
+            ids.mapNotNull(::getClip)
+
+    override fun setFavorite(clipId: Long, isFavorite: Boolean) {
+        val clip = getClip(clipId)?.copy(isFavorite = isFavorite)
+        clip ?: return
+        updateClip(clipId, clip)
     }
 
-    /**
-     * Удаляет запись из базы данных
-     * @param [id] идентификатор записи
-     */
-    fun deleteClip(context: Context, id: Long) {
-        context.contentResolver.delete(ClipsTable.buildClipUri(id), null, null)
+    override fun changeCategory(clipId: Long, categoryId: Long) {
+        val clip = getClip(clipId)?.copy(categoryId = categoryId)
+        clip ?: return
+        updateClip(clipId, clip)
     }
 
-    /**
-     * Удаляет записи из базы данных
-     * @param [ids] идентификаторы записей на удаление
-     */
-    fun deleteClips(context: Context, ids: List<Long>) {
-        ids.forEach { deleteClip(context, it) }
+    override fun deleteClip(id: Long) {
+        ctx.contentResolver.delete(ClipsTable.buildClipUri(id), null, null)
     }
 
-    /**
-     * Обновляет содержимое записи
-     * @param [clipId]        идентификатор записи
-     * @param [contentValues] новые свойства записи
-     * @return количество обновленных записей
-     */
-    fun updateClip(context: Context, clipId: Long, contentValues: ContentValues): Int {
+    override fun deleteClips(ids: Collection<Long>) {
+        ids.forEach(::deleteClip)
+    }
+
+    override fun updateClip(clipId: Long, clip: Clip): Boolean {
         val clipUri = ClipsTable.buildClipUri(clipId)
-        return context.contentResolver.update(clipUri, contentValues, null, null)
+        val values = ClipToContentsMapper.map(clip)
+        return ctx.contentResolver.update(clipUri, values, null, null) > 0
     }
 
     companion object : Provider<ClipboardRepository>() {
 
-        override fun createInstance() = ClipboardRepository()
+        /** Приватный экземпляр класса */
+        private var INSTANCE: ClipboardRepository? = null
+
+        /** Инициализирует компонент */
+        fun init(context: Context) {
+            INSTANCE = ClipboardRepository(context)
+        }
+
+        override fun createInstance() = INSTANCE ?: error("Компонент не инициализирован")
     }
 }

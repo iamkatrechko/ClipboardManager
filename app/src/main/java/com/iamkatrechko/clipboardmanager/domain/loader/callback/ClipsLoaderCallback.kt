@@ -46,7 +46,7 @@ class ClipsLoaderCallback(
 
     override fun onLoadFinished(loader: Loader<Cursor>, data: Cursor?) {
         Log.d(TAG, "onLoadFinished")
-        preparedAction(CursorToClipMapper().toClips(ClipCursor(data)))
+        preparedAction(CursorToClipMapper.toClips(ClipCursor(data)))
     }
 
     override fun onLoaderReset(loader: Loader<Cursor>) {

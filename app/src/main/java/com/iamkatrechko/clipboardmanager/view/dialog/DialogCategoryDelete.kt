@@ -27,7 +27,7 @@ class DialogCategoryDelete : DialogFragment() {
     override fun onCreateDialog(bundle: Bundle?): Dialog {
         var selectedCategoryPos = 0
         val deleteCategoryId = arguments?.getLong(KEY_DELETE_CATEGORY_ID, -1) ?: -1
-        val categories = CategoryRepository.getInstance().getCategories(context!!).filter { it.id != deleteCategoryId }
+        val categories = CategoryRepository.getInstance().getCategories().filter { it.id != deleteCategoryId }
         val valuesList = categories.map { it.title }.toTypedArray()
 
         // TODO добавить пункт "удалить вместе с категорией"

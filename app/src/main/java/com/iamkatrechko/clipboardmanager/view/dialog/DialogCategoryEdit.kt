@@ -35,7 +35,7 @@ class DialogCategoryEdit : DialogFragment() {
         if (isNewCategory) {
             etTitle.setText(R.string.new_category)
         } else {
-            val category = CategoryRepository.getInstance().getCategory(context!!, categoryId)
+            val category = CategoryRepository.getInstance().getCategory(categoryId)
             etTitle.setText(category?.title)
         }
 

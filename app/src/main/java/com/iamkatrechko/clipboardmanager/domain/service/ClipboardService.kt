@@ -8,11 +8,11 @@ import android.util.Log
 import androidx.core.content.systemService
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
+import com.iamkatrechko.clipboardmanager.domain.request.InsertClipRequest
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.PrefsManager
 import com.iamkatrechko.clipboardmanager.domain.util.SettingsValues
 import com.iamkatrechko.clipboardmanager.view.extension.TAG
-import com.iamkatrechko.clipboardmanager.domain.util.UtilPreferences
 import com.iamkatrechko.clipboardmanager.view.NotificationManager
 import com.iamkatrechko.clipboardmanager.view.extension.showToast
 
@@ -40,7 +40,7 @@ class ClipboardService : Service() {
         } else if (text.isEmpty()) {
             Log.d(TAG, "Отмена: текст записи пуст")
             showToast(R.string.empty_record)
-        } else if (repository.alreadyExists(this, text)) {
+        } else if (repository.alreadyExists(text)) {
             Log.d(TAG, "Отмена: текущая запись уже существует")
             showToast(R.string.record_already_exists)
             //TODO Сделать настройку "Если уже существует: ничего не делать || изменить дату на новую
@@ -97,17 +97,17 @@ class ClipboardService : Service() {
 
     /** Копирует запись с указанным [id] в буфер обмена */
     private fun copyToClipboard(id: Long) {
-        repository.getClip(this, id)?.let {
+        repository.getClip(id)?.let {
             ClipUtils.copyToClipboard(this, it.text)
         }
         startMyService(this)
     }
 
-    /** Добавление новой записи с текстом [text] в базу данных */
-    private fun addClipAndShowCancel(text: String) {
-        val newClipUri = repository.insertClip(this, text)
-        if (newClipUri != null) {
-            startService(CancelViewService.newIntent(this, newClipUri.lastPathSegment))
+    /** Добавление новой записи с текстом [content] в базу данных */
+    private fun addClipAndShowCancel(content: String) {
+        val clipId = repository.insertClip(InsertClipRequest.withContent(content))
+        if (clipId != null) {
+            startService(CancelViewService.newIntent(this, clipId.toString()))
         }
     }
 

@@ -28,7 +28,7 @@ class DialogChangeCategory : DialogFragment() {
     }
 
     override fun onCreateDialog(bundle: Bundle?): Dialog {
-        val categories = CategoryRepository.getInstance().getCategories(context!!)
+        val categories = CategoryRepository.getInstance().getCategories()
         val names = categories.map { it.title }.toTypedArray()
 
         return AlertDialog.Builder(activity)

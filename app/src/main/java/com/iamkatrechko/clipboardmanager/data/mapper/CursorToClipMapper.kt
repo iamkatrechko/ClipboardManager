@@ -8,7 +8,7 @@ import com.iamkatrechko.clipboardmanager.data.model.Clip
  * @author iamkatrechko
  *         Date: 04.11.2017
  */
-class CursorToClipMapper {
+object CursorToClipMapper {
 
     /**
      * Переводит из курсора в запись
@@ -25,7 +25,8 @@ class CursorToClipMapper {
                 clipCursor.isFavorite,
                 clipCursor.date,
                 clipCursor.categoryId,
-                clipCursor.isDeleted)
+                clipCursor.isDeleted,
+                clipCursor.positn)
     }
 
     /**

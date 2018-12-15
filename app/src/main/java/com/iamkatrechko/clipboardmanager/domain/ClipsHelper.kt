@@ -1,9 +1,7 @@
 package com.iamkatrechko.clipboardmanager.domain
 
-import android.content.Context
-import androidx.core.content.contentValuesOf
-import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.ClipsTable
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
+import com.iamkatrechko.clipboardmanager.domain.request.InsertClipRequest
 
 /**
  * Помощник по работе с записями
@@ -22,46 +20,41 @@ object ClipsHelper {
      * @param [separator] разделитель между записями
      * @return объединенная строка
      */
-    fun joinToString(context: Context, clipIds: List<Long>, separator: String): String {
-        return clipRepository.getClips(context, clipIds).joinToString(separator)
+    fun joinToString(clipIds: List<Long>, separator: String): String {
+        return clipRepository.getClips(clipIds).joinToString(separator) { it.text }
     }
 
     /**
      * Объединяет содержимое записей в одну строку и создает на ее основе новую запись
-     * @param [context]   контекст
      * @param [clipIds]   идентификаторы записей
      * @param [separator] разделитель между записями
      * @param [deleteOld] требуется ли удалить исходные записи
      */
-    fun joinAndDelete(context: Context, clipIds: List<Long>, separator: String, deleteOld: Boolean) {
-        val newClipText = ClipsHelper.joinToString(context, clipIds, separator)
+    fun joinAndDelete(clipIds: List<Long>, separator: String, deleteOld: Boolean) {
+        val newClipText = ClipsHelper.joinToString(clipIds, separator)
         if (deleteOld) {
-            clipRepository.deleteClips(context, clipIds)
+            clipIds.forEach(clipRepository::deleteClip)
         }
-        clipRepository.insertClip(context, newClipText)
+        clipRepository.insertClip(InsertClipRequest.withContent(newClipText))
     }
 
     /**
      * Изменяет категорию записей
-     * @param [context]    контекст
      * @param [clipIds]    идентификаторы записей
      * @param [categoryId] идентификатор новой категории
      */
-    fun changeCategory(context: Context, clipIds: List<Long>, categoryId: Long) {
+    fun changeCategory(clipIds: List<Long>, categoryId: Long) {
         for (id in clipIds) {
-            val content = contentValuesOf(ClipsTable.COLUMN_CATEGORY_ID to categoryId)
-            clipRepository.updateClip(context, id, content)
+            clipRepository.changeCategory(id, categoryId)
         }
     }
 
     /**
      * Изменяет флага избранности записи в базе данных
-     * @param [context]    контекст
      * @param [clipId]     идентификатор записи
      * @param [isFavorite] флаг избранности
      */
-    fun setFavorite(context: Context, clipId: Long, isFavorite: Boolean) {
-        val content = contentValuesOf(ClipsTable.COLUMN_IS_FAVORITE to isFavorite)
-        clipRepository.updateClip(context, clipId, content)
+    fun setFavorite(clipId: Long, isFavorite: Boolean) {
+        clipRepository.setFavorite(clipId, isFavorite)
     }
 }

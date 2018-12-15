@@ -14,6 +14,7 @@ import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription.CategoryTable
 import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository
 import com.iamkatrechko.clipboardmanager.domain.loader.callback.CategoriesLoaderCallback
+import com.iamkatrechko.clipboardmanager.domain.repository.ICategoryRepository
 import com.iamkatrechko.clipboardmanager.domain.use_case.MoveClipsUseCase
 import com.iamkatrechko.clipboardmanager.view.DialogManager
 import com.iamkatrechko.clipboardmanager.view.adapter.CategoriesCursorAdapter
@@ -29,7 +30,7 @@ import com.iamkatrechko.clipboardmanager.view.dialog.DialogCategoryEdit
 class CategoriesListFragment : Fragment() {
 
     /** Репозиторий список категорий */
-    private val repository = CategoryRepository.getInstance()
+    private val repository: ICategoryRepository = CategoryRepository.getInstance()
     /** Адаптер списка категорий заметок  */
     private lateinit var categoriesAdapter: CategoriesCursorAdapter
 
@@ -90,7 +91,7 @@ class CategoriesListFragment : Fragment() {
 
     /** Создает новую категорию */
     private fun createCategory(name: String) {
-        repository.addCategory(context!!, name)
+        repository.addCategory(name)
     }
 
     /** Переименовывает категорию */

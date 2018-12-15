@@ -27,7 +27,7 @@ class MoveClipsUseCase : CompletableUseCase<MoveClipsUseCase.Params>() {
                     ClipsTable.COLUMN_CATEGORY_ID + "=" + params.fromCategoryId, null)
 
             // Удаление категории (теперь уже пустой)
-            CategoryRepository.getInstance().deleteCategory(params.context, params.fromCategoryId)
+            CategoryRepository.getInstance().removeCategory(params.fromCategoryId.toInt())
         }
     }
 

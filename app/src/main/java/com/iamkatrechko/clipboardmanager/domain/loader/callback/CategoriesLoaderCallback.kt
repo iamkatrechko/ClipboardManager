@@ -47,7 +47,7 @@ class CategoriesLoaderCallback(
     }
 
     override fun onLoadFinished(loader: Loader<Cursor>, data: Cursor) {
-        onDataPrepared(CursorToCategoryMapper().toCategories(CategoryCursor(data)))
+        onDataPrepared(CursorToCategoryMapper.toCategories(CategoryCursor(data)))
     }
 
     override fun onLoaderReset(loader: Loader<Cursor>) {

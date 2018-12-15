@@ -80,7 +80,7 @@ object RemoteViewCreator {
                 OrderType.BY_DATE_ASC.query + " LIMIT 4")
         )
 
-        return CursorToClipMapper().toClips(ClipCursor(lastRecords))
+        return CursorToClipMapper.toClips(ClipCursor(lastRecords))
     }
 
     /** Создает элемент списка последних записей */

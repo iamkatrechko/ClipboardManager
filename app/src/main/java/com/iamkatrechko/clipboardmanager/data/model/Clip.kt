@@ -4,20 +4,23 @@ package com.iamkatrechko.clipboardmanager.data.model
  * Сущность записи базы данных
  * @author iamkatrechko
  *         Date: 04.11.2017
+ *
+ * @param id         идентификатор
+ * @param title      заголовок
+ * @param text       содержание
+ * @param isFavorite признак избранности
+ * @param dateTime   дата
+ * @param categoryId идентификатор категории
+ * @param isDeleted  флаг удаленного статуса
+ * @param position   позиция в списке
  */
 data class Clip(
-        /** Идентификатор */
         val id: Long,
-        /** Заголовок */
         val title: String,
-        /** Текст записи */
         val text: String,
-        /** флаг избранности */
         val isFavorite: Boolean,
-        /** Время создания (мс) */
-        val dateTime: Long,
-        /** Идентификатор категории */
+        val dateTime: Long = System.currentTimeMillis(),
         val categoryId: Long,
-        /** Флаг удалённой записи */
-        val isDeleted: Boolean
+        val isDeleted: Boolean = false,
+        val position: Int = 0
 )

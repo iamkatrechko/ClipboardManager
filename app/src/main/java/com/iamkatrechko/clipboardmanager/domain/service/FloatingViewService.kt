@@ -52,7 +52,7 @@ class FloatingViewService : Service() {
         binding.recyclerView.adapter = clipsAdapter
 
         clipsAdapter.onClickListener = { clipId ->
-            val clip = ClipboardRepository.getInstance().getClip(this@FloatingViewService, clipId)
+            val clip = ClipboardRepository.getInstance().getClip(clipId)
             ClipUtils.sendClipToMyAccessibilityService(this@FloatingViewService, clip?.text)
             showToast("Id = $clipId")
         }
@@ -71,7 +71,7 @@ class FloatingViewService : Service() {
                 })
                 .addTo(disposables)
 
-        val categoriesTitles = CategoryRepository.getInstance().getCategories(this).map { it.title }.toTypedArray()
+        val categoriesTitles = CategoryRepository.getInstance().getCategories().map { it.title }.toTypedArray()
         spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesTitles)
         spinnerAdapter?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinner.adapter = spinnerAdapter

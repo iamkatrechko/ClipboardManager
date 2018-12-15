@@ -15,6 +15,7 @@ import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 import com.iamkatrechko.clipboardmanager.databinding.FragmentClipViewBinding
 import com.iamkatrechko.clipboardmanager.domain.ClipsHelper
+import com.iamkatrechko.clipboardmanager.domain.repository.ICategoryRepository
 import com.iamkatrechko.clipboardmanager.domain.service.experiment.CursorClipsRepo
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.DateFormatUtils
@@ -49,7 +50,7 @@ class ClipViewFragment : Fragment() {
     /** Репозиторий записей */
     private val clipRepository = ClipboardRepository.getInstance()
     /** Репозиторий категорий */
-    private val catRepository = CategoryRepository.getInstance()
+    private val catRepository: ICategoryRepository = CategoryRepository.getInstance()
     /** Список подписчиков */
     private val disposables = CompositeDisposable()
 
@@ -76,7 +77,7 @@ class ClipViewFragment : Fragment() {
     /** Удаляет текущую заметку */
     private fun deleteClip() {
         disposables.dispose()
-        clipRepository.deleteClip(context!!, clipId!!)
+        clipRepository.deleteClip(clipId!!)
         activity?.finish()
     }
 
@@ -87,7 +88,7 @@ class ClipViewFragment : Fragment() {
     private fun setIsFavorite(fav: Boolean) {
         //isFavorite = fav
         //setFavIcon(isFavorite)
-        ClipsHelper.setFavorite(context!!, clipId!!, fav)
+        ClipsHelper.setFavorite(clipId!!, fav)
     }
 
     /**
@@ -98,7 +99,7 @@ class ClipViewFragment : Fragment() {
         // TODO Переписать в презентер
         CursorClipsRepo.getInstance()
                 .getClip(context!!, clipId)
-                .map { it to catRepository.getCategory(context!!, it.categoryId)!! }
+                .map { it to catRepository.getCategory(it.categoryId)!! }
                 .subscribe({ (clip, category) ->
                     showToast("onNext")
                     initViews(clip, category)
@@ -136,7 +137,7 @@ class ClipViewFragment : Fragment() {
         }
         if (DialogManager.DIALOG_CHANGE_CATEGORY == requestCode) {
             val categoryId = data.getLongExtra(DialogChangeCategory.KEY_CATEGORY_ID, 0)
-            ClipsHelper.changeCategory(context!!, Collections.singletonList(clipId!!), categoryId)
+            ClipsHelper.changeCategory(Collections.singletonList(clipId!!), categoryId)
             //loadCategory(categoryId)
             return
         }

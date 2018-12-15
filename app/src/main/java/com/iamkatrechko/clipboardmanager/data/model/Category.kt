@@ -10,4 +10,11 @@ class Category(
         val id: Long,
         /** Заголовок */
         val title: String
-)
+) {
+
+    companion object {
+
+        /** Идентификатор категории по-умолчанию (неудаляемая) */
+        const val DEFAULT_CATEGORY_ID = 1
+    }
+}

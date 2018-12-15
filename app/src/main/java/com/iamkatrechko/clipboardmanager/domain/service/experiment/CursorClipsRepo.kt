@@ -36,7 +36,7 @@ class CursorClipsRepo private constructor() {
                     null,
                     ClipsTable._ID + " DESC")
             cursor?.registerListener(362623) { loader, clipsCursor ->
-                clipsSubject.onNext(CursorToClipMapper().toClips(ClipCursor(clipsCursor)))
+                clipsSubject.onNext(CursorToClipMapper.toClips(ClipCursor(clipsCursor)))
             }
             cursor?.registerOnLoadCanceledListener {
                 if (clipsSubject.hasObservers()) {
@@ -57,7 +57,7 @@ class CursorClipsRepo private constructor() {
             val cursorLoader = CursorLoader(context, clipUri, null, null, null, null)
             cursorLoader.registerListener(Random().nextInt()) { _, clipsCursor ->
                 if (clipsCursor?.moveToFirst() == true) {
-                    emitter.onNext(CursorToClipMapper().toClip(ClipCursor(clipsCursor)))
+                    emitter.onNext(CursorToClipMapper.toClip(ClipCursor(clipsCursor)))
                 } else {
                     emitter.onError(Exception("Запись не найдена"))
                 }

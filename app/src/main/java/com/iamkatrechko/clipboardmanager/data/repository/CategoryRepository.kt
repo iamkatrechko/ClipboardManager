@@ -2,71 +2,72 @@ package com.iamkatrechko.clipboardmanager.data.repository
 
 import android.content.ContentValues
 import android.content.Context
-import android.net.Uri
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.CategoryCursor
 import com.iamkatrechko.clipboardmanager.data.mapper.CursorToCategoryMapper
 import com.iamkatrechko.clipboardmanager.data.model.Category
 import com.iamkatrechko.clipboardmanager.data.repository.common.Provider
+import com.iamkatrechko.clipboardmanager.domain.repository.ICategoryRepository
+import com.iamkatrechko.clipboardmanager.domain.util.isNullOrEmpty
 
 /**
  * Репозиторий категорий записей
+ * ToDo: перевести все на Rx
  * @author iamkatrechko
  *         Date: 08.11.17
+ *
+ * @param ctx контекст приложения
  */
-class CategoryRepository private constructor() {
+class CategoryRepository private constructor(
+        private val ctx: Context
+) : ICategoryRepository {
 
-    /**
-     * Возвращает категорию по его идентификатору
-     * @param [context] контекст
-     * @param [id]      идентификатор категории
-     */
-    fun getCategory(context: Context, id: Long): Category? {
-        val cursor = context.contentResolver.query(DatabaseDescription.CategoryTable.buildClipUri(id),
+    override fun getCategory(id: Long): Category? {
+        val cursor = ctx.contentResolver.query(DatabaseDescription.CategoryTable.buildClipUri(id),
                 null,
                 null,
                 null,
                 null)
-        return if (cursor != null && cursor.moveToFirst()) {
-            CursorToCategoryMapper().toCategory(CategoryCursor(cursor))
-        } else {
+        return if (cursor.isNullOrEmpty()) {
             null
+        } else {
+            cursor.moveToFirst()
+            CursorToCategoryMapper.toCategory(CategoryCursor(cursor))
         }
     }
 
-    /**
-     * Возвращает список всех категорий
-     * @param [context] контекст
-     */
-    fun getCategories(context: Context): List<Category> {
-        val cursor = context.contentResolver.query(DatabaseDescription.CategoryTable.CONTENT_URI,
+    override fun getCategories(): List<Category> {
+        val cursor = ctx.contentResolver.query(DatabaseDescription.CategoryTable.CONTENT_URI,
                 null,
                 null,
                 null,
                 null)
-        val list = arrayListOf<Category>()
-        if (cursor != null) {
-            list.addAll(CursorToCategoryMapper().toCategories(CategoryCursor(cursor)))
-        }
-        return list
+        return CursorToCategoryMapper.toCategories(CategoryCursor(cursor))
     }
 
-    /** Добавляет новую категорию с именем [title] */
-    fun addCategory(context: Context, title: String): Uri {
+    override fun addCategory(title: String): Long? {
         val uri = DatabaseDescription.CategoryTable.CONTENT_URI
         val contentValues = ContentValues()
         contentValues.put(DatabaseDescription.CategoryTable.COLUMN_TITLE, title)
-        return context.contentResolver.insert(uri, contentValues)
+        return ctx.contentResolver.insert(uri, contentValues)?.lastPathSegment?.toLong()
     }
 
-    /** Удаляет категорию с определенным [id] */
-    fun deleteCategory(context: Context, id: Long) {
-        val uriDelete = DatabaseDescription.CategoryTable.buildClipUri(id)
-        context.contentResolver.delete(uriDelete, null, null)
+    override fun removeCategory(id: Int) {
+        if (id == Category.DEFAULT_CATEGORY_ID) error("Невозможно удалить основную категорию")
+        val uriDelete = DatabaseDescription.CategoryTable.buildClipUri(id.toLong())
+        ctx.contentResolver.delete(uriDelete, null, null)
     }
 
     companion object : Provider<CategoryRepository>() {
 
-        override fun createInstance() = CategoryRepository()
+        /** Приватный экземпляр класса */
+        private var INSTANCE: CategoryRepository? = null
+
+        /** Инициализирует компонент */
+        fun init(context: Context) {
+            INSTANCE = CategoryRepository(context)
+        }
+
+        override fun createInstance() = INSTANCE ?: error("Компонент не инициализирован")
     }
 }
