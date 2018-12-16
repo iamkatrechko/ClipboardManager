@@ -5,6 +5,7 @@ import android.util.Log
 import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 import com.iamkatrechko.clipboardmanager.domain.service.ClipboardService
+import com.iamkatrechko.clipboardmanager.domain.service.experiment.CursorClipsRepo
 import com.iamkatrechko.clipboardmanager.domain.util.PrefsManager
 import com.iamkatrechko.clipboardmanager.domain.util.SettingsValues
 
@@ -23,6 +24,7 @@ class App : Application() {
         ClipboardRepository.init(this)
         CategoryRepository.init(this)
         PrefsManager.init(this)
+        CursorClipsRepo.init(this)
         if (SettingsValues.getInstance().monitoringEnabled) {
             ClipboardService.startMyService(this)
         }

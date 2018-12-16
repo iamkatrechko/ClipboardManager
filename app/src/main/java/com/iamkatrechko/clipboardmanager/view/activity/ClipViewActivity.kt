@@ -23,6 +23,7 @@ class ClipViewActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val clipId = intent.getLongExtra(KEY_CLIP_ID, -1)
+        check(clipId != -1L) { "Не передан обязательный параметр $KEY_CLIP_ID" }
         val fragmentManager = supportFragmentManager
         if (fragmentManager.fragments.isEmpty()) {
             fragmentManager.beginTransaction()

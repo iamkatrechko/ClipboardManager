@@ -2,145 +2,70 @@ package com.iamkatrechko.clipboardmanager.view.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.*
 import androidx.core.os.bundleOf
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.model.Category
 import com.iamkatrechko.clipboardmanager.data.model.Clip
-import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository
-import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 import com.iamkatrechko.clipboardmanager.databinding.FragmentClipViewBinding
-import com.iamkatrechko.clipboardmanager.domain.ClipsHelper
-import com.iamkatrechko.clipboardmanager.domain.repository.ICategoryRepository
-import com.iamkatrechko.clipboardmanager.domain.service.experiment.CursorClipsRepo
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.DateFormatUtils
 import com.iamkatrechko.clipboardmanager.domain.util.IntentUtils
 import com.iamkatrechko.clipboardmanager.view.DialogManager
 import com.iamkatrechko.clipboardmanager.view.activity.ClipEditActivity
+import com.iamkatrechko.clipboardmanager.view.base.BaseFragment
 import com.iamkatrechko.clipboardmanager.view.dialog.DialogChangeCategory
 import com.iamkatrechko.clipboardmanager.view.extension.TAG
-import com.iamkatrechko.clipboardmanager.view.extension.showToast
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import java.util.*
+import com.iamkatrechko.clipboardmanager.view.extension.onClick
+import com.iamkatrechko.clipboardmanager.view.presenter.ClipViewPresenter
+import com.iamkatrechko.clipboardmanager.view.presenter.ClipViewView
 
 /**
  * Фрагмент экрана просмотра записи
  * @author iamkatrechko
  *         Date: 01.11.2016
  */
-class ClipViewFragment : Fragment() {
+class ClipViewFragment : BaseFragment<FragmentClipViewBinding>(), ClipViewView {
 
-    /** Идентификатор текущей записи */
-    // TODO Хранить всю запись и засунуть в биндинги
-    private var clipId: Long? = null
-    /** Идентификатор текущей категории  */
-    //private var categoryId: Long = -1
-    /** Флаг принадлежности к избранным  */
-    private var isFavorite = false
+    override val layoutId: Int
+        get() = R.layout.fragment_clip_view
 
-    /** Биндинг разметки */
-    private lateinit var binding: FragmentClipViewBinding
-
-    /** Репозиторий записей */
-    private val clipRepository = ClipboardRepository.getInstance()
-    /** Репозиторий категорий */
-    private val catRepository: ICategoryRepository = CategoryRepository.getInstance()
-    /** Список подписчиков */
-    private val disposables = CompositeDisposable()
+    /** Презентер экрана */
+    private lateinit var presenter: ClipViewPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        clipId = arguments!!.getLong(KEY_CLIP_ID)
+        val clipId = arguments?.getLong(KEY_CLIP_ID)
+                ?: error("Не передан обязательный параметр $KEY_CLIP_ID")
+        presenter = ClipViewPresenter(clipId)
         Log.i(TAG, "Просмотр заметки [id=$clipId]")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_clip_view, container, false)
+        super.onCreateView(inflater, container, savedInstanceState)
 
-        binding.linearCategory.setOnClickListener { DialogManager.showDialogChangeCategory(this) }
-        binding.ivIsFavorite.setOnClickListener { setIsFavorite(!isFavorite) }
-        binding.ivCopy.setOnClickListener { ClipUtils.copyToClipboard(context!!, binding.textViewContent.text.toString()) }
-        binding.ivShare.setOnClickListener { IntentUtils.sendMail(context!!, binding.textViewTitle.text.toString()) }
-        binding.fab.setOnClickListener { startActivity(ClipEditActivity.newIntent(context!!, clipId)) }
+        binding.apply {
+            linearCategory.onClick(presenter::onCategoryClick)
+            ivIsFavorite.onClick(presenter::onFavoriteClick)
+            ivShare.onClick(presenter::onShareClick)
+            ivCopy.onClick(presenter::onCopyToClipboardClick)
+            fab.onClick(presenter::onEditClick)
+        }
 
-        loadClip(clipId!!)
         return binding.root
     }
 
-    /** Удаляет текущую заметку */
-    private fun deleteClip() {
-        disposables.dispose()
-        clipRepository.deleteClip(clipId!!)
-        activity?.finish()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        presenter.onAttach(this)
     }
 
-    /**
-     * Изменяет принадлежность заметки к избранным
-     * @param [fav] принадлежность заметки к избранным
-     */
-    private fun setIsFavorite(fav: Boolean) {
-        //isFavorite = fav
-        //setFavIcon(isFavorite)
-        ClipsHelper.setFavorite(clipId!!, fav)
-    }
-
-    /**
-     * Загружает редактируемую запись и обновляет интерфейс
-     * @param [clipId] идентификатор записи
-     */
-    private fun loadClip(clipId: Long) {
-        // TODO Переписать в презентер
-        CursorClipsRepo.getInstance()
-                .getClip(context!!, clipId)
-                .map { it to catRepository.getCategory(it.categoryId)!! }
-                .subscribe({ (clip, category) ->
-                    showToast("onNext")
-                    initViews(clip, category)
-                }, {
-                    // TODO Диалог
-                    showToast("onError ${it.message}")
-                }, {
-                    showToast("onComplete")
-                }).addTo(disposables)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        disposables.dispose()
-    }
-
-    /**
-     * Инициализирует экран по записи
-     * @param [clip]     запись
-     * @param [category] категория
-     */
-    private fun initViews(clip: Clip, category: Category) {
-        binding.textViewTitle.text = clip.title
-        binding.textViewContent.text = clip.text
-        binding.tvDate.text = DateFormatUtils.getTimeInString(clip.dateTime)
-        binding.tvCategory.text = category.title
-        //categoryId = clip.categoryId
-        isFavorite = clip.isFavorite
-        binding.ivIsFavorite.setImageResource(if (isFavorite) R.drawable.ic_star else R.drawable.ic_star_border)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode != Activity.RESULT_OK || data == null) {
-            return
-        }
-        if (DialogManager.DIALOG_CHANGE_CATEGORY == requestCode) {
-            val categoryId = data.getLongExtra(DialogChangeCategory.KEY_CATEGORY_ID, 0)
-            ClipsHelper.changeCategory(Collections.singletonList(clipId!!), categoryId)
-            //loadCategory(categoryId)
-            return
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.onDetach()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -152,21 +77,63 @@ class ClipViewFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> activity?.onBackPressed()
-            R.id.action_delete -> deleteClip()
+            R.id.action_delete -> presenter.onDeleteClick()
+            else -> return super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
+        return true
+    }
+
+    override fun showData(clip: Clip, category: Category) {
+        // TODO засунуть в биндинги
+        binding.apply {
+            textViewTitle.text = clip.title
+            textViewContent.text = clip.text
+            tvDate.text = DateFormatUtils.getTimeInString(clip.dateTime)
+            tvCategory.text = category.title
+            //categoryId = clip.categoryId
+            ivIsFavorite.setImageResource(if (clip.isFavorite) R.drawable.ic_star else R.drawable.ic_star_border)
+        }
+    }
+
+    override fun openEditView(clipId: Long) {
+        startActivity(ClipEditActivity.newIntent(requireContext(), clipId))
+    }
+
+    override fun copyToClipboard(content: String) {
+        // ToDo: создать ClipManager и провайдить в презентер
+        ClipUtils.copyToClipboard(requireContext(), content)
+    }
+
+    override fun sendEmail(content: String) {
+        IntentUtils.sendMail(requireContext(), content)
+    }
+
+    override fun showCategoryChangeDiaolog() {
+        DialogManager.showDialogChangeCategory(this)
+    }
+
+    override fun finish() {
+        activity?.finish()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode != Activity.RESULT_OK || data == null) {
+            return
+        }
+        if (DialogManager.DIALOG_CHANGE_CATEGORY == requestCode) {
+            val categoryId = data.getLongExtra(DialogChangeCategory.KEY_CATEGORY_ID, -1)
+            presenter.onCategoryChanged(categoryId)
+        }
     }
 
     companion object {
 
-        /** Ключ аргумента. Id записи */
+        /** Ключ аргумента. Идентификатор заметки */
         private const val KEY_CLIP_ID = "KEY_CLIP_ID"
 
         /** Возвращает новый экземпляр фрагмента */
         fun newInstance(clipId: Long) = ClipViewFragment().apply {
-            arguments = bundleOf(
-                    KEY_CLIP_ID to clipId
-            )
+            arguments = bundleOf(KEY_CLIP_ID to clipId)
         }
     }
 }

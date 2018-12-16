@@ -53,3 +53,8 @@ var View.gone
     set(value) {
         visibility = if (value) GONE else VISIBLE
     }
+
+/** Устанавливает слушатель нажатий */
+fun View.onClick(action: () -> Unit) {
+    setOnClickListener { action() }
+}

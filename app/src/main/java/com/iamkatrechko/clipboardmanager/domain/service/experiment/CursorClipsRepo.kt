@@ -17,9 +17,13 @@ import java.util.*
  * Репозиторий записей на Subject'ах
  * @author iamkatrechko
  *         Date: 13.04.2018
+ *
+ * @param ctx контекст приложения
  */
 @Experimental
-class CursorClipsRepo private constructor() {
+class CursorClipsRepo private constructor(
+        private val ctx: Context
+) {
 
     /** Вещатель изменений списка записей */
     private var clipsSubject = BehaviorSubject.create<List<Clip>>()
@@ -49,12 +53,12 @@ class CursorClipsRepo private constructor() {
     }
 
     /** Возвращает запись по ее [clipId] */
-    fun getClip(context: Context, clipId: Long): Observable<Clip> {
+    fun getClip(clipId: Long): Observable<Clip> {
         val clipUri = ClipsTable.buildClipUri(clipId)
         return Observable.create<Clip> { emitter ->
             // TODO При успехе перевести в функцию расширения CursorLoader.toDisposable()
             // TODO Сейвить в мапу или в лист, если лоадер будет сам останавливаться
-            val cursorLoader = CursorLoader(context, clipUri, null, null, null, null)
+            val cursorLoader = CursorLoader(ctx, clipUri, null, null, null, null)
             cursorLoader.registerListener(Random().nextInt()) { _, clipsCursor ->
                 if (clipsCursor?.moveToFirst() == true) {
                     emitter.onNext(CursorToClipMapper.toClip(ClipCursor(clipsCursor)))
@@ -72,6 +76,15 @@ class CursorClipsRepo private constructor() {
 
     companion object : Provider<CursorClipsRepo>() {
 
-        override fun createInstance() = CursorClipsRepo()
+
+        /** Приватный экземпляр класса */
+        private var INSTANCE: CursorClipsRepo? = null
+
+        /** Инициализирует компонент */
+        fun init(context: Context) {
+            INSTANCE = CursorClipsRepo(context)
+        }
+
+        override fun createInstance() = INSTANCE ?: error("Компонент не инициализирован")
     }
 }
