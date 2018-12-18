@@ -70,8 +70,7 @@ class ClipViewFragment : BaseFragment<FragmentClipViewBinding>(), ClipViewView {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        // TODO Меню для режима просмотра
-        inflater.inflate(R.menu.menu_edit_clip, menu)
+        inflater.inflate(R.menu.menu_view_clip, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -29,7 +29,7 @@ class ClipboardRepository private constructor(
             put(ClipsTable.COLUMN_CONTENT, request.content)
             put(ClipsTable.COLUMN_CATEGORY_ID, request.categoryId.toLong())
             put(ClipsTable.COLUMN_DATE, request.date)
-            put(ClipsTable.COLUMN_IS_FAVORITE, request.isFavorite)
+            put(ClipsTable.COLUMN_IS_FAVORITE, false)
             put(ClipsTable.COLUMN_IS_DELETED, 0)
             put(ClipsTable.COLUMN_POSITION, request.position)
         }

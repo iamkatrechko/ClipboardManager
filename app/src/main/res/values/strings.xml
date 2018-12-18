@@ -26,7 +26,9 @@
     <string name="confirm">Подтверждение</string>
 
     <string name="question.cancel">Отменить?</string>
+    <string name="question.save">Сохранить?</string>
     <string name="question.exit_without_save">Изменения не сохранены. Выйти без сохранения?</string>
+    <string name="question.save_on_exit">Сохранить изменения перед выходом?</string>
     <string name="question.delete_selected">Удалить выделенные записи?</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>

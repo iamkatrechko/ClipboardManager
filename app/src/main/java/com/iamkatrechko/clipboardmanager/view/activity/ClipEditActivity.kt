@@ -23,11 +23,10 @@ class ClipEditActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val uri = intent.getLongExtra(KEY_URI, -1)
-        val action = intent.getIntExtra(KEY_ACTION, -1)
         val fragmentManager = supportFragmentManager
         if (fragmentManager.fragments.isEmpty()) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, ClipEditFragment.newInstance(uri, action))
+                    .replace(R.id.container, ClipEditFragment.newInstance(uri))
                     .commit()
         }
     }
@@ -45,17 +44,14 @@ class ClipEditActivity : AppCompatActivity() {
 
         /** Ключ аргумента. Uri заметки */
         private const val KEY_URI = "KEY_URI"
-        /** Ключ аргумента. Действие при открытии (просмотр/редактирование) */
-        private const val KEY_ACTION = "KEY_ACTION"
 
         /**
          * Возвращает интент активности
          * @param clipUri URI редактируемой записи
          */
-        fun newIntent(context: Context, clipUri: Long?, action: Int? = null) =
+        fun newIntent(context: Context, clipUri: Long?) =
                 Intent(context, ClipEditActivity::class.java).apply {
                     putExtra(KEY_URI, clipUri)
-                    putExtra(KEY_ACTION, action)
                 }
     }
 }

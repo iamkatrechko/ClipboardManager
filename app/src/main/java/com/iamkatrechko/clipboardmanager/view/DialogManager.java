@@ -69,7 +69,7 @@ public class DialogManager {
 
     public static void showDialogCancel(Fragment fragment) {
         FragmentManager fragmentManager = fragment.getActivity().getSupportFragmentManager();
-        DialogSaveClip fragmentDialog = DialogSaveClip.Companion.newInstance();
+        DialogSaveClip fragmentDialog = DialogSaveClip.newInstance();
         fragmentDialog.setTargetFragment(fragment, DIALOG_CANCEL_CHANGES);
         fragmentDialog.show(fragmentManager, "DIALOG_CANCEL_CHANGES");
     }

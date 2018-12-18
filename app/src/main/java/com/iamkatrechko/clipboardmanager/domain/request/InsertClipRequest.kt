@@ -11,14 +11,13 @@ import com.iamkatrechko.clipboardmanager.data.model.Category
  * @param content    контент
  * @param categoryId идентификатор категории
  * @param date       дата
- * @param isFavorite признак избранности
  * @param position   позиция в списке
  */
 class InsertClipRequest(
         val title: String,
         val content: String,
         val categoryId: Int,
-        val isFavorite: Boolean,
+        // ToDo: удалить поле
         val date: Long = System.currentTimeMillis(),
         val position: Int = 0 // ToDo: POSITION - last
 ) {
@@ -35,7 +34,6 @@ class InsertClipRequest(
                     content.take(titleLength),
                     content,
                     Category.DEFAULT_CATEGORY_ID,
-                    false,
                     System.currentTimeMillis(),
                     0
             )

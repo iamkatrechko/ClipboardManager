@@ -26,18 +26,20 @@ class DialogSaveClip : DialogFragment() {
 
     override fun onCreateDialog(bundle: Bundle?): Dialog {
         return AlertDialog.Builder(activity!!)
-                .setTitle(R.string.question_cancel)
-                .setMessage(R.string.question_exit_without_save)
-                .setPositiveButton(R.string.yes) { _, _ -> sendResult(false) }
-                .setNegativeButton(R.string.cancel, null).create()
+                .setTitle(R.string.question_save)
+                .setMessage(R.string.question_save_on_exit)
+                .setPositiveButton(R.string.yes) { _, _ -> sendResult(true) }
+                .setNegativeButton(R.string.no) { _, _ -> sendResult(false) }
+                .setNeutralButton(R.string.cancel, null)
+                .create()
     }
 
     companion object {
 
         const val KEY_IS_SAVE = "KEY_IS_SAVE"
 
-        fun newInstance(): DialogSaveClip {
-            return DialogSaveClip()
-        }
+        @JvmStatic
+        fun newInstance(): DialogSaveClip =
+                DialogSaveClip()
     }
 }

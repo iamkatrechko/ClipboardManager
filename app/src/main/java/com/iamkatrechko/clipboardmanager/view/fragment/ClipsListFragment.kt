@@ -50,7 +50,7 @@ class ClipsListFragment : Fragment() {
     private var listener = object : ClipsAdapter.ClipClickListener {
 
         override fun onClick(clipId: Long) {
-            startActivity(ClipEditActivity.newIntent(context!!, clipId))
+            startActivity(ClipEditActivity.newIntent(requireContext(), clipId))
         }
 
         override fun onSelectedChange(isSelectedMode: Boolean, selectedCount: Int) {
@@ -117,40 +117,40 @@ class ClipsListFragment : Fragment() {
             putParcelable(ClipsLoaderCallback.KEY_LOADER_PARAMS, ClipParam(categoryId = categoryId, order = order, onlyFav = onlyFav))
         }
         loaderManager.restartLoader(ClipsLoaderCallback.MAIN_CLIPS_LOADER, bundle,
-                ClipsLoaderCallback(context!!, { clipsAdapter.setClips(it) }))
+                ClipsLoaderCallback(requireContext(), clipsAdapter::setClips))
     }
 
     /** Открывает экран создания новой заметки  */
     fun addNewClip() {
-        val i = ClipEditActivity.newIntent(context!!, null)
+        val i = ClipEditActivity.newIntent(requireContext(), null)
         startActivity(i)
     }
 
     private fun showPopupMenu(view: View, pos: Int, clipId: Long) {
-        val popupMenu = PopupMenu(context!!, view)
+        val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.inflate(R.menu.menu_popup_clip_options) // Для Android 4.0
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_copy -> {
-                    ClipUtils.copyToClipboard(context!!, repository.getClip(clipId)?.text.orEmpty())
+                    ClipUtils.copyToClipboard(requireContext(), repository.getClip(clipId)?.text.orEmpty())
                     clipsAdapter.notifyDataSetChanged()
                 }
                 R.id.action_copy_close -> {
-                    ClipUtils.copyToClipboard(context!!, repository.getClip(clipId)?.text.orEmpty())
+                    ClipUtils.copyToClipboard(requireContext(), repository.getClip(clipId)?.text.orEmpty())
                     activity?.finish()
                 }
                 R.id.action_view -> {
-                    startActivity(ClipViewActivity.newIntent(context!!, clipId))
+                    startActivity(ClipViewActivity.newIntent(requireContext(), clipId))
                 }
                 R.id.action_edit -> {
-                    startActivity(ClipEditActivity.newIntent(context!!, clipId))
+                    startActivity(ClipEditActivity.newIntent(requireContext(), clipId))
                 }
                 R.id.action_delete -> {
                     repository.deleteClip(clipId)
                     clipsAdapter.notifyItemRemoved(pos)
                 }
                 R.id.action_share -> {
-                    IntentUtils.sendMail(context!!, repository.getClip(clipId)?.text.orEmpty())
+                    IntentUtils.sendMail(requireContext(), repository.getClip(clipId)?.text.orEmpty())
                 }
             }
             return@setOnMenuItemClickListener true
@@ -224,7 +224,7 @@ class ClipsListFragment : Fragment() {
                 val shareText = ClipsHelper.joinToString(
                         clipsAdapter.getSelectedIds(),
                         PrefsManager.getInstance().clipSplitChar)
-                IntentUtils.sendMail(context!!, shareText)
+                IntentUtils.sendMail(requireContext(), shareText)
             }
         // Сменить категорию выделенных записей
             R.id.action_change_category -> DialogManager.showDialogChangeCategory(this)
