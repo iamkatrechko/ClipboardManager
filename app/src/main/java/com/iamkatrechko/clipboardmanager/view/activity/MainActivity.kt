@@ -49,8 +49,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.fab).setOnClickListener {
-            val clipsFragment = supportFragmentManager.findFragmentById(R.id.container) as ClipsListFragment
-            clipsFragment.addNewClip()
+            val i = ClipEditActivity.newIntent(this, null)
+            startActivity(i)
         }
         initNavigationView()
 

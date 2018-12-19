@@ -3,7 +3,6 @@ package com.iamkatrechko.clipboardmanager.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PopupMenu
 import android.support.v7.widget.RecyclerView
@@ -12,11 +11,11 @@ import android.widget.Toast
 import com.iamkatrechko.clipboardmanager.App
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
+import com.iamkatrechko.clipboardmanager.databinding.FragmentMainBinding
 import com.iamkatrechko.clipboardmanager.domain.ClipsHelper
 import com.iamkatrechko.clipboardmanager.domain.loader.callback.ClipsLoaderCallback
 import com.iamkatrechko.clipboardmanager.domain.param.ClipParam
 import com.iamkatrechko.clipboardmanager.domain.param.values.OrderType
-import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.IntentUtils
 import com.iamkatrechko.clipboardmanager.domain.util.PrefsManager
 import com.iamkatrechko.clipboardmanager.view.DialogManager
@@ -25,17 +24,26 @@ import com.iamkatrechko.clipboardmanager.view.activity.ClipViewActivity
 import com.iamkatrechko.clipboardmanager.view.activity.DeveloperActivity
 import com.iamkatrechko.clipboardmanager.view.activity.SearchActivity
 import com.iamkatrechko.clipboardmanager.view.adapter.ClipsAdapter
+import com.iamkatrechko.clipboardmanager.view.base.BaseFragment
 import com.iamkatrechko.clipboardmanager.view.dialog.DialogChangeCategory
 import com.iamkatrechko.clipboardmanager.view.dialog.DialogDeleteConfirm
 import com.iamkatrechko.clipboardmanager.view.dialog.DialogSplitClips
+import com.iamkatrechko.clipboardmanager.view.extension.showToast
+import com.iamkatrechko.clipboardmanager.view.presenter.ClipsListPresenter
+import com.iamkatrechko.clipboardmanager.view.presenter.ClipsListView
 
 /**
  * Основной фрагмент экрана со списком заметок
  * @author iamkatrechko
  *         Date: 01.11.2016
  */
-class ClipsListFragment : Fragment() {
+class ClipsListFragment : BaseFragment<FragmentMainBinding>(), ClipsListView {
 
+    override val layoutId: Int
+        get() = R.layout.fragment_main
+
+    /** Презентер экрана */
+    private lateinit var presenter: ClipsListPresenter
     /** Виджет списка заметок  */
     private lateinit var recyclerView: RecyclerView
 
@@ -65,38 +73,18 @@ class ClipsListFragment : Fragment() {
     /** Адаптер списка заметок  */
     private var clipsAdapter: ClipsAdapter = ClipsAdapter(listener)
 
-    companion object {
-
-        /** Ключ аргумента. Идентификатор текущей категории */
-        private const val KEY_ARGUMENT_CATEGORY_ID = "CATEGORY_ID"
-
-        /**
-         * Возвращает новый экземпляр фрагмента
-         * @param [categoryId] идентификатор категории
-         * @return новый экземпляр фрагмента
-         */
-        fun newInstance(categoryId: Long? = null): ClipsListFragment {
-            val fragment = ClipsListFragment()
-
-            fragment.arguments = Bundle().apply {
-                putLong(KEY_ARGUMENT_CATEGORY_ID, categoryId ?: -1)
-            }
-
-            return fragment
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        currentCategoryId = arguments!!.getLong(KEY_ARGUMENT_CATEGORY_ID)
+        currentCategoryId = arguments?.getLong(KEY_ARGUMENT_CATEGORY_ID, -1L)
         currentCategoryId = if (currentCategoryId == -1L) null else currentCategoryId
+        presenter = ClipsListPresenter()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_main, container, false)
-        recyclerView = view.findViewById(R.id.recyclerView)
-        clipsAdapter.setEmptyView(view.findViewById(R.id.linearEmpty))
+        super.onCreateView(inflater, container, savedInstanceState)
+        recyclerView = binding.recyclerView
+        clipsAdapter.setEmptyView(binding.linearEmpty)
 
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.setHasFixedSize(true)
@@ -104,7 +92,21 @@ class ClipsListFragment : Fragment() {
 
         clipsAdapter.onMoreClickListener = ::showPopupMenu
         showClipsByCategoryId(currentCategoryId)
-        return view
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        presenter.onAttach(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDetach()
+    }
+
+    override fun closeScreen() {
+        activity?.finish()
     }
 
     /**
@@ -123,31 +125,26 @@ class ClipsListFragment : Fragment() {
                 ClipsLoaderCallback(requireContext(), clipsAdapter::setClips))
     }
 
-    /** Открывает экран создания новой заметки  */
-    fun addNewClip() {
-        val i = ClipEditActivity.newIntent(requireContext(), null)
-        startActivity(i)
+    override fun openClipViewScreen(clipId: Int) {
+        startActivity(ClipViewActivity.newIntent(requireContext(), clipId.toLong()))
+    }
+
+    override fun openClipEditScreen(clipId: Int) {
+        startActivity(ClipEditActivity.newIntent(requireContext(), clipId.toLong()))
     }
 
     private fun showPopupMenu(view: View, pos: Int, clipId: Long) {
         val popupMenu = PopupMenu(requireContext(), view)
-        popupMenu.inflate(R.menu.menu_popup_clip_options) // Для Android 4.0
+        popupMenu.inflate(R.menu.menu_popup_clip_options)
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_copy -> {
                     clipManager.toClipboard(repository.getClip(clipId)?.text.orEmpty())
                     clipsAdapter.notifyDataSetChanged()
                 }
-                R.id.action_copy_close -> {
-                    clipManager.toClipboard(repository.getClip(clipId)?.text.orEmpty())
-                    activity?.finish()
-                }
-                R.id.action_view -> {
-                    startActivity(ClipViewActivity.newIntent(requireContext(), clipId))
-                }
-                R.id.action_edit -> {
-                    startActivity(ClipEditActivity.newIntent(requireContext(), clipId))
-                }
+                R.id.action_copy_close -> presenter.onCopyAndCloseClicked(clipId.toInt())
+                R.id.action_view -> presenter.onClipViewClicked(clipId.toInt())
+                R.id.action_edit -> presenter.onClipEditClicked(clipId.toInt())
                 R.id.action_delete -> {
                     repository.deleteClip(clipId)
                     clipsAdapter.notifyItemRemoved(pos)
@@ -169,11 +166,7 @@ class ClipsListFragment : Fragment() {
      */
     private fun changeToolbarItemIcon(itemStar: MenuItem?, isOnlyFavoriteShow: Boolean) {
         if (isContextMenu) return
-        if (isOnlyFavoriteShow) {
-            itemStar?.setIcon(R.drawable.ic_star_white)
-        } else {
-            itemStar?.setIcon(R.drawable.ic_star_border_white)
-        }
+        itemStar?.setIcon(if (isOnlyFavoriteShow) R.drawable.ic_star_white else R.drawable.ic_star_border_white)
     }
 
     /** Нажатие кнопки "назад"  */
@@ -185,51 +178,50 @@ class ClipsListFragment : Fragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater!!.inflate(if (!isContextMenu) R.menu.menu_main else R.menu.menu_main_context, menu)
+        inflater.inflate(if (!isContextMenu) R.menu.menu_main else R.menu.menu_main_context, menu)
         if (selectedCount == 0) {
-            activity!!.setTitle(R.string.app_name)
+            activity?.setTitle(R.string.app_name)
         } else {
-            activity!!.title = getString(R.string.selected_count, selectedCount.toString())
-            menu!!.findItem(R.id.action_split).isVisible = selectedCount > 1
+            activity?.title = getString(R.string.selected_count, selectedCount.toString())
+            menu.findItem(R.id.action_split)?.isVisible = selectedCount > 1
         }
 
         val showOnlyFavorite = PrefsManager.getInstance().isShowOnlyFavorite
-        val itemStar = menu?.findItem(R.id.action_show_favorites)
+        val itemStar = menu.findItem(R.id.action_show_favorites)
         changeToolbarItemIcon(itemStar, showOnlyFavorite)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-        // Окно поиска
-            R.id.action_search -> activity!!.startActivity(Intent(activity, SearchActivity::class.java))
-        // Настройка сортировки
+            // Окно поиска
+            R.id.action_search -> startActivity(Intent(activity, SearchActivity::class.java))
+            // Настройка сортировки
             R.id.action_set_order -> DialogManager.showDialogSetOrderType(this)
-        // Показывать только избранные
+            // Показывать только избранные
             R.id.action_show_favorites -> {
                 val isOnly = PrefsManager.getInstance().isShowOnlyFavorite
                 changeToolbarItemIcon(item, !isOnly)
                 PrefsManager.getInstance().isShowOnlyFavorite = !isOnly
                 showClipsByCategoryId(currentCategoryId)
             }
-        // Меню разработчика
+            // Меню разработчика
             R.id.action_developer_menu -> {
-                val i = Intent(activity, DeveloperActivity::class.java)
-                activity!!.startActivity(i)
+                startActivity(Intent(requireContext(), DeveloperActivity::class.java))
             }
-        // Удалить выделенные записи
+            // Удалить выделенные записи
             R.id.action_delete -> DialogManager.showDialogDeleteConfirm(this)
-        // Соединить выделенные записи
+            // Соединить выделенные записи
             R.id.action_split -> DialogManager.showDialogSplitClips(this)
-        // Поделиться выделенными записями
+            // Поделиться выделенными записями
             R.id.action_share -> {
                 val shareText = ClipsHelper.joinToString(
                         clipsAdapter.getSelectedIds(),
                         PrefsManager.getInstance().clipSplitChar)
                 IntentUtils.sendMail(requireContext(), shareText)
             }
-        // Сменить категорию выделенных записей
+            // Сменить категорию выделенных записей
             R.id.action_change_category -> DialogManager.showDialogChangeCategory(this)
         }
         return super.onOptionsItemSelected(item)
@@ -245,9 +237,9 @@ class ClipsListFragment : Fragment() {
                 val deleteOldClips = data.getBooleanExtra(DialogSplitClips.KEY_IS_DELETE_OLD_CLIPS, false)
                 ClipsHelper.joinAndDelete(clipsAdapter.getSelectedIds(), splitChar, deleteOldClips)
                 clipsAdapter.resetSelectMode()
-                Toast.makeText(context, R.string.splited, Toast.LENGTH_SHORT).show()
+                showToast(R.string.splited)
             } else {
-                Toast.makeText(context, R.string.select_cancel, Toast.LENGTH_SHORT).show()
+                showToast(R.string.select_cancel)
             }
         }
         if (requestCode == DialogManager.DIALOG_CHANGE_CATEGORY) {
@@ -265,6 +257,27 @@ class ClipsListFragment : Fragment() {
             val pos = data.getIntExtra("orderType", 0)
             PrefsManager.getInstance().clipsOrderType = OrderType.values()[pos]
             showClipsByCategoryId(currentCategoryId)
+        }
+    }
+
+    companion object {
+
+        /** Ключ аргумента. Идентификатор текущей категории */
+        private const val KEY_ARGUMENT_CATEGORY_ID = "CATEGORY_ID"
+
+        /**
+         * Возвращает новый экземпляр фрагмента
+         * @param [categoryId] идентификатор категории
+         * @return новый экземпляр фрагмента
+         */
+        fun newInstance(categoryId: Long? = null): ClipsListFragment {
+            val fragment = ClipsListFragment()
+
+            fragment.arguments = Bundle().apply {
+                putLong(KEY_ARGUMENT_CATEGORY_ID, categoryId ?: -1)
+            }
+
+            return fragment
         }
     }
 }
