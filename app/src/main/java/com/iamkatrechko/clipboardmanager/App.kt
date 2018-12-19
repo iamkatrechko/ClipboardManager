@@ -4,10 +4,12 @@ import android.app.Application
 import android.util.Log
 import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
+import com.iamkatrechko.clipboardmanager.domain.IClipManager
 import com.iamkatrechko.clipboardmanager.domain.service.ClipboardService
 import com.iamkatrechko.clipboardmanager.domain.service.experiment.CursorClipsRepo
 import com.iamkatrechko.clipboardmanager.domain.util.PrefsManager
 import com.iamkatrechko.clipboardmanager.domain.util.SettingsValues
+import com.iamkatrechko.clipboardmanager.view.ClipManager
 
 /**
  * Класс Application
@@ -20,6 +22,7 @@ class App : Application() {
         super.onCreate()
         Log.d("App", "CreateAppInstance")
 
+        clipManager = ClipManager(this)
         SettingsValues.init(this)
         ClipboardRepository.init(this)
         CategoryRepository.init(this)
@@ -28,5 +31,12 @@ class App : Application() {
         if (SettingsValues.getInstance().monitoringEnabled) {
             ClipboardService.startMyService(this)
         }
+    }
+
+    companion object {
+
+        /** Менеджер буфера обмена */
+        lateinit var clipManager: IClipManager
+            private set
     }
 }

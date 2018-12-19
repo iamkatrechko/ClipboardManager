@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.core.os.bundleOf
+import com.iamkatrechko.clipboardmanager.App
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.model.Category
 import com.iamkatrechko.clipboardmanager.data.model.Clip
@@ -96,11 +97,6 @@ class ClipViewFragment : BaseFragment<FragmentClipViewBinding>(), ClipViewView {
 
     override fun openEditView(clipId: Long) {
         startActivity(ClipEditActivity.newIntent(requireContext(), clipId))
-    }
-
-    override fun copyToClipboard(content: String) {
-        // ToDo: создать ClipManager и провайдить в презентер
-        ClipUtils.copyToClipboard(requireContext(), content)
     }
 
     override fun sendEmail(content: String) {

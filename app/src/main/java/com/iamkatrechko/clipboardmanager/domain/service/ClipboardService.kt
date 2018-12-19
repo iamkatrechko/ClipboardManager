@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.content.systemService
+import com.iamkatrechko.clipboardmanager.App
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 import com.iamkatrechko.clipboardmanager.domain.request.InsertClipRequest
@@ -32,7 +33,7 @@ class ClipboardService : Service() {
     /** Слушатель новых записей в буфере обмена */
     private val clipListener = ClipboardManager.OnPrimaryClipChangedListener {
         Log.d(TAG, "Обнаружена новая запись в буфере обмена")
-        val (text, label) = ClipUtils.getClip(this)
+        val (text, label) = App.clipManager.getClip()
 
         if (label == ClipUtils.CLIP_LABEL || label == ClipUtils.CLIP_LABEL_ACCESSIBILITY) {
             Log.d(TAG, "Отмена: копирование из приложения")
@@ -98,7 +99,7 @@ class ClipboardService : Service() {
     /** Копирует запись с указанным [id] в буфер обмена */
     private fun copyToClipboard(id: Long) {
         repository.getClip(id)?.let {
-            ClipUtils.copyToClipboard(this, it.text)
+            App.clipManager.toClipboard(it.text)
         }
         startMyService(this)
     }

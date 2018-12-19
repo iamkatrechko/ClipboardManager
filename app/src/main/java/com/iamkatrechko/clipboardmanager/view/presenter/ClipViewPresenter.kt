@@ -1,6 +1,7 @@
 package com.iamkatrechko.clipboardmanager.view.presenter
 
 import android.util.Log
+import com.iamkatrechko.clipboardmanager.App
 import com.iamkatrechko.clipboardmanager.data.model.Clip
 import com.iamkatrechko.clipboardmanager.data.repository.CategoryRepository
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
@@ -31,6 +32,8 @@ class ClipViewPresenter(
     private var clipDisposable: Disposable? = null
     /** Текущая заметка */
     private var currentClip: Clip? = null
+    /** Менеджер буфера обмена */
+    private val clipManager = App.clipManager
 
     override fun onAttach(view: ClipViewView) {
         super.onAttach(view)
@@ -42,7 +45,7 @@ class ClipViewPresenter(
     }
 
     fun onCopyToClipboardClick() {
-        currentClip?.let { view?.copyToClipboard(it.text) }
+        currentClip?.let { clipManager.toClipboard(it.text) }
     }
 
     fun onShareClick() {

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.view.View
 import android.widget.RemoteViews
+import com.iamkatrechko.clipboardmanager.App
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.database.DatabaseDescription
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
@@ -30,7 +31,7 @@ object RemoteViewCreator {
         val onlyFavorite = PrefsManager.getInstance().isShowOnlyFavoriteInNotification
 
         val generalRemoteViews = RemoteViews(context.packageName, R.layout.remote_view_notification)
-        val currentClip = ClipUtils.getClipboardText(context)
+        val currentClip = App.clipManager.getClipboardText()
 
         generalRemoteViews.setTextViewText(R.id.tvCurrent, "> $currentClip")
 

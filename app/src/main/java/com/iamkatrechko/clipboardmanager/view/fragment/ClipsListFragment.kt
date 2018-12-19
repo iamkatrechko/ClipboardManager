@@ -9,6 +9,7 @@ import android.support.v7.widget.PopupMenu
 import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.Toast
+import com.iamkatrechko.clipboardmanager.App
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
 import com.iamkatrechko.clipboardmanager.domain.ClipsHelper
@@ -38,6 +39,8 @@ class ClipsListFragment : Fragment() {
     /** Виджет списка заметок  */
     private lateinit var recyclerView: RecyclerView
 
+    /** Менеджер буфера обмена */
+    private val clipManager = App.clipManager
     /** Текущая выбранная категория  */
     private var currentCategoryId: Long? = -1
     /** Включен ли режим выделения  */
@@ -132,11 +135,11 @@ class ClipsListFragment : Fragment() {
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_copy -> {
-                    ClipUtils.copyToClipboard(requireContext(), repository.getClip(clipId)?.text.orEmpty())
+                    clipManager.toClipboard(repository.getClip(clipId)?.text.orEmpty())
                     clipsAdapter.notifyDataSetChanged()
                 }
                 R.id.action_copy_close -> {
-                    ClipUtils.copyToClipboard(requireContext(), repository.getClip(clipId)?.text.orEmpty())
+                    clipManager.toClipboard(repository.getClip(clipId)?.text.orEmpty())
                     activity?.finish()
                 }
                 R.id.action_view -> {

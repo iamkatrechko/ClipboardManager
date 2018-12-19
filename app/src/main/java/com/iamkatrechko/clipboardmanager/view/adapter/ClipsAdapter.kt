@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.bignerdranch.android.multiselector.MultiSelector
 import com.bignerdranch.android.multiselector.SwappingHolder
+import com.iamkatrechko.clipboardmanager.App
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.data.database.wrapper.ClipCursor
 import com.iamkatrechko.clipboardmanager.data.mapper.CursorToClipMapper
@@ -197,7 +198,7 @@ internal class ClipsAdapter constructor(
             binding.buttonMore.setOnClickListener { onMoreClickListener(it, adapterPosition, clipId) }
 
             binding.ivCopy.setOnClickListener {
-                ClipUtils.copyToClipboard(context, binding.tvContent.text.toString())
+                App.clipManager.toClipboard(binding.tvContent.text.toString())
                 notifyDataSetChanged()
             }
 
@@ -221,7 +222,7 @@ internal class ClipsAdapter constructor(
             binding.tvIsDeleted.text = clip.isDeleted.toString()
             binding.ivFavorite.setImageResource(if (clip.isFavorite) R.drawable.ic_star else R.drawable.ic_star_border)
 
-            val clipInClipboard = clip.text == ClipUtils.getClipboardText(binding.tvCategoryId.context)
+            val clipInClipboard = clip.text == App.clipManager.getClipboardText()
             binding.tvContent.setTypeface(null, if (clipInClipboard) Typeface.BOLD else Typeface.NORMAL)
         }
     }

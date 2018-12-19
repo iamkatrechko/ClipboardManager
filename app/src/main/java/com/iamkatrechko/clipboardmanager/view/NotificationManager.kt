@@ -3,6 +3,7 @@ package com.iamkatrechko.clipboardmanager.view
 import android.app.Notification
 import android.content.Context
 import android.support.v4.app.NotificationCompat
+import com.iamkatrechko.clipboardmanager.App
 import com.iamkatrechko.clipboardmanager.R
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.SettingsValues
@@ -21,7 +22,7 @@ class NotificationManager {
     fun getNotification(context: Context): Notification {
         val builder = NotificationCompat.Builder(context)
                 .setContentTitle(context.getString(R.string.current_clipboard_text))
-                .setContentText("> " + ClipUtils.getClipboardText(context))
+                .setContentText("> " + App.clipManager.getClipboardText())
                 .setSmallIcon(R.drawable.ic_icon)
 
         if (settings.displayHistory) {

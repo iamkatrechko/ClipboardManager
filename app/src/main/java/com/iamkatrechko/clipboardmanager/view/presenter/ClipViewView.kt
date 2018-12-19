@@ -17,8 +17,6 @@ interface ClipViewView : MvpView {
 
     fun showCategoryChangeDiaolog()
 
-    fun copyToClipboard(content: String)
-
     fun sendEmail(content: String)
 
     fun finish()
