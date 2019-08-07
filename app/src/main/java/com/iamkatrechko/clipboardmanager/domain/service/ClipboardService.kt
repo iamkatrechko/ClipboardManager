@@ -1,21 +1,21 @@
 package com.iamkatrechko.clipboardmanager.domain.service
 
 import android.app.Service
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import androidx.core.content.systemService
 import com.iamkatrechko.clipboardmanager.App
-import com.iamkatrechko.clipboardmanager.R
+import com.iamkatrechko.clipboardmanager.data.model.SimpleClip
 import com.iamkatrechko.clipboardmanager.data.repository.ClipboardRepository
+import com.iamkatrechko.clipboardmanager.domain.repository.SystemsClipsWatcher
 import com.iamkatrechko.clipboardmanager.domain.request.InsertClipRequest
 import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.PrefsManager
 import com.iamkatrechko.clipboardmanager.domain.util.SettingsValues
-import com.iamkatrechko.clipboardmanager.view.extension.TAG
 import com.iamkatrechko.clipboardmanager.view.NotificationManager
-import com.iamkatrechko.clipboardmanager.view.extension.showToast
+import com.iamkatrechko.clipboardmanager.view.extension.TAG
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 
 /**
  * Сервис для прослушивания буфера обмена
@@ -26,36 +26,17 @@ class ClipboardService : Service() {
 
     /** Репозиторий с записями в базе данных */
     private val repository = ClipboardRepository.getInstance()
-    /** Менеджер буфера обмена  */
-    private var clipboardManager: ClipboardManager? = null
     /** Хранилище настроек программы */
     private val settings = SettingsValues.getInstance()
-    /** Слушатель новых записей в буфере обмена */
-    private val clipListener = ClipboardManager.OnPrimaryClipChangedListener {
-        Log.d(TAG, "Обнаружена новая запись в буфере обмена")
-        val (text, label) = App.clipManager.getClip()
-
-        if (label == ClipUtils.CLIP_LABEL || label == ClipUtils.CLIP_LABEL_ACCESSIBILITY) {
-            Log.d(TAG, "Отмена: копирование из приложения")
-            showToast("Отмена: копирование из приложения")
-        } else if (text.isEmpty()) {
-            Log.d(TAG, "Отмена: текст записи пуст")
-            showToast(R.string.empty_record)
-        } else if (repository.alreadyExists(text)) {
-            Log.d(TAG, "Отмена: текущая запись уже существует")
-            showToast(R.string.record_already_exists)
-            //TODO Сделать настройку "Если уже существует: ничего не делать || изменить дату на новую
-        } else {
-            addClipAndShowCancel(text)
-        }
-        // Обновляем уведомление
-        ClipboardService.startMyService(this)
-    }
+    /** Общий список rx-подписчиков */
+    private val disposables = CompositeDisposable()
 
     override fun onCreate() {
         Log.d(TAG, "onCreate")
-        clipboardManager = systemService<ClipboardManager>()
-        clipboardManager?.addPrimaryClipChangedListener(clipListener)
+        val clipManager = SystemsClipsWatcher(App.clipManager, this.applicationContext)
+        clipManager.observe()
+                .subscribe(::prepareClip)
+                .addTo(disposables)
         // TODO Отображать уведомление при запуске
     }
 
@@ -66,19 +47,39 @@ class ClipboardService : Service() {
             ACTION_COPY_TO_CLIPBOARD -> copyToClipboard(intent.getLongExtra("id", -1))
             else -> startForegroundService()
         }
-        return Service.START_NOT_STICKY
+        return START_NOT_STICKY
     }
 
-    override fun onBind(intent: Intent) = null
+    override fun onBind(intent: Intent) =
+            null
 
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "onDestroy")
-        clipboardManager?.removePrimaryClipChangedListener(clipListener)
+        disposables.dispose()
     }
 
     override fun onTaskRemoved(rootIntent: Intent) {
         Log.d(TAG, "onTaskRemoved")
+    }
+
+    /** Обработчик найденных записей буфера */
+    private fun prepareClip(clip: SimpleClip) {
+        Log.d(TAG, "Обнаружена новая запись в буфере обмена")
+        val (text, label) = clip
+
+        if (label == ClipUtils.CLIP_LABEL || label == ClipUtils.CLIP_LABEL_ACCESSIBILITY) {
+            Log.d(TAG, "Отмена: копирование из приложения")
+        } else if (text.isEmpty()) {
+            Log.d(TAG, "Отмена: текст записи пуст")
+        } else if (repository.alreadyExists(text)) {
+            Log.d(TAG, "Отмена: текущая запись уже существует")
+            //TODO Сделать настройку "Если уже существует: ничего не делать || изменить дату на новую
+        } else {
+            addClipAndShowCancel(text)
+        }
+        // Обновляем уведомление
+        startMyService(this)
     }
 
     /** Запускает фоновый сервис */
