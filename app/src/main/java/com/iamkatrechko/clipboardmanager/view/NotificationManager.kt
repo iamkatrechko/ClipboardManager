@@ -2,10 +2,11 @@ package com.iamkatrechko.clipboardmanager.view
 
 import android.app.Notification
 import android.content.Context
+import android.os.Build
 import android.support.v4.app.NotificationCompat
 import com.iamkatrechko.clipboardmanager.App
+import com.iamkatrechko.clipboardmanager.NotificationsChannelsManager
 import com.iamkatrechko.clipboardmanager.R
-import com.iamkatrechko.clipboardmanager.domain.util.ClipUtils
 import com.iamkatrechko.clipboardmanager.domain.util.SettingsValues
 
 /**
@@ -25,11 +26,15 @@ class NotificationManager {
                 .setContentText("> " + App.clipManager.getClipboardText())
                 .setSmallIcon(R.drawable.ic_icon)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationsChannelsManager(context).createMainChannel()
+            builder.setChannelId(channel.id)
+        }
         if (settings.displayHistory) {
             builder.setCustomBigContentView(RemoteViewCreator.createHistoryRemoteView(context))
         }
 
-        builder.priority = when (settings.notificationPriority.toInt()) {
+        builder.priority = when (settings.notificationPriority?.toInt()) {
             1 -> NotificationCompat.PRIORITY_MAX
             2 -> NotificationCompat.PRIORITY_HIGH
             3 -> NotificationCompat.PRIORITY_DEFAULT
